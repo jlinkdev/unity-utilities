@@ -8,7 +8,7 @@ Requires Unity 2022.3 LTS or later.
 
 There are several ways to install Unity Utilities:
 
-### Package Manager
+### Package Manager Git URL
 
 The recommended way is to install this library as a Git package using the Unity
 Package Manager. First, make sure Git is installed and available in your
@@ -19,6 +19,12 @@ Then add the package using this Git URL:
 ```text
 https://github.com/jlinkdev/unity-utilities.git
 ```
+
+### Local Package
+
+If you do not want to use Git, download this repository as an archive and
+extract it somewhere in your project or on your machine. Then open Unity's
+Package Manager and add it with **Add package from disk**.
 
 ## Included utilities
 - **ObjectPooling**: reusable generic/object-component pooling utilities under `Runtime/ObjectPooling`.
