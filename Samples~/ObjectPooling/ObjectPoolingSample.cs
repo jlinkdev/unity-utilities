@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityUtilities.Pooling;
+using jlinkdev.UnityUtilities.ObjectPooling;
 
-namespace UnityUtilities.Samples
+namespace jlinkdev.UnityUtilities.Samples.ObjectPooling
 {
     /// <summary>
     /// Small example that spawns pooled objects on a timer and returns old ones.

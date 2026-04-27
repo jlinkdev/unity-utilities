@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UnityUtilities.Pooling
+namespace jlinkdev.UnityUtilities.ObjectPooling
 {
     /// <summary>
     /// Inspector-friendly pooled prefab provider.

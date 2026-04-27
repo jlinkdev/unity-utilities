@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnityUtilities.Pooling
+namespace jlinkdev.UnityUtilities.ObjectPooling
 {
     /// <summary>
     /// Generic reusable object pool for reference types.

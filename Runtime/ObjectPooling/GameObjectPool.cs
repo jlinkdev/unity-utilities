@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UnityUtilities.Pooling
+namespace jlinkdev.UnityUtilities.ObjectPooling
 {
     /// <summary>
     /// Unity-specific reusable pool for <see cref="GameObject"/> instances.
