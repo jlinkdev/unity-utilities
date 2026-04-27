@@ -1,0 +1,17 @@
+{
+  "name": "com.jlinkdev.unity-utilities",
+  "displayName": "Unity Utilities",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Reusable Unity utilities, shaders, editor tools, and systems for Unity projects.",
+  "author": {
+    "name": "Justin Link"
+  },
+  "samples": [
+    {
+      "displayName": "Object Pooling",
+      "description": "Sample showing single-prefab pooling with GameObjectPoolHandle and multi-prefab pooling with GameObjectPoolRegistry.",
+      "path": "Samples~/ObjectPooling"
+    }
+  ]
+}
