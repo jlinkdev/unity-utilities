@@ -10,7 +10,7 @@
   "samples": [
     {
       "displayName": "Object Pooling",
-      "description": "Basic sample showing how to spawn and despawn objects using GameObjectPoolHandle.",
+      "description": "Sample showing single-prefab pooling with GameObjectPoolHandle and multi-prefab pooling with GameObjectPoolRegistry.",
       "path": "Samples~/ObjectPooling"
     }
   ]

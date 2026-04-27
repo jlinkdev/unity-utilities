@@ -7,13 +7,20 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
     /// </summary>
     public sealed class GameObjectPoolHandle : MonoBehaviour
     {
-        [SerializeField] private GameObject _prefab;
-        [SerializeField] [Min(0)] private int _initialCapacity = 8;
-        [SerializeField] [Min(1)] private int _maxCapacity = 64;
-        [SerializeField] private Transform _inactiveParent;
-        [SerializeField] private bool _activateOnGet = true;
-        [SerializeField] private bool _deactivateOnReturn = true;
-        [SerializeField] private bool _prewarmOnAwake = true;
+        [SerializeField] [Tooltip("Prefab used to create instances for this pool.")]
+        private GameObject _prefab;
+        [SerializeField] [Tooltip("Number of instances created when this handle initializes with prewarming enabled.")] [Min(0)]
+        private int _initialCapacity = 8;
+        [SerializeField] [Tooltip("Maximum number of instances this pool can track at once.")] [Min(1)]
+        private int _maxCapacity = 64;
+        [SerializeField] [Tooltip("Optional parent assigned to inactive returned instances.")]
+        private Transform _inactiveParent;
+        [SerializeField] [Tooltip("Whether instances are activated when retrieved from the pool.")]
+        private bool _activateOnGet = true;
+        [SerializeField] [Tooltip("Whether instances are deactivated when returned to the pool.")]
+        private bool _deactivateOnReturn = true;
+        [SerializeField] [Tooltip("Whether the initial capacity is created during Awake.")]
+        private bool _prewarmOnAwake = true;
 
         private GameObjectPool _pool;
 
@@ -43,6 +50,11 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         public GameObject Spawn()
         {
             EnsureInitialized(true);
+            if (_pool == null)
+            {
+                return null;
+            }
+
             return _pool.Get();
         }
 
@@ -52,6 +64,11 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         public GameObject Spawn(Vector3 position, Quaternion rotation, Transform parent = null)
         {
             EnsureInitialized(true);
+            if (_pool == null)
+            {
+                return null;
+            }
+
             return _pool.Get(position, rotation, parent);
         }
 
@@ -75,6 +92,11 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         public int Prewarm(int count)
         {
             EnsureInitialized(false);
+            if (_pool == null)
+            {
+                return 0;
+            }
+
             return _pool.Prewarm(count);
         }
 
