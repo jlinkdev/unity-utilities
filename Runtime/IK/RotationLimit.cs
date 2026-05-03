@@ -54,22 +54,38 @@ namespace jlinkdev.UnityUtilities.IK
 
         private void LateUpdate() { ApplyLimit(); }
 
+        private void OnDrawGizmos()
+        {
+            DrawDebugGizmos(0.25f);
+        }
+
         private void OnDrawGizmosSelected()
+        {
+            DrawDebugGizmos(1f);
+        }
+
+        private void DrawDebugGizmos(float alphaScale)
         {
             if (!drawGizmos) return;
             Vector3 worldAxis = transform.TransformDirection(localAxis.normalized);
             if (mode == LimitMode.Hinge)
             {
-                Gizmos.color = Color.yellow;
+                Gizmos.color = WithAlpha(Color.yellow, 1f * alphaScale);
                 Gizmos.DrawRay(transform.position, Quaternion.AngleAxis(hingeMin, worldAxis) * transform.up * 0.5f);
                 Gizmos.DrawRay(transform.position, Quaternion.AngleAxis(hingeMax, worldAxis) * transform.up * 0.5f);
             }
             else
             {
-                Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f);
+                Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f * alphaScale);
                 Gizmos.DrawRay(transform.position, worldAxis * 0.5f);
                 Gizmos.DrawWireSphere(transform.position + worldAxis * 0.5f, Mathf.Sin(coneAngle * Mathf.Deg2Rad) * 0.5f);
             }
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            color.a = Mathf.Clamp01(alpha);
+            return color;
         }
     }
 }

@@ -19,6 +19,48 @@ namespace jlinkdev.UnityUtilities.IK
         [SerializeField, Tooltip("Draw gizmo debug visuals in the scene view.")]
         private bool drawGizmos = true;
 
+        public Transform[] Joints
+        {
+            get => joints;
+            set => joints = value;
+        }
+
+        public Transform Target
+        {
+            get => target;
+            set => target = value;
+        }
+
+        public Vector3 LocalAimAxis
+        {
+            get => localAimAxis;
+            set => localAimAxis = value.sqrMagnitude > 0.00001f ? value.normalized : Vector3.forward;
+        }
+
+        public int Iterations
+        {
+            get => iterations;
+            set => iterations = Mathf.Max(1, value);
+        }
+
+        public float Weight
+        {
+            get => weight;
+            set => weight = IKMath.ClampWeight(value);
+        }
+
+        public bool SolveInLateUpdate
+        {
+            get => solveInLateUpdate;
+            set => solveInLateUpdate = value;
+        }
+
+        public bool DrawGizmos
+        {
+            get => drawGizmos;
+            set => drawGizmos = value;
+        }
+
         public void Solve()
         {
             if (joints == null || joints.Length == 0 || target == null) return;
@@ -41,22 +83,38 @@ namespace jlinkdev.UnityUtilities.IK
 
         private void LateUpdate() { if (solveInLateUpdate) Solve(); }
 
+        private void OnDrawGizmos()
+        {
+            DrawDebugGizmos(0.25f);
+        }
+
         private void OnDrawGizmosSelected()
         {
+            DrawDebugGizmos(1f);
+        }
+
+        private void DrawDebugGizmos(float alphaScale)
+        {
             if (!drawGizmos || joints == null || joints.Length == 0) return;
-            Gizmos.color = Color.cyan;
+            Gizmos.color = WithAlpha(Color.cyan, 1f * alphaScale);
             for (int i = 0; i < joints.Length - 1; i++) if (joints[i] != null && joints[i + 1] != null) Gizmos.DrawLine(joints[i].position, joints[i + 1].position);
             Transform tip = joints[joints.Length - 1];
             if (tip != null)
             {
-                Gizmos.color = Color.yellow;
+                Gizmos.color = WithAlpha(Color.yellow, 1f * alphaScale);
                 Gizmos.DrawRay(tip.position, tip.TransformDirection(localAimAxis.normalized) * 0.5f);
             }
             if (target != null && tip != null)
             {
-                Gizmos.color = Color.green;
+                Gizmos.color = WithAlpha(Color.green, 1f * alphaScale);
                 Gizmos.DrawLine(tip.position, target.position);
             }
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            color.a = Mathf.Clamp01(alpha);
+            return color;
         }
     }
 }

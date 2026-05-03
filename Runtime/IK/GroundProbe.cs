@@ -24,6 +24,57 @@ namespace jlinkdev.UnityUtilities.IK
         private bool _hasHit;
         private RaycastHit _hit;
 
+        public Transform RayOrigin
+        {
+            get => rayOrigin;
+            set => rayOrigin = value;
+        }
+
+        public float RayDistance
+        {
+            get => rayDistance;
+            set => rayDistance = Mathf.Max(0f, value);
+        }
+
+        public LayerMask GroundMask
+        {
+            get => groundMask;
+            set => groundMask = value;
+        }
+
+        public float SurfaceOffset
+        {
+            get => surfaceOffset;
+            set => surfaceOffset = value;
+        }
+
+        public bool AlignToNormal
+        {
+            get => alignToNormal;
+            set => alignToNormal = value;
+        }
+
+        public float PositionSmooth
+        {
+            get => positionSmooth;
+            set => positionSmooth = Mathf.Max(0f, value);
+        }
+
+        public float RotationSmooth
+        {
+            get => rotationSmooth;
+            set => rotationSmooth = Mathf.Max(0f, value);
+        }
+
+        public bool DrawGizmos
+        {
+            get => drawGizmos;
+            set => drawGizmos = value;
+        }
+
+        public bool HasHit => _hasHit;
+        public RaycastHit CurrentHit => _hit;
+
         private void LateUpdate()
         {
             if (rayOrigin == null) return;
@@ -53,17 +104,33 @@ namespace jlinkdev.UnityUtilities.IK
             }
         }
 
+        private void OnDrawGizmos()
+        {
+            DrawDebugGizmos(0.25f);
+        }
+
         private void OnDrawGizmosSelected()
         {
+            DrawDebugGizmos(1f);
+        }
+
+        private void DrawDebugGizmos(float alphaScale)
+        {
             if (!drawGizmos || rayOrigin == null) return;
-            Gizmos.color = Color.white;
+            Gizmos.color = WithAlpha(Color.white, 1f * alphaScale);
             Gizmos.DrawLine(rayOrigin.position, rayOrigin.position + Vector3.down * rayDistance);
             if (_hasHit)
             {
-                Gizmos.color = Color.green;
+                Gizmos.color = WithAlpha(Color.green, 1f * alphaScale);
                 Gizmos.DrawWireSphere(_hit.point, 0.03f);
                 Gizmos.DrawRay(_hit.point, _hit.normal * 0.3f);
             }
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            color.a = Mathf.Clamp01(alpha);
+            return color;
         }
     }
 }

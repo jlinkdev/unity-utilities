@@ -31,6 +31,60 @@ namespace jlinkdev.UnityUtilities.IK
         [SerializeField, Tooltip("Draw gizmo debug visuals in the scene view.")]
         private bool drawGizmos = true;
 
+        public Transform[] Joints
+        {
+            get => joints;
+            set => joints = value;
+        }
+
+        public Transform Target
+        {
+            get => target;
+            set => target = value;
+        }
+
+        public Transform Pole
+        {
+            get => pole;
+            set => pole = value;
+        }
+
+        public int Iterations
+        {
+            get => iterations;
+            set => iterations = Mathf.Max(1, value);
+        }
+
+        public float Tolerance
+        {
+            get => tolerance;
+            set => tolerance = Mathf.Max(0f, value);
+        }
+
+        public bool LockRoot
+        {
+            get => lockRoot;
+            set => lockRoot = value;
+        }
+
+        public float Weight
+        {
+            get => weight;
+            set => weight = IKMath.ClampWeight(value);
+        }
+
+        public bool SolveInLateUpdate
+        {
+            get => solveInLateUpdate;
+            set => solveInLateUpdate = value;
+        }
+
+        public bool DrawGizmos
+        {
+            get => drawGizmos;
+            set => drawGizmos = value;
+        }
+
         public void Solve()
         {
             if (joints == null || joints.Length < 2 || target == null) return;
@@ -99,14 +153,24 @@ namespace jlinkdev.UnityUtilities.IK
 
         private void LateUpdate() { if (solveInLateUpdate) Solve(); }
 
+        private void OnDrawGizmos()
+        {
+            DrawDebugGizmos(0.25f);
+        }
+
         private void OnDrawGizmosSelected()
         {
+            DrawDebugGizmos(1f);
+        }
+
+        private void DrawDebugGizmos(float alphaScale)
+        {
             if (!drawGizmos || joints == null || joints.Length < 2) return;
-            Gizmos.color = Color.cyan;
+            Gizmos.color = WithAlpha(Color.cyan, 1f * alphaScale);
             for (int i = 0; i < joints.Length - 1; i++) if (joints[i] != null && joints[i + 1] != null) Gizmos.DrawLine(joints[i].position, joints[i + 1].position);
-            if (target != null)
+            if (target != null && joints[joints.Length - 1] != null)
             {
-                Gizmos.color = Color.green;
+                Gizmos.color = WithAlpha(Color.green, 1f * alphaScale);
                 Gizmos.DrawLine(joints[joints.Length - 1].position, target.position);
                 Gizmos.DrawWireSphere(target.position, 0.04f);
             }
@@ -114,16 +178,22 @@ namespace jlinkdev.UnityUtilities.IK
             if (joints[0] != null)
             {
                 Vector3[] p = new Vector3[joints.Length];
-                for (int i = 0; i < joints.Length; i++) p[i] = joints[i].position;
-                Gizmos.color = new Color(1f, 1f, 0f, 0.6f);
+                for (int i = 0; i < joints.Length; i++) p[i] = joints[i] != null ? joints[i].position : joints[0].position;
+                Gizmos.color = WithAlpha(Color.yellow, 0.6f * alphaScale);
                 Gizmos.DrawWireSphere(joints[0].position, IKMath.SumLengths(p));
             }
 
             if (pole != null)
             {
-                Gizmos.color = Color.magenta;
+                Gizmos.color = WithAlpha(Color.magenta, 1f * alphaScale);
                 Gizmos.DrawWireSphere(pole.position, 0.03f);
             }
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            color.a = Mathf.Clamp01(alpha);
+            return color;
         }
     }
 }

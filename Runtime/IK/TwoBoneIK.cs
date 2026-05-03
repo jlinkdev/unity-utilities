@@ -31,6 +31,60 @@ namespace jlinkdev.UnityUtilities.IK
         [SerializeField, Tooltip("Draw gizmo debug visuals in the scene view.")]
         private bool drawGizmos = true;
 
+        public Transform Root
+        {
+            get => root;
+            set => root = value;
+        }
+
+        public Transform Mid
+        {
+            get => mid;
+            set => mid = value;
+        }
+
+        public Transform Tip
+        {
+            get => tip;
+            set => tip = value;
+        }
+
+        public Transform Target
+        {
+            get => target;
+            set => target = value;
+        }
+
+        public Transform Pole
+        {
+            get => pole;
+            set => pole = value;
+        }
+
+        public float Weight
+        {
+            get => weight;
+            set => weight = IKMath.ClampWeight(value);
+        }
+
+        public bool MatchTipRotation
+        {
+            get => matchTipRotation;
+            set => matchTipRotation = value;
+        }
+
+        public bool SolveInLateUpdate
+        {
+            get => solveInLateUpdate;
+            set => solveInLateUpdate = value;
+        }
+
+        public bool DrawGizmos
+        {
+            get => drawGizmos;
+            set => drawGizmos = value;
+        }
+
         public void Solve()
         {
             if (root == null || mid == null || tip == null || target == null)
@@ -74,7 +128,7 @@ namespace jlinkdev.UnityUtilities.IK
             float cosAngle = ((upperLen * upperLen) + (clampedDist * clampedDist) - (lowerLen * lowerLen)) / (2f * upperLen * clampedDist);
             float angle = Mathf.Acos(Mathf.Clamp(cosAngle, -1f, 1f));
 
-            Vector3 bendDir = Quaternion.AngleAxis(-Mathf.Rad2Deg * angle, bendNormal) * dirToTarget;
+            Vector3 bendDir = Quaternion.AngleAxis(Mathf.Rad2Deg * angle, bendNormal) * dirToTarget;
             Vector3 solvedMidPos = rootPos + (bendDir * upperLen);
 
             Quaternion rootRotation = Quaternion.FromToRotation(midPos - rootPos, solvedMidPos - rootPos) * root.rotation;
@@ -124,7 +178,7 @@ namespace jlinkdev.UnityUtilities.IK
             if (pole != null)
             {
                 Gizmos.color = Color.magenta;
-                Gizmos.DrawLine(root.position, pole.position);
+                Gizmos.DrawLine(mid.position, pole.position);
                 Gizmos.DrawWireSphere(pole.position, 0.03f);
             }
         }
