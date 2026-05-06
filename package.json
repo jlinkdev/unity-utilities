@@ -12,6 +12,11 @@
       "displayName": "Object Pooling",
       "description": "Sample showing single-prefab pooling with GameObjectPoolHandle and multi-prefab pooling with GameObjectPoolRegistry.",
       "path": "Samples~/ObjectPooling"
+    },
+    {
+      "displayName": "IK",
+      "description": "Sample scripts and setup notes for testing TwoBoneIK, FABRIKChain, AimIK, and GroundProbe with runtime grid controls.",
+      "path": "Samples~/IK"
     }
   ]
 }
