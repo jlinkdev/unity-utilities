@@ -714,26 +714,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bece2ebdb3c2456c948ed2a4d0faca0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _definitions:
-  - _prefab: {fileID: 2813877928521109347, guid: d316fc58fa173674aab4a5cac1b00299, type: 3}
-    _initialCapacity: 10
-    _maxCapacity: 25
-    _inactiveParent: {fileID: 0}
-    _activateOnGet: 1
-    _deactivateOnReturn: 1
-  - _prefab: {fileID: 2813877928521109347, guid: 338e64c7bf75038478ee0b41e0c78866, type: 3}
-    _initialCapacity: 10
-    _maxCapacity: 25
-    _inactiveParent: {fileID: 0}
-    _activateOnGet: 1
-    _deactivateOnReturn: 1
-  - _prefab: {fileID: 2813877928521109347, guid: 1cd58facd66721446a232da3d9888265, type: 3}
-    _initialCapacity: 10
-    _maxCapacity: 25
-    _inactiveParent: {fileID: 0}
-    _activateOnGet: 1
-    _deactivateOnReturn: 1
+  _definitionSets:
+  - {fileID: 11400000, guid: 0b556b21cfdf4f79b6d55b8c8a9ce0f5, type: 2}
+  _definitions: []
   _defaultInactiveParent: {fileID: 391679843}
+  _activateOnGet: 1
+  _deactivateOnReturn: 1
+  _runtimeInitialCapacity: 0
+  _runtimeMaxCapacity: 64
   _initializeOnAwake: 1
   _clearAllOnDestroy: 1
 --- !u!1 &1784637264

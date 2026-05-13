@@ -15,12 +15,6 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         private int _initialCapacity = 8;
         [SerializeField] [Tooltip("Maximum number of prefab instances this pool can track at once.")] [Min(1)]
         private int _maxCapacity = 64;
-        [SerializeField] [Tooltip("Optional parent for inactive instances from this pool. Uses the registry default inactive parent when left empty.")]
-        private Transform _inactiveParent;
-        [SerializeField] [Tooltip("Whether instances are activated when retrieved from the pool.")]
-        private bool _activateOnGet = true;
-        [SerializeField] [Tooltip("Whether instances are deactivated when returned to the pool.")]
-        private bool _deactivateOnReturn = true;
 
         /// <summary>
         /// Gets the prefab used to create pooled instances and identify this pool in a registry.
@@ -67,16 +61,15 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
             return true;
         }
 
-        internal GameObjectPool CreatePool(Transform defaultInactiveParent)
+        internal GameObjectPool CreatePool(Transform inactiveParent, bool activateOnGet, bool deactivateOnReturn)
         {
-            Transform inactiveParent = _inactiveParent != null ? _inactiveParent : defaultInactiveParent;
             return new GameObjectPool(
                 _prefab,
                 _initialCapacity,
                 _maxCapacity,
                 inactiveParent,
-                _activateOnGet,
-                _deactivateOnReturn);
+                activateOnGet,
+                deactivateOnReturn);
         }
     }
 }
