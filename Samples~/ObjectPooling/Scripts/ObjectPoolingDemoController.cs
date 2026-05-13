@@ -68,7 +68,7 @@ namespace jlinkdev.UnityUtilities.Samples.ObjectPooling
         public bool IsRegistryMode => _demoMode == DemoMode.Registry;
         public string CurrentModeName => IsRegistryMode ? "GameObjectPoolRegistry" : "GameObjectPoolHandle";
         public string CurrentModeDescription => IsRegistryMode
-            ? "Add GameObjectPoolRegistry to one scene object, add one GameObjectPoolDefinition per prefab, then spawn by prefab reference and despawn by instance."
+            ? "Add GameObjectPoolRegistry to one scene object, assign one or more GameObjectPoolDefinitionSet assets, then spawn by prefab reference and despawn by instance."
             : "Add GameObjectPoolHandle to a scene object, assign one prefab plus capacity settings, then call Spawn and Despawn on that handle.";
 
         public bool AutoSpawn

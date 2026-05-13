@@ -37,6 +37,9 @@ Use the pooling APIs at the level that matches the project need:
 - `GameObjectPool`: code-owned pooling for one prefab.
 - `ComponentPool<T>`: code-owned pooling when callers want a component directly.
 - `GameObjectPoolHandle`: inspector-friendly scene component for one pooled prefab.
+- `GameObjectPoolDefinitionSet`: reusable ScriptableObject asset containing prefab capacity definitions.
 - `GameObjectPoolRegistry`: inspector-friendly scene component for multiple prefab pools looked up by prefab reference.
 
-`GameObjectPoolRegistry` is intended as the scalable default when a project has many pooled prefabs. It owns a serialized list of `GameObjectPoolDefinition` entries, initializes one `GameObjectPool` per prefab, tracks which pool spawned each active instance, and supports despawning by instance.
+`GameObjectPoolRegistry` is intended as the scalable default when a project has many pooled prefabs. It can initialize pools from multiple `GameObjectPoolDefinitionSet` assets plus scene-local `GameObjectPoolDefinition` entries. Definitions specify prefab, initial capacity, and max capacity; shared behavior such as inactive parent, activate-on-get, and deactivate-on-return lives on the registry. Scene-local definitions are processed before definition-set assets, so they can override shared assets by prefab reference.
+
+When `Spawn` or `Prewarm` receives a prefab with no initialized definition, the registry logs a warning, creates a runtime pool using its runtime fallback capacity settings, and continues instead of failing the spawn.

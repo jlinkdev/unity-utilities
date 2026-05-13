@@ -8,10 +8,20 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
     /// </summary>
     public sealed class GameObjectPoolRegistry : MonoBehaviour
     {
-        [SerializeField] [Tooltip("Prefab pool definitions initialized by this registry. Each prefab can appear only once.")]
+        [SerializeField] [Tooltip("Reusable prefab pool definition assets initialized by this registry. Processed after scene definitions.")]
+        private GameObjectPoolDefinitionSet[] _definitionSets;
+        [SerializeField] [Tooltip("Scene-local prefab pool definitions initialized by this registry. Processed before definition sets.")]
         private GameObjectPoolDefinition[] _definitions;
-        [SerializeField] [Tooltip("Fallback parent for inactive instances when a definition does not specify its own inactive parent.")]
+        [SerializeField] [Tooltip("Parent used for inactive instances created by this registry.")]
         private Transform _defaultInactiveParent;
+        [SerializeField] [Tooltip("Whether instances from this registry are activated when retrieved from a pool.")]
+        private bool _activateOnGet = true;
+        [SerializeField] [Tooltip("Whether instances from this registry are deactivated when returned to a pool.")]
+        private bool _deactivateOnReturn = true;
+        [SerializeField] [Tooltip("Number of instances prewarmed when an undefined prefab is registered at runtime.")] [Min(0)]
+        private int _runtimeInitialCapacity;
+        [SerializeField] [Tooltip("Maximum number of instances tracked when an undefined prefab is registered at runtime.")] [Min(1)]
+        private int _runtimeMaxCapacity = 64;
         [SerializeField] [Tooltip("Whether the registry initializes all valid definitions during Awake.")]
         private bool _initializeOnAwake = true;
         [SerializeField] [Tooltip("Whether all pooled instances are destroyed when this registry is destroyed.")]
@@ -19,6 +29,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
 
         private readonly Dictionary<GameObject, GameObjectPool> _poolsByPrefab = new Dictionary<GameObject, GameObjectPool>();
         private readonly Dictionary<GameObject, GameObjectPool> _ownersByInstance = new Dictionary<GameObject, GameObjectPool>();
+        private bool _initialized;
 
         /// <summary>
         /// Gets the total number of initialized pools.
@@ -89,43 +100,34 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         /// </summary>
         public void Initialize()
         {
-            if (_poolsByPrefab.Count > 0)
+            if (_initialized)
             {
                 return;
             }
 
-            if (_definitions == null)
+            _initialized = true;
+            InitializeDefinitions(_definitions, "scene registry");
+
+            if (_definitionSets == null)
             {
                 return;
             }
 
-            for (int i = 0; i < _definitions.Length; i++)
+            for (int i = 0; i < _definitionSets.Length; i++)
             {
-                GameObjectPoolDefinition definition = _definitions[i];
-                if (definition == null)
+                GameObjectPoolDefinitionSet definitionSet = _definitionSets[i];
+                if (definitionSet == null)
                 {
-                    Debug.LogWarning($"Pool definition at index {i} is null.", this);
+                    Debug.LogWarning($"Pool definition set at index {i} is null.", this);
                     continue;
                 }
 
-                if (!definition.IsValid(out string message))
-                {
-                    Debug.LogWarning(message, this);
-                    continue;
-                }
-
-                if (_poolsByPrefab.ContainsKey(definition.Prefab))
-                {
-                    Debug.LogWarning($"Duplicate pool prefab '{definition.Prefab.name}' ignored.", this);
-                    continue;
-                }
-
-                _poolsByPrefab.Add(definition.Prefab, definition.CreatePool(_defaultInactiveParent));
+                InitializeDefinitions(definitionSet.Definitions, $"definition set '{definitionSet.name}'");
             }
         }
 
         /// <summary>
-        /// Spawns an instance from the pool registered for the provided prefab.
+        /// Spawns an instance from the pool for the provided prefab.
         /// </summary>
         public GameObject Spawn(GameObject prefab)
         {
@@ -133,7 +135,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         }
 
         /// <summary>
-        /// Spawns an instance from the pool registered for the provided prefab and applies transform data.
+        /// Spawns an instance from the pool for the provided prefab and applies transform data.
         /// </summary>
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
         {
@@ -141,7 +143,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         }
 
         /// <summary>
-        /// Attempts to spawn an instance from the pool registered for the provided prefab.
+        /// Attempts to spawn an instance from the pool for the provided prefab.
         /// </summary>
         public bool TrySpawn(GameObject prefab, out GameObject instance, Vector3 position, Quaternion rotation, Transform parent = null)
         {
@@ -182,7 +184,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         }
 
         /// <summary>
-        /// Attempts to prewarm a specific registered pool.
+        /// Attempts to prewarm the pool for the provided prefab.
         /// </summary>
         public int Prewarm(GameObject prefab, int count)
         {
@@ -190,7 +192,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         }
 
         /// <summary>
-        /// Destroys inactive instances in every registered pool.
+        /// Destroys inactive instances in every initialized pool.
         /// </summary>
         public void ClearInactive()
         {
@@ -201,7 +203,7 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
         }
 
         /// <summary>
-        /// Destroys all tracked instances in every registered pool.
+        /// Destroys all tracked instances in every initialized pool.
         /// </summary>
         public void ClearAll()
         {
@@ -237,8 +239,65 @@ namespace jlinkdev.UnityUtilities.ObjectPooling
                 return true;
             }
 
-            Debug.LogWarning($"No pool is registered for prefab '{prefab.name}'.", this);
-            return false;
+            pool = CreateRuntimePool(prefab, out int initialCapacity, out int maxCapacity);
+            _poolsByPrefab.Add(prefab, pool);
+            Debug.LogWarning(
+                $"No pool definition was initialized for prefab '{prefab.name}'. " +
+                $"A runtime pool was created with initial capacity {initialCapacity} and max capacity {maxCapacity}.",
+                this);
+            return true;
+        }
+
+        private void InitializeDefinitions(GameObjectPoolDefinition[] definitions, string source)
+        {
+            if (definitions == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < definitions.Length; i++)
+            {
+                GameObjectPoolDefinition definition = definitions[i];
+                if (definition == null)
+                {
+                    Debug.LogWarning($"Pool definition at {source} index {i} is null.", this);
+                    continue;
+                }
+
+                if (!definition.IsValid(out string message))
+                {
+                    Debug.LogWarning(message, this);
+                    continue;
+                }
+
+                if (_poolsByPrefab.ContainsKey(definition.Prefab))
+                {
+                    Debug.LogWarning($"Duplicate pool prefab '{definition.Prefab.name}' in {source} ignored.", this);
+                    continue;
+                }
+
+                _poolsByPrefab.Add(
+                    definition.Prefab,
+                    definition.CreatePool(_defaultInactiveParent, _activateOnGet, _deactivateOnReturn));
+            }
+        }
+
+        private GameObjectPool CreateRuntimePool(GameObject prefab, out int initialCapacity, out int maxCapacity)
+        {
+            initialCapacity = Mathf.Max(0, _runtimeInitialCapacity);
+            maxCapacity = Mathf.Max(1, _runtimeMaxCapacity);
+            if (initialCapacity > maxCapacity)
+            {
+                maxCapacity = initialCapacity;
+            }
+
+            return new GameObjectPool(
+                prefab,
+                initialCapacity,
+                maxCapacity,
+                _defaultInactiveParent,
+                _activateOnGet,
+                _deactivateOnReturn);
         }
 
         private void OnDestroy()
