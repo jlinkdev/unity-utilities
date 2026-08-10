@@ -32,7 +32,7 @@ Pin a tag or commit by appending `#<revision>` to the URL.
 
 ## Development
 
-The host project currently targets Unity `6000.0.58f1`. Package manifests keep
+The host project currently targets Unity `6000.3.21f1`. Package manifests keep
 their minimum supported Editor at Unity `2022.3`; compatibility with that
 minimum should be covered by a separate validation run before stable releases.
 
