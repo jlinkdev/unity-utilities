@@ -1,0 +1,58 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace jlinkdev.UnityUtilities.Portals.Tests
+{
+    public sealed class PortalTraversalTests
+    {
+        [UnityTest]
+        public IEnumerator RigidbodyTraversal_MapsPoseVelocityAndUniformScale()
+        {
+            GameObject entryObject = new GameObject("Entry Portal");
+            GameObject exitObject = new GameObject("Exit Portal");
+            entryObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            exitObject.transform.SetPositionAndRotation(new Vector3(8f, 1f, 2f), Quaternion.Euler(0f, 90f, 0f));
+            exitObject.transform.localScale = Vector3.one * 0.5f;
+
+            Portal entry = entryObject.AddComponent<Portal>();
+            Portal exit = exitObject.AddComponent<Portal>();
+            entry.LinkedPortal = exit;
+            exit.LinkedPortal = entry;
+
+            GameObject travellerObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            travellerObject.name = "Rigidbody Traveller";
+            travellerObject.transform.position = new Vector3(0.25f, 0.5f, -1f);
+            Rigidbody body = travellerObject.AddComponent<Rigidbody>();
+            body.useGravity = false;
+            PortalTraveller traveller = travellerObject.AddComponent<PortalTraveller>();
+            yield return null;
+
+            Vector3 startPosition = travellerObject.transform.position;
+            Vector3 startVelocity = new Vector3(0f, 0f, 6f);
+#if UNITY_6000_0_OR_NEWER
+            body.linearVelocity = startVelocity;
+#else
+            body.velocity = startVelocity;
+#endif
+            Vector3 expectedPosition = PortalMath.MapPoint(entryObject.transform, exitObject.transform, startPosition);
+            Vector3 expectedVelocity = PortalMath.MapDirection(entryObject.transform, exitObject.transform, startVelocity) * 0.5f;
+
+            traveller.Teleport(entry, exit);
+
+            Assert.That(Vector3.Distance(travellerObject.transform.position, expectedPosition), Is.LessThan(0.001f));
+            Assert.That(Vector3.Distance(travellerObject.transform.localScale, Vector3.one * 0.5f), Is.LessThan(0.001f));
+#if UNITY_6000_0_OR_NEWER
+            Assert.That(Vector3.Distance(body.linearVelocity, expectedVelocity), Is.LessThan(0.001f));
+#else
+            Assert.That(Vector3.Distance(body.velocity, expectedVelocity), Is.LessThan(0.001f));
+#endif
+
+            Object.Destroy(travellerObject);
+            Object.Destroy(entryObject);
+            Object.Destroy(exitObject);
+            yield return null;
+        }
+    }
+}

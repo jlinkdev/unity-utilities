@@ -1,0 +1,18 @@
+{
+  "name": "jlinkdev.Portals.Editor",
+  "rootNamespace": "jlinkdev.UnityUtilities.Portals.Editor",
+  "references": [
+    "jlinkdev.Portals"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

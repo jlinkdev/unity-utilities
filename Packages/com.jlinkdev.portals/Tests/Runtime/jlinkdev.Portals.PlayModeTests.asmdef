@@ -1,0 +1,21 @@
+{
+  "name": "jlinkdev.Portals.PlayModeTests",
+  "rootNamespace": "jlinkdev.UnityUtilities.Portals.Tests",
+  "references": [
+    "jlinkdev.Portals"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

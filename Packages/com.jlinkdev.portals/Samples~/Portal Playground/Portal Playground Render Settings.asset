@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089c5fd4275937440bc206d43cf57e36, type: 3}
+  m_Name: Portal Playground Render Settings
+  m_EditorClassIdentifier: jlinkdev.Portals::jlinkdev.UnityUtilities.Portals.PortalRenderSettings
+  recursionLimit: 3
+  renderScale: 0.75
+  nearClipOffset: 0.04
+  cullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  renderShadows: 1
+  renderInSceneView: 0
+  useHdr: 1

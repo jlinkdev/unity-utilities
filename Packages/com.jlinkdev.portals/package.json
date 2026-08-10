@@ -1,0 +1,21 @@
+{
+  "name": "com.jlinkdev.portals",
+  "displayName": "jlinkdev Portals",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Seamless paired planar portals for URP, including recursive rendering, physical traversal, clipping, scale mapping, editor tooling, and samples.",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "14.0.11",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Portal Playground",
+      "description": "A ready-to-run scene demonstrating linked views, recursion, Rigidbody and CharacterController traversal, clipping, and scaled portals.",
+      "path": "Samples~/Portal Playground"
+    }
+  ]
+}
