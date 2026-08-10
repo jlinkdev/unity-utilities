@@ -1,0 +1,20 @@
+{
+  "name": "com.jlinkdev.ik",
+  "displayName": "JLinkDev IK",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Lightweight inverse-kinematics components for limbs, chains, aiming, and ground targets.",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "IK",
+      "description": "Runtime controls for exercising TwoBoneIK, FABRIKChain, AimIK, and GroundProbe.",
+      "path": "Samples~/IK"
+    }
+  ]
+}

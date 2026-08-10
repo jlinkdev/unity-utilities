@@ -1,6 +1,6 @@
 {
-  "name": "jlinkdev.UnityUtilities",
-  "rootNamespace": "jlinkdev.UnityUtilities",
+  "name": "jlinkdev.IK",
+  "rootNamespace": "jlinkdev.UnityUtilities.IK",
   "references": [],
   "includePlatforms": [],
   "excludePlatforms": [],

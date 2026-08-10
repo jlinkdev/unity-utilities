@@ -1,12 +1,8 @@
 {
-  "name": "jlinkdev.UnityUtilities.Editor",
-  "rootNamespace": "jlinkdev.UnityUtilities.Editor",
-  "references": [
-    "jlinkdev.UnityUtilities"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "name": "jlinkdev.ObjectPooling",
+  "rootNamespace": "jlinkdev.UnityUtilities.ObjectPooling",
+  "references": [],
+  "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

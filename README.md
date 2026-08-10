@@ -1,72 +1,42 @@
-# unity-utilities
-Reusable Unity utilities, shaders, editor tools, and systems for Unity projects.
+# JLinkDev Unity Packages
 
+A Unity development project and monorepo for independently versioned UPM
+packages. Open the repository root directly in Unity to develop and validate
+all embedded packages together.
 
-## Installation Instructions
+## Packages
 
-Requires Unity 2022.3 LTS or later.
+| Package | Package ID | Status |
+| --- | --- | --- |
+| IK | `com.jlinkdev.ik` | Experimental; interactive validation remains incomplete |
+| Object Pooling | `com.jlinkdev.object-pooling` | Initial package extraction |
 
-There are several ways to install Unity Utilities:
+## Install from Git
 
-### Package Manager Git URL
+Add only the packages a project needs through Package Manager using their
+repository subfolder URLs.
 
-The recommended way is to install this library as a Git package using the Unity
-Package Manager. First, make sure Git is installed and available in your
-system's PATH.
-
-Then add the package using this Git URL:
+IK:
 
 ```text
-https://github.com/jlinkdev/unity-utilities.git
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.ik
 ```
 
-### Local Package
+Object Pooling:
 
-If you do not want to use Git, download this repository as an archive and
-extract it somewhere in your project or on your machine. Then open Unity's
-Package Manager and add it with **Add package from disk**.
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.object-pooling
+```
 
-## Included utilities
-- **ObjectPooling**: reusable generic/object-component pooling utilities under `Runtime/ObjectPooling`.
+Pin a tag or commit by appending `#<revision>` to the URL.
 
-### Object pooling
+## Development
 
-Use the pooling APIs at the level that matches the project need:
+The host project currently targets Unity `6000.0.58f1`. Package manifests keep
+their minimum supported Editor at Unity `2022.3`; compatibility with that
+minimum should be covered by a separate validation run before stable releases.
 
-- `ObjectPool<T>`: generic non-Unity-object pooling.
-- `GameObjectPool`: code-owned pooling for one prefab.
-- `ComponentPool<T>`: code-owned pooling when callers want a component directly.
-- `GameObjectPoolHandle`: inspector-friendly scene component for one pooled prefab.
-- `GameObjectPoolDefinitionSet`: reusable ScriptableObject asset containing prefab capacity definitions.
-- `GameObjectPoolRegistry`: inspector-friendly scene component for multiple prefab pools looked up by prefab reference.
-
-`GameObjectPoolRegistry` is intended as the scalable default when a project has many pooled prefabs. It can initialize pools from multiple `GameObjectPoolDefinitionSet` assets plus scene-local `GameObjectPoolDefinition` entries. Definitions specify prefab, initial capacity, and max capacity; shared behavior such as inactive parent, activate-on-get, and deactivate-on-return lives on the registry. Scene-local definitions are processed before definition-set assets, so they can override shared assets by prefab reference.
-
-When `Spawn` or `Prewarm` receives a prefab with no initialized definition, the registry logs a warning, creates a runtime pool using its runtime fallback capacity settings, and continues instead of failing the spawn.
-
-## IK module (`Runtime/IK`)
-A tiny, prototype-friendly set of IK components under `jlinkdev.UnityUtilities.IK` for common procedural rig problems.
-
-### What it is for
-- Quick limb, chain, and aiming behaviors
-- Procedural gameplay and rapid iteration
-- Drop-in scene components with minimal setup
-
-### What it is NOT for
-- Full-body or VR IK
-- Animator/animation-graph integration frameworks
-- Heavy constraint systems or advanced editor tooling
-
-### Quick setup
-- **TwoBoneIK**: add to any GameObject, assign `root`, `mid`, `tip`, `target` (optional `pole`), then play.
-- **FABRIKChain**: add component, assign `joints` root-to-tip and `target`, tweak iterations/tolerance if needed.
-- **AimIK**: assign a joint chain and target, set `localAimAxis` to match the rig's forward axis.
-- **GroundProbe**: assign `rayOrigin`, set cast distance/layers, then use this transform as an IK target.
-
-### Update timing
-- Solvers run in `LateUpdate` by default and can also be called manually via `Solve()`.
-
-### Known limitations
-- These are intentionally lightweight solvers and do not cover advanced animation workflows.
-- Pole behavior in FABRIK is a simple bias and may need scene-specific tuning.
-- RotationLimit is intentionally basic (single hinge or cone clamp only).
+Each package owns its manifest, assemblies, documentation, changelog, and
+samples, and should keep its tests within its own package directory. If one
+package begins using another, declare both the UPM package dependency in
+`package.json` and the assembly reference in its `.asmdef`.

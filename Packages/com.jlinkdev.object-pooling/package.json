@@ -1,0 +1,17 @@
+{
+  "name": "com.jlinkdev.object-pooling",
+  "displayName": "JLinkDev Object Pooling",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Reusable generic, GameObject, component, and prefab-registry pooling utilities.",
+  "author": {
+    "name": "Justin Link"
+  },
+  "samples": [
+    {
+      "displayName": "Object Pooling",
+      "description": "Demonstrates single-prefab handles and multi-prefab registries backed by definition sets.",
+      "path": "Samples~/ObjectPooling"
+    }
+  ]
+}
