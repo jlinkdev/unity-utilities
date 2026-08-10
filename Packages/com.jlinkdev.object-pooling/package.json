@@ -1,6 +1,6 @@
 {
   "name": "com.jlinkdev.object-pooling",
-  "displayName": "JLinkDev Object Pooling",
+  "displayName": "jlinkdev Object Pooling",
   "version": "0.1.0",
   "unity": "2022.3",
   "description": "Reusable generic, GameObject, component, and prefab-registry pooling utilities.",

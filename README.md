@@ -1,4 +1,4 @@
-# JLinkDev Unity Packages
+# jlinkdev Unity Packages
 
 A Unity development project and monorepo for independently versioned UPM
 packages. Open the repository root directly in Unity to develop and validate

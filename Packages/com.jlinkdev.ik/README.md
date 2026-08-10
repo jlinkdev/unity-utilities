@@ -1,4 +1,4 @@
-# JLinkDev IK
+# jlinkdev IK
 
 Lightweight, prototype-friendly inverse-kinematics components under the
 `jlinkdev.UnityUtilities.IK` namespace.

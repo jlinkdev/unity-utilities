@@ -1,4 +1,4 @@
-# JLinkDev Object Pooling
+# jlinkdev Object Pooling
 
 Reusable pooling utilities under the
 `jlinkdev.UnityUtilities.ObjectPooling` namespace.
