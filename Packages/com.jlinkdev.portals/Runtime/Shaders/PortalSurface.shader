@@ -17,6 +17,9 @@ Shader "jlinkdev/Portals/Portal Surface"
             Tags { "LightMode"="UniversalForward" }
             Cull Off
             ZWrite On
+            // Keep the portal surface behind directly rendered traveller fragments
+            // at the shared clip boundary to prevent a sub-pixel depth seam.
+            Offset 1, 1
 
             HLSLPROGRAM
             #pragma vertex Vert

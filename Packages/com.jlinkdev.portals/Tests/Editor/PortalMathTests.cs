@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace jlinkdev.UnityUtilities.Portals.Tests
@@ -53,6 +54,18 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
         {
             Assert.That(PortalMath.SignedDistance(entryObject.transform, Vector3.forward), Is.GreaterThan(0f));
             Assert.That(PortalMath.SignedDistance(entryObject.transform, Vector3.back), Is.LessThan(0f));
+        }
+
+        [Test]
+        public void NearClipOffset_ClampsZeroToSafeEpsilon()
+        {
+            PortalRenderSettings settings = ScriptableObject.CreateInstance<PortalRenderSettings>();
+            SerializedObject serializedSettings = new SerializedObject(settings);
+            serializedSettings.FindProperty("nearClipOffset").floatValue = 0f;
+            serializedSettings.ApplyModifiedPropertiesWithoutUndo();
+
+            Assert.That(settings.NearClipOffset, Is.EqualTo(PortalRenderSettings.MinimumNearClipOffset));
+            Object.DestroyImmediate(settings);
         }
     }
 }

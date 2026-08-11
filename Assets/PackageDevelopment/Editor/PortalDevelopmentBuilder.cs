@@ -61,7 +61,7 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             EnsureFolder($"{AuthoringRoot}/Materials");
             EnsureFolder($"{AuthoringRoot}/Prefabs");
 
-            Material portalMaterial = Material("Portal Surface", "jlinkdev/Portals/Portal Surface", new Color(0.9f, 0.97f, 1f));
+            Material portalMaterial = Material("Portal Surface", "jlinkdev/Portals/Portal Surface", Color.white);
             Material blue = Material("Blue Clipped", "jlinkdev/Portals/Portal Clipped Lit", new Color(0.12f, 0.5f, 1f));
             Material orange = Material("Orange Clipped", "jlinkdev/Portals/Portal Clipped Lit", new Color(1f, 0.34f, 0.06f));
             Material magenta = Material("Magenta Clipped", "jlinkdev/Portals/Portal Clipped Lit", new Color(0.9f, 0.12f, 0.7f));
@@ -258,7 +258,8 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             SerializedObject serialized = new SerializedObject(settings);
             serialized.FindProperty("recursionLimit").intValue = 3;
             serialized.FindProperty("renderScale").floatValue = 0.75f;
-            serialized.FindProperty("nearClipOffset").floatValue = 0.04f;
+            serialized.FindProperty("nearClipOffset").floatValue = PortalRenderSettings.MinimumNearClipOffset;
+            serialized.FindProperty("renderInSceneView").boolValue = false;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             return settings;
         }

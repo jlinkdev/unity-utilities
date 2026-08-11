@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+- Fixed traveller transition clones retaining the wrong side of the destination portal plane.
+- Added a small configurable clip-plane overlap to prevent cracks at the transition seam.
+- Added portal-surface depth bias so directly rendered travellers win sub-pixel depth ties at the seam.
+- Reduced the oblique near-clip safety offset and clamp to avoid visible gaps without allowing zero-plane flicker.
+- Removed the sample portal surface tint so portal views preserve the source camera color.
+
 ## [0.1.0] - 2026-08-10
 
 - Added paired planar portal rendering for URP.

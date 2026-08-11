@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: jlinkdev.Portals::jlinkdev.UnityUtilities.Portals.PortalRenderSettings
   recursionLimit: 3
   renderScale: 0.75
-  nearClipOffset: 0.04
+  nearClipOffset: 0.00001
   cullingMask:
     serializedVersion: 2
     m_Bits: 4294967295

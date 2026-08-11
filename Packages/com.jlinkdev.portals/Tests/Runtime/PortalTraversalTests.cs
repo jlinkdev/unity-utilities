@@ -54,5 +54,50 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
             Object.Destroy(exitObject);
             yield return null;
         }
+
+        [UnityTest]
+        public IEnumerator TransitionClipping_KeepsComplementaryPortalSides()
+        {
+            GameObject entryObject = new GameObject("Entry Portal");
+            GameObject exitObject = new GameObject("Exit Portal");
+            entryObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            exitObject.transform.SetPositionAndRotation(Vector3.forward * 10f, Quaternion.identity);
+
+            Portal entry = entryObject.AddComponent<Portal>();
+            Portal exit = exitObject.AddComponent<Portal>();
+            entry.LinkedPortal = exit;
+            exit.LinkedPortal = entry;
+
+            GameObject travellerObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            travellerObject.name = "Clipped Traveller";
+            travellerObject.transform.position = Vector3.forward * 0.25f;
+            PortalTraveller traveller = travellerObject.AddComponent<PortalTraveller>();
+            yield return null;
+
+            travellerObject.SendMessage("EnterPortal", entry, SendMessageOptions.RequireReceiver);
+            yield return null;
+
+            GameObject cloneObject = GameObject.Find("Clipped Traveller (Portal Transition)");
+            Assert.That(cloneObject, Is.Not.Null);
+
+            int clipPlaneId = Shader.PropertyToID("_PortalClipPlane");
+            int clipEnabledId = Shader.PropertyToID("_PortalClipEnabled");
+            MaterialPropertyBlock sourceProperties = new MaterialPropertyBlock();
+            MaterialPropertyBlock cloneProperties = new MaterialPropertyBlock();
+            travellerObject.GetComponent<Renderer>().GetPropertyBlock(sourceProperties);
+            cloneObject.GetComponent<Renderer>().GetPropertyBlock(cloneProperties);
+
+            Vector3 sourceNormal = sourceProperties.GetVector(clipPlaneId);
+            Vector3 destinationNormal = cloneProperties.GetVector(clipPlaneId);
+            Assert.That(sourceProperties.GetFloat(clipEnabledId), Is.EqualTo(1f));
+            Assert.That(cloneProperties.GetFloat(clipEnabledId), Is.EqualTo(1f));
+            Assert.That(Vector3.Dot(sourceNormal, entry.transform.forward), Is.GreaterThan(0.99f));
+            Assert.That(Vector3.Dot(destinationNormal, exit.transform.forward), Is.GreaterThan(0.99f));
+
+            Object.Destroy(travellerObject);
+            Object.Destroy(entryObject);
+            Object.Destroy(exitObject);
+            yield return null;
+        }
     }
 }

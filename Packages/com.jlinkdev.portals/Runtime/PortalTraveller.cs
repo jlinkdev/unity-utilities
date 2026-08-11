@@ -13,6 +13,8 @@ namespace jlinkdev.UnityUtilities.Portals
         [SerializeField] private bool createTransitionClone = true;
         [SerializeField] private bool enableClipping = true;
         [SerializeField, Min(0f)] private float crossingEpsilon = 0.001f;
+        [Tooltip("Adds a small overlap between the original and cloned halves to prevent cracks at the portal plane.")]
+        [SerializeField, Min(0f)] private float clipPlaneOffset = 0.002f;
 
         private readonly List<Renderer> sourceRenderers = new List<Renderer>();
         private readonly List<Renderer> cloneRenderers = new List<Renderer>();
@@ -219,10 +221,14 @@ namespace jlinkdev.UnityUtilities.Portals
                 side = 1f;
 
             Vector3 sourceNormal = activePortal.transform.forward * side;
-            Vector4 sourcePlane = WorldPlane(activePortal.transform.position, sourceNormal);
+            Vector4 sourcePlane = WorldPlane(
+                activePortal.transform.position - sourceNormal * clipPlaneOffset,
+                sourceNormal);
             Portal destination = activePortal.LinkedPortal;
-            Vector3 destinationNormal = -destination.transform.forward * side;
-            Vector4 destinationPlane = WorldPlane(destination.transform.position, destinationNormal);
+            Vector3 destinationNormal = destination.transform.forward * side;
+            Vector4 destinationPlane = WorldPlane(
+                destination.transform.position - destinationNormal * clipPlaneOffset,
+                destinationNormal);
             SetClipPlane(sourceRenderers, sourcePlane, true);
             SetClipPlane(cloneRenderers, destinationPlane, true);
         }
