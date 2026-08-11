@@ -23,6 +23,15 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.world-scanning": {
+      "version": "file:com.jlinkdev.world-scanning",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.3",
+        "com.unity.timeline": "1.8.7"
+      }
+    },
     "com.unity.burst": {
       "version": "1.8.30",
       "depth": 2,

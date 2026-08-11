@@ -1,0 +1,21 @@
+{
+  "name": "jlinkdev.WorldScanning.Editor",
+  "rootNamespace": "jlinkdev.UnityUtilities.WorldScanning.Editor",
+  "references": [
+    "jlinkdev.WorldScanning",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Universal.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

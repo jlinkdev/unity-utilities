@@ -1,0 +1,30 @@
+{
+  "name": "com.jlinkdev.world-scanning",
+  "displayName": "jlinkdev World Scanning",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Professional world-space scan pulses for URP, including surface bands, grid overlays, edge highlights, shader reveal integration, gameplay receivers, Timeline clips, and a focused demo.",
+  "license": "MIT",
+  "keywords": [
+    "scan",
+    "radar",
+    "pulse",
+    "reveal",
+    "urp",
+    "rendering"
+  ],
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.3",
+    "com.unity.timeline": "1.8.7"
+  },
+  "samples": [
+    {
+      "displayName": "World Scan Demo",
+      "description": "A professional greybox facility demonstrating pulse layers, grids, edge detection, reveal responders, and gameplay callbacks.",
+      "path": "Samples~/World Scan Demo"
+    }
+  ]
+}

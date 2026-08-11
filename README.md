@@ -10,6 +10,8 @@ all embedded packages together.
 | --- | --- | --- |
 | IK | `com.jlinkdev.ik` | Experimental; interactive validation remains incomplete |
 | Object Pooling | `com.jlinkdev.object-pooling` | Initial package extraction |
+| Portals | `com.jlinkdev.portals` | Initial package implementation |
+| World Scanning | `com.jlinkdev.world-scanning` | Focused Unity 6 URP scan pulse package |
 
 ## Install from Git
 
@@ -28,12 +30,24 @@ Object Pooling:
 https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.object-pooling
 ```
 
+Portals:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.portals
+```
+
+World Scanning:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.world-scanning
+```
+
 Pin a tag or commit by appending `#<revision>` to the URL.
 
 ## Development
 
-The host project currently targets Unity `6000.3.21f1`. Package manifests keep
-their minimum supported Editor at Unity `2022.3`; compatibility with that
+The host project currently targets Unity `6000.3.21f1`. Each package declares
+its own minimum supported Editor in `package.json`; compatibility at that
 minimum should be covered by a separate validation run before stable releases.
 
 Each package owns its manifest, assemblies, documentation, changelog, and

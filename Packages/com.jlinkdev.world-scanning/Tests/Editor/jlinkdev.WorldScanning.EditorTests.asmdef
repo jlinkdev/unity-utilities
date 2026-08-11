@@ -1,0 +1,23 @@
+{
+  "name": "jlinkdev.WorldScanning.EditorTests",
+  "rootNamespace": "jlinkdev.UnityUtilities.WorldScanning.Tests",
+  "references": [
+    "jlinkdev.WorldScanning"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
