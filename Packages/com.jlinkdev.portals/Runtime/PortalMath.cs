@@ -66,5 +66,19 @@ namespace jlinkdev.UnityUtilities.Portals
             Vector3 cameraNormal = worldToCamera.MultiplyVector(normal).normalized;
             return new Vector4(cameraNormal.x, cameraNormal.y, cameraNormal.z, -Vector3.Dot(cameraPoint, cameraNormal));
         }
+
+        internal static Vector4 StabilizeCameraSpacePlane(Vector4 plane, float minimumDistance)
+        {
+            minimumDistance = Mathf.Max(minimumDistance, 0.0001f);
+            if (Mathf.Abs(plane.w) >= minimumDistance)
+                return plane;
+
+            // CalculateObliqueMatrix becomes numerically unstable when its near
+            // plane is effectively coincident with the camera origin. Preserve
+            // the plane orientation and retained side while moving only that
+            // near-zero camera-space distance to a safe value.
+            plane.w = plane.w < 0f ? -minimumDistance : minimumDistance;
+            return plane;
+        }
     }
 }

@@ -86,5 +86,20 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
             Assert.That(settings.NearClipOffset, Is.EqualTo(PortalRenderSettings.MinimumNearClipOffset));
             Object.DestroyImmediate(settings);
         }
+
+        [TestCase(0.00001f, 0.15f)]
+        [TestCase(-0.00001f, -0.15f)]
+        [TestCase(0.5f, 0.5f)]
+        public void CameraSpacePlane_ClampsOnlyNearCoincidentDistances(float distance, float expected)
+        {
+            Vector4 plane = new Vector4(0f, 0f, 1f, distance);
+
+            Vector4 stabilized = PortalMath.StabilizeCameraSpacePlane(plane, 0.15f);
+
+            Assert.That(stabilized.w, Is.EqualTo(expected).Within(0.000001f));
+            Assert.That(stabilized.x, Is.EqualTo(plane.x));
+            Assert.That(stabilized.y, Is.EqualTo(plane.y));
+            Assert.That(stabilized.z, Is.EqualTo(plane.z));
+        }
     }
 }

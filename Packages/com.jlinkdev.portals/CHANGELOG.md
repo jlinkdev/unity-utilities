@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Added a main-camera-only near-plane aperture cap to prevent the source world flashing through the portal during camera traversal.
+- Stabilized close-range oblique portal-camera planes to prevent degenerate-frustum errors during camera traversal.
 - Enabled traversal on the recursive playground pair and audited all sample portal links and trigger references.
 - Added a distinct inactive portal backside and restricted traversal and off-screen rendering to the active front face.
 - Fixed recursive camera poses so every level advances through the same entry-to-exit transform instead of alternating back toward the source camera.

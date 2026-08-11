@@ -7,6 +7,15 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
 {
     public sealed class PortalTraversalTests
     {
+        [Test]
+        public void NearClipFixShader_IsPackagedAndSupported()
+        {
+            Shader shader = Resources.Load<Shader>("PortalNearClipFix");
+
+            Assert.That(shader, Is.Not.Null);
+            Assert.That(shader.isSupported, Is.True);
+        }
+
         [UnityTest]
         public IEnumerator RigidbodyTraversal_MapsPoseVelocityAndUniformScale()
         {
