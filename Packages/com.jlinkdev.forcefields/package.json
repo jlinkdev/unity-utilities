@@ -1,0 +1,21 @@
+{
+  "name": "com.jlinkdev.forcefields",
+  "displayName": "jlinkdev Forcefields",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Professional URP forcefield rendering with Fresnel energy, refraction, depth intersections, allocation-free impact ripples, reusable presets, and editor tooling.",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "14.0.11",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Forcefield Showcase",
+      "description": "Interactive gallery demonstrating presets, impact ripples, compound visuals, refraction, and a stress test.",
+      "path": "Samples~/Forcefield Showcase"
+    }
+  ]
+}

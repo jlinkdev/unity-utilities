@@ -1,0 +1,16 @@
+{
+  "name": "jlinkdev.Forcefields.Showcase",
+  "rootNamespace": "jlinkdev.UnityUtilities.Forcefields.Samples",
+  "references": [
+    "jlinkdev.Forcefields"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a4ccfd18874798b8c2df8ca278ee5e, type: 3}
+  m_Name: Clean Energy
+  m_EditorClassIdentifier:
+  surfaceColor: {r: 0.012, g: 0.26, b: 0.48, a: 1}
+  surfaceIntensity: 0.7
+  opacity: 0.1
+  backfaceOpacity: 0.32
+  fresnelColor: {r: 0.03, g: 1.15, b: 2.8, a: 1}
+  fresnelIntensity: 1.6
+  fresnelPower: 4.5
+  refractionEnabled: 1
+  refractionStrength: 0.014
+  chromaticSplit: 0.0008
+  noiseEnabled: 1
+  noiseScale: 2.4
+  noiseVelocity: {x: 0.07, y: 0.025, z: -0.04}
+  noiseStrength: 0.22
+  pulseSpeed: 0.55
+  pulseStrength: 0.04
+  patternEnabled: 0
+  patternColor: {r: 0.03, g: 0.75, b: 1.7, a: 1}
+  patternScale: 7
+  patternWidth: 0.045
+  patternIntensity: 0.25
+  impactColor: {r: 0.1, g: 2.4, b: 4.5, a: 1}
+  impactIntensity: 2.8
+  impactDuration: 1.25
+  rippleSpeed: 2.8
+  rippleWidth: 0.105
+  rippleFadePower: 1.8
+  rippleRefraction: 0.022
+  intersectionEnabled: 1
+  intersectionColor: {r: 0.05, g: 1.4, b: 3.2, a: 1}
+  intersectionIntensity: 1.2
+  intersectionWidth: 0.16
+  quality: 2

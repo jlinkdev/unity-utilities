@@ -10,6 +10,7 @@ all embedded packages together.
 | --- | --- | --- |
 | IK | `com.jlinkdev.ik` | Experimental; interactive validation remains incomplete |
 | Object Pooling | `com.jlinkdev.object-pooling` | Initial package extraction |
+| Forcefields | `com.jlinkdev.forcefields` | Professional URP visual forcefields and impact ripples |
 | Portals | `com.jlinkdev.portals` | Initial package implementation |
 | World Scanning | `com.jlinkdev.world-scanning` | Focused Unity 6 URP scan pulse package |
 
@@ -28,6 +29,12 @@ Object Pooling:
 
 ```text
 https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.object-pooling
+```
+
+Forcefields:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.forcefields
 ```
 
 Portals:

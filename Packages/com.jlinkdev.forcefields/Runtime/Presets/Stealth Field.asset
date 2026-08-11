@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a4ccfd18874798b8c2df8ca278ee5e, type: 3}
+  m_Name: Stealth Field
+  m_EditorClassIdentifier:
+  surfaceColor: {r: 0.015, g: 0.08, b: 0.11, a: 1}
+  surfaceIntensity: 0.22
+  opacity: 0.025
+  backfaceOpacity: 0.22
+  fresnelColor: {r: 0.08, g: 0.55, b: 0.72, a: 1}
+  fresnelIntensity: 0.45
+  fresnelPower: 7.5
+  refractionEnabled: 1
+  refractionStrength: 0.024
+  chromaticSplit: 0.0005
+  noiseEnabled: 1
+  noiseScale: 3.1
+  noiseVelocity: {x: 0.045, y: 0.02, z: -0.035}
+  noiseStrength: 0.12
+  pulseSpeed: 0.25
+  pulseStrength: 0.015
+  patternEnabled: 0
+  patternColor: {r: 0.05, g: 0.4, b: 0.55, a: 1}
+  patternScale: 8
+  patternWidth: 0.035
+  patternIntensity: 0.08
+  impactColor: {r: 0.15, g: 1.8, b: 2.6, a: 1}
+  impactIntensity: 4.5
+  impactDuration: 1.05
+  rippleSpeed: 3.6
+  rippleWidth: 0.075
+  rippleFadePower: 2.8
+  rippleRefraction: 0.045
+  intersectionEnabled: 0
+  intersectionColor: {r: 0.05, g: 0.8, b: 1.2, a: 1}
+  intersectionIntensity: 0.4
+  intersectionWidth: 0.08
+  quality: 2

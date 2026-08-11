@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a4ccfd18874798b8c2df8ca278ee5e, type: 3}
+  m_Name: Hex Defense
+  m_EditorClassIdentifier:
+  surfaceColor: {r: 0.01, g: 0.18, b: 0.34, a: 1}
+  surfaceIntensity: 0.65
+  opacity: 0.12
+  backfaceOpacity: 0.38
+  fresnelColor: {r: 0.02, g: 0.9, b: 2.5, a: 1}
+  fresnelIntensity: 1.45
+  fresnelPower: 5.2
+  refractionEnabled: 1
+  refractionStrength: 0.012
+  chromaticSplit: 0.0006
+  noiseEnabled: 1
+  noiseScale: 3.6
+  noiseVelocity: {x: 0.035, y: 0.015, z: -0.02}
+  noiseStrength: 0.16
+  pulseSpeed: 0.35
+  pulseStrength: 0.03
+  patternEnabled: 1
+  patternColor: {r: 0.03, g: 1.1, b: 2.7, a: 1}
+  patternScale: 6.5
+  patternWidth: 0.055
+  patternIntensity: 0.7
+  impactColor: {r: 0.08, g: 2.1, b: 4.8, a: 1}
+  impactIntensity: 3.4
+  impactDuration: 1.45
+  rippleSpeed: 2.45
+  rippleWidth: 0.085
+  rippleFadePower: 2.2
+  rippleRefraction: 0.018
+  intersectionEnabled: 1
+  intersectionColor: {r: 0.04, g: 1.3, b: 3.4, a: 1}
+  intersectionIntensity: 1.4
+  intersectionWidth: 0.13
+  quality: 2

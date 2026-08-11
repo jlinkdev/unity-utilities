@@ -1,0 +1,19 @@
+{
+  "name": "jlinkdev.Forcefields.Editor",
+  "rootNamespace": "jlinkdev.UnityUtilities.Forcefields.Editor",
+  "references": [
+    "jlinkdev.Forcefields",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

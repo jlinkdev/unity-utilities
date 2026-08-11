@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a4ccfd18874798b8c2df8ca278ee5e, type: 3}
+  m_Name: Plasma Containment
+  m_EditorClassIdentifier:
+  surfaceColor: {r: 0.3, g: 0.025, b: 0.4, a: 1}
+  surfaceIntensity: 1.1
+  opacity: 0.16
+  backfaceOpacity: 0.45
+  fresnelColor: {r: 2.5, g: 0.12, b: 1.7, a: 1}
+  fresnelIntensity: 1.8
+  fresnelPower: 3.1
+  refractionEnabled: 1
+  refractionStrength: 0.034
+  chromaticSplit: 0.0025
+  noiseEnabled: 1
+  noiseScale: 1.75
+  noiseVelocity: {x: 0.13, y: 0.09, z: -0.11}
+  noiseStrength: 0.65
+  pulseSpeed: 0.9
+  pulseStrength: 0.14
+  patternEnabled: 0
+  patternColor: {r: 1.8, g: 0.08, b: 1.2, a: 1}
+  patternScale: 5
+  patternWidth: 0.08
+  patternIntensity: 0.2
+  impactColor: {r: 3.5, g: 0.2, b: 2.8, a: 1}
+  impactIntensity: 3.8
+  impactDuration: 1.7
+  rippleSpeed: 2.15
+  rippleWidth: 0.19
+  rippleFadePower: 1.3
+  rippleRefraction: 0.05
+  intersectionEnabled: 1
+  intersectionColor: {r: 2.8, g: 0.08, b: 1.9, a: 1}
+  intersectionIntensity: 1.8
+  intersectionWidth: 0.25
+  quality: 2
