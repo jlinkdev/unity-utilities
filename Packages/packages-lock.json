@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.jlinkdev.beams": {
+      "version": "file:com.jlinkdev.beams",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.3",
+        "com.unity.modules.physics": "1.0.0"
+      }
+    },
     "com.jlinkdev.forcefields": {
       "version": "file:com.jlinkdev.forcefields",
       "depth": 0,

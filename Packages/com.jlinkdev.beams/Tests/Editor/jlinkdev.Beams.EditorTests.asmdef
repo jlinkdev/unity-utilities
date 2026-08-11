@@ -1,0 +1,22 @@
+{
+  "name": "jlinkdev.Beams.EditorTests",
+  "rootNamespace": "jlinkdev.UnityUtilities.Beams.Tests",
+  "references": [
+    "jlinkdev.Beams"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,30 @@
+{
+  "name": "com.jlinkdev.beams",
+  "displayName": "jlinkdev Beams",
+  "version": "1.0.0-pre.1",
+  "unity": "6000.0",
+  "description": "A composable, gameplay-neutral beam construction kit with strand paths, endpoint providers, procedural rendering, shader animation, and contact-ready geometry.",
+  "license": "MIT",
+  "keywords": [
+    "beam",
+    "laser",
+    "lightning",
+    "electricity",
+    "urp",
+    "rendering"
+  ],
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.3",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Beam Kit Demo",
+      "description": "A focused gallery of continuous, curved, electrical, branching, pulsing, and contact-aware beams.",
+      "path": "Samples~/Beam Kit Demo"
+    }
+  ]
+}
