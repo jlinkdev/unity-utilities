@@ -21,6 +21,8 @@ The runtime does not depend on any input package. Import **Portal Playground** f
 
 Each `Portal` references exactly one linked portal. Rendering uses an off-screen URP camera, an oblique projection plane, frustum checks, reusable render textures, and a configurable recursion limit. Repeated views accumulate the same entry-to-exit transform, and the final level resolves to a configurable animated energy horizon instead of an accidental black frame. `PortalRenderSettings` assets can be shared by any number of pairs.
 
+Portals are one-sided: the front renders and accepts traversal, while the reverse side displays a dark inactive panel and ignores entry. This keeps freestanding portal geometry visually and mechanically unambiguous.
+
 ## Traversal and scaling
 
 `PortalTraveller` supports ordinary transforms, `Rigidbody`, and `CharacterController`. Rigidbody linear and angular velocities are mapped through the pair. Character motors can implement `IPortalVelocityProvider` so their velocity is mapped as well. Uniform portal scaling is optional and scales traveller position, local scale, and linear velocity by the exit-to-entry ratio.

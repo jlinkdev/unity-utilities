@@ -10,6 +10,8 @@ Shader "jlinkdev/Portals/Portal Surface"
         [HDR] _TerminalColor("Recursion End Color", Color) = (0.005, 0.018, 0.045, 1)
         [HDR] _TerminalGlowColor("Recursion End Glow", Color) = (0.04, 0.8, 1.6, 1)
         _TerminalGlowIntensity("Recursion End Glow Intensity", Range(0, 4)) = 1.15
+        [HDR] _BackColor("Inactive Back Color", Color) = (0.006, 0.01, 0.018, 1)
+        [HDR] _BackGlowColor("Inactive Back Accent", Color) = (0.015, 0.22, 0.3, 1)
     }
 
     SubShader
@@ -41,6 +43,8 @@ Shader "jlinkdev/Portals/Portal Surface"
                 half4 _TerminalColor;
                 half4 _TerminalGlowColor;
                 half _TerminalGlowIntensity;
+                half4 _BackColor;
+                half4 _BackGlowColor;
             CBUFFER_END
 
             struct Attributes
@@ -65,8 +69,27 @@ Shader "jlinkdev/Portals/Portal Surface"
                 return output;
             }
 
-            half4 Frag(Varyings input) : SV_Target
+            half4 Frag(Varyings input, FRONT_FACE_TYPE isFrontFace : FRONT_FACE_SEMANTIC) : SV_Target
             {
+                float2 edgeDistance = min(input.uv, 1.0 - input.uv);
+                half edge = 1.0h - smoothstep(0.0h, _EdgeWidth, min(edgeDistance.x, edgeDistance.y));
+                // Unity's built-in Quad winding faces opposite local +Z, while
+                // Portal defines its active side with transform.forward (+Z).
+                half activePortalFace = IS_FRONT_VFACE(isFrontFace, 0.0h, 1.0h);
+                if (activePortalFace < 0.5h)
+                {
+                    // The reverse side is an intentionally inactive matte panel.
+                    // A faint center seam keeps it readable as portal hardware
+                    // without suggesting that the live view can be entered here.
+                    float2 backPosition = input.uv * 2.0 - 1.0;
+                    half centerSeam = 1.0h - smoothstep(0.012h, 0.055h, abs(backPosition.x));
+                    half seamFade = saturate(1.0h - abs(backPosition.y));
+                    half pulse = 0.82h + 0.18h * sin(_Time.y * 1.1h);
+                    half3 backView = _BackColor.rgb + _BackGlowColor.rgb *
+                        (edge * 0.28h + centerSeam * seamFade * pulse * 0.16h);
+                    return half4(backView, 1.0h);
+                }
+
                 float2 screenUV = input.screenPos.xy / max(input.screenPos.w, 0.0001);
                 half4 view = SAMPLE_TEXTURE2D(_PortalTexture, sampler_PortalTexture, screenUV) * _Tint;
 
@@ -87,8 +110,6 @@ Shader "jlinkdev/Portals/Portal Surface"
                     (terminalCore * 0.22h + terminalRing * 0.12h + terminalHorizon * 0.72h);
                 view.rgb = lerp(view.rgb, terminalView, saturate(_PortalTerminal));
 
-                float2 edgeDistance = min(input.uv, 1.0 - input.uv);
-                half edge = 1.0h - smoothstep(0.0h, _EdgeWidth, min(edgeDistance.x, edgeDistance.y));
                 return lerp(view, _EdgeColor, edge * _EdgeColor.a);
             }
             ENDHLSL

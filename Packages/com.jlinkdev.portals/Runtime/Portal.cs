@@ -8,6 +8,7 @@ namespace jlinkdev.UnityUtilities.Portals
     public sealed class Portal : MonoBehaviour
     {
         private static readonly List<Portal> ActivePortalsInternal = new List<Portal>();
+        private readonly HashSet<PortalTraveller> backsideTravellers = new HashSet<PortalTraveller>();
 
         [Header("Pair")]
         [SerializeField] private Portal linkedPortal;
@@ -58,6 +59,7 @@ namespace jlinkdev.UnityUtilities.Portals
         private void OnDisable()
         {
             ActivePortalsInternal.Remove(this);
+            backsideTravellers.Clear();
             PortalRenderSystem.Release(this);
         }
 
@@ -73,8 +75,17 @@ namespace jlinkdev.UnityUtilities.Portals
                 return;
 
             PortalTraveller traveller = other.GetComponentInParent<PortalTraveller>();
-            if (traveller != null)
-                traveller.EnterPortal(this);
+            if (traveller == null)
+                return;
+
+            if (!IsInFrontOfPortal(traveller.transform.position))
+            {
+                backsideTravellers.Add(traveller);
+                return;
+            }
+
+            backsideTravellers.Remove(traveller);
+            traveller.EnterPortal(this);
         }
 
         private void OnTriggerStay(Collider other)
@@ -83,15 +94,20 @@ namespace jlinkdev.UnityUtilities.Portals
                 return;
 
             PortalTraveller traveller = other.GetComponentInParent<PortalTraveller>();
-            if (traveller != null)
-                traveller.EnterPortal(this);
+            if (traveller == null || backsideTravellers.Contains(traveller) || !IsInFrontOfPortal(traveller.transform.position))
+                return;
+
+            traveller.EnterPortal(this);
         }
 
         private void OnTriggerExit(Collider other)
         {
             PortalTraveller traveller = other.GetComponentInParent<PortalTraveller>();
-            if (traveller != null)
-                traveller.ExitPortal(this);
+            if (traveller == null)
+                return;
+
+            backsideTravellers.Remove(traveller);
+            traveller.ExitPortal(this);
         }
 
         public Matrix4x4 MapMatrix(Matrix4x4 matrix)
@@ -118,9 +134,16 @@ namespace jlinkdev.UnityUtilities.Portals
         {
             if (surfaceRenderer == null || !surfaceRenderer.enabled || !surfaceRenderer.gameObject.activeInHierarchy)
                 return false;
+            if (!IsInFrontOfPortal(camera.transform.position))
+                return false;
 
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
             return GeometryUtility.TestPlanesAABB(planes, surfaceRenderer.bounds);
+        }
+
+        private bool IsInFrontOfPortal(Vector3 position)
+        {
+            return PortalMath.SignedDistance(transform, position) > 0f;
         }
 
         internal void SetViewTexture(Texture texture, bool showRecursionEnd = false)

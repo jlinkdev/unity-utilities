@@ -61,9 +61,7 @@ namespace jlinkdev.UnityUtilities.Portals
             UpdateTransitionVisuals();
 
             float currentDistance = PortalMath.SignedDistance(activePortal.transform, transform.position);
-            bool crossed = Mathf.Abs(previousDistance) > crossingEpsilon &&
-                           Mathf.Abs(currentDistance) > crossingEpsilon &&
-                           Mathf.Sign(previousDistance) != Mathf.Sign(currentDistance);
+            bool crossed = previousDistance > crossingEpsilon && currentDistance < -crossingEpsilon;
 
             if (crossed && lastTeleportFrame != Time.frameCount)
                 Teleport(activePortal, activePortal.LinkedPortal);

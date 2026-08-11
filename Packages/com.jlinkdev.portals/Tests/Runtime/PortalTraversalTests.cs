@@ -99,5 +99,40 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
             Object.Destroy(exitObject);
             yield return null;
         }
+
+        [UnityTest]
+        public IEnumerator PortalTrigger_OnlyArmsTraversalFromFront()
+        {
+            GameObject entryObject = new GameObject("Entry Portal");
+            GameObject exitObject = new GameObject("Exit Portal");
+            entryObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            exitObject.transform.SetPositionAndRotation(Vector3.forward * 10f, Quaternion.Euler(0f, 180f, 0f));
+
+            Portal entry = entryObject.AddComponent<Portal>();
+            Portal exit = exitObject.AddComponent<Portal>();
+            entry.LinkedPortal = exit;
+            exit.LinkedPortal = entry;
+
+            GameObject travellerObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            travellerObject.name = "Backside Traveller";
+            travellerObject.transform.position = Vector3.back * 0.25f;
+            PortalTraveller traveller = travellerObject.AddComponent<PortalTraveller>();
+            yield return null;
+
+            entryObject.SendMessage("OnTriggerEnter", travellerObject.GetComponent<Collider>(), SendMessageOptions.RequireReceiver);
+
+            Assert.That(traveller.ActivePortal, Is.Null);
+
+            entryObject.SendMessage("OnTriggerExit", travellerObject.GetComponent<Collider>(), SendMessageOptions.RequireReceiver);
+            travellerObject.transform.position = Vector3.forward * 0.25f;
+            entryObject.SendMessage("OnTriggerEnter", travellerObject.GetComponent<Collider>(), SendMessageOptions.RequireReceiver);
+
+            Assert.That(traveller.ActivePortal, Is.SameAs(entry));
+
+            Object.Destroy(travellerObject);
+            Object.Destroy(entryObject);
+            Object.Destroy(exitObject);
+            yield return null;
+        }
     }
 }

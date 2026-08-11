@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Enabled traversal on the recursive playground pair and audited all sample portal links and trigger references.
+- Added a distinct inactive portal backside and restricted traversal and off-screen rendering to the active front face.
 - Fixed recursive camera poses so every level advances through the same entry-to-exit transform instead of alternating back toward the source camera.
 - Added a configurable animated energy horizon for the final bounded recursion level.
 - Fixed traveller transition clones retaining the wrong side of the destination portal plane.

@@ -2562,7 +2562,7 @@ MonoBehaviour:
   surfaceRenderer: {fileID: 537903552}
   traversalTrigger: {fileID: 1334441587}
   renderSettings: {fileID: 11400000, guid: 9f1e8f3bbed5cd64691ace8f1d563779, type: 2}
-  traversalEnabled: 0
+  traversalEnabled: 1
   scaleTravellers: 1
   drawDebugGizmos: 1
 --- !u!65 &1334441587
@@ -2620,7 +2620,7 @@ MonoBehaviour:
   surfaceRenderer: {fileID: 1616173045}
   traversalTrigger: {fileID: 1415542940}
   renderSettings: {fileID: 11400000, guid: 9f1e8f3bbed5cd64691ace8f1d563779, type: 2}
-  traversalEnabled: 0
+  traversalEnabled: 1
   scaleTravellers: 1
   drawDebugGizmos: 1
 --- !u!65 &1415542940
@@ -4563,7 +4563,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2076665757}
   m_Layer: 0
-  m_Name: Recursive Display Pair (Traversal Disabled)
+  m_Name: Recursive Portal Pair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

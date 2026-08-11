@@ -126,13 +126,11 @@ namespace jlinkdev.UnityUtilities.Portals.Development
 
         private static void CreateRecursiveDisplayPair(PortalRenderSettings settings, Material portalMaterial, Material frameMaterial)
         {
-            GameObject pair = new GameObject("Recursive Display Pair (Traversal Disabled)");
+            GameObject pair = new GameObject("Recursive Portal Pair");
             Portal first = CreatePortal("Recursive Portal C", pair.transform, new Vector3(-6f, 2f, 3f), Quaternion.Euler(0f, 90f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
             Portal second = CreatePortal("Recursive Portal D", pair.transform, new Vector3(6f, 2f, 3f), Quaternion.Euler(0f, -90f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
             first.LinkedPortal = second;
             second.LinkedPortal = first;
-            first.TraversalEnabled = false;
-            second.TraversalEnabled = false;
         }
 
         private static Portal CreatePortal(string name, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, PortalRenderSettings settings, Material portalMaterial, Material frameMaterial)
