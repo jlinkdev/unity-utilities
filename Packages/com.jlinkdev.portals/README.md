@@ -19,7 +19,7 @@ The runtime does not depend on any input package. Import **Portal Playground** f
 
 ## Rendering
 
-Each `Portal` references exactly one linked portal. Rendering uses an off-screen URP camera, an oblique projection plane, frustum checks, reusable render textures, and a configurable recursion limit. `PortalRenderSettings` assets can be shared by any number of pairs.
+Each `Portal` references exactly one linked portal. Rendering uses an off-screen URP camera, an oblique projection plane, frustum checks, reusable render textures, and a configurable recursion limit. Repeated views accumulate the same entry-to-exit transform, and the final level resolves to a configurable animated energy horizon instead of an accidental black frame. `PortalRenderSettings` assets can be shared by any number of pairs.
 
 ## Traversal and scaling
 

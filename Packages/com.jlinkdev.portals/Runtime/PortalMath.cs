@@ -11,6 +11,14 @@ namespace jlinkdev.UnityUtilities.Portals
             return exit.localToWorldMatrix * HalfTurn * entry.worldToLocalMatrix * matrix;
         }
 
+        public static Matrix4x4 MapMatrixRepeated(Transform entry, Transform exit, Matrix4x4 matrix, int traversalCount)
+        {
+            Matrix4x4 mapped = matrix;
+            for (int traversal = 0; traversal < traversalCount; traversal++)
+                mapped = MapMatrix(entry, exit, mapped);
+            return mapped;
+        }
+
         public static Vector3 MapPoint(Transform entry, Transform exit, Vector3 point)
         {
             return MapMatrix(entry, exit, Matrix4x4.Translate(point)).GetColumn(3);

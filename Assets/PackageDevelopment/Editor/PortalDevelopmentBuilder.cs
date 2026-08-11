@@ -116,9 +116,9 @@ namespace jlinkdev.UnityUtilities.Portals.Development
 
         private static GameObject CreatePortalPair(PortalRenderSettings settings, Material portalMaterial, Material frameMaterial)
         {
-            GameObject pair = new GameObject("Linked Portal Pair (Scaled Exit)");
+            GameObject pair = new GameObject("Linked Portal Pair");
             Portal first = CreatePortal("Portal A — Main Room", pair.transform, new Vector3(0f, 2f, 0f), Quaternion.Euler(0f, 180f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
-            Portal second = CreatePortal("Portal B — Exit Room", pair.transform, new Vector3(9f, 2f, 4f), Quaternion.Euler(0f, 90f, 0f), Vector3.one * 0.72f, settings, portalMaterial, frameMaterial);
+            Portal second = CreatePortal("Portal B — Exit Room", pair.transform, new Vector3(9f, 2f, 4f), Quaternion.Euler(0f, 90f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
             first.LinkedPortal = second;
             second.LinkedPortal = first;
             return pair;
@@ -127,8 +127,8 @@ namespace jlinkdev.UnityUtilities.Portals.Development
         private static void CreateRecursiveDisplayPair(PortalRenderSettings settings, Material portalMaterial, Material frameMaterial)
         {
             GameObject pair = new GameObject("Recursive Display Pair (Traversal Disabled)");
-            Portal first = CreatePortal("Recursive Portal C", pair.transform, new Vector3(-6f, 2f, 3f), Quaternion.Euler(0f, 90f, 0f), Vector3.one * 0.8f, settings, portalMaterial, frameMaterial);
-            Portal second = CreatePortal("Recursive Portal D", pair.transform, new Vector3(6f, 2f, 3f), Quaternion.Euler(0f, -90f, 0f), Vector3.one * 0.8f, settings, portalMaterial, frameMaterial);
+            Portal first = CreatePortal("Recursive Portal C", pair.transform, new Vector3(-6f, 2f, 3f), Quaternion.Euler(0f, 90f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
+            Portal second = CreatePortal("Recursive Portal D", pair.transform, new Vector3(6f, 2f, 3f), Quaternion.Euler(0f, -90f, 0f), Vector3.one, settings, portalMaterial, frameMaterial);
             first.LinkedPortal = second;
             second.LinkedPortal = first;
             first.TraversalEnabled = false;
@@ -260,7 +260,11 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             serialized.FindProperty("renderScale").floatValue = 0.75f;
             serialized.FindProperty("nearClipOffset").floatValue = PortalRenderSettings.MinimumNearClipOffset;
             serialized.FindProperty("renderInSceneView").boolValue = false;
+            serialized.FindProperty("recursionEndColor").colorValue = new Color(0.005f, 0.018f, 0.045f, 1f);
+            serialized.FindProperty("recursionEndGlowColor").colorValue = new Color(0.04f, 0.8f, 1.6f, 1f);
+            serialized.FindProperty("recursionEndGlowIntensity").floatValue = 1.15f;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(settings);
             return settings;
         }
 

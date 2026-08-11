@@ -123,7 +123,7 @@ namespace jlinkdev.UnityUtilities.Portals
             return GeometryUtility.TestPlanesAABB(planes, surfaceRenderer.bounds);
         }
 
-        internal void SetViewTexture(Texture texture)
+        internal void SetViewTexture(Texture texture, bool showRecursionEnd = false)
         {
             if (surfaceRenderer == null)
                 return;
@@ -131,6 +131,16 @@ namespace jlinkdev.UnityUtilities.Portals
             surfaceProperties ??= new MaterialPropertyBlock();
             surfaceRenderer.GetPropertyBlock(surfaceProperties);
             surfaceProperties.SetTexture(PortalShaderProperties.PortalTexture, texture);
+            surfaceProperties.SetFloat(PortalShaderProperties.PortalTerminal, showRecursionEnd ? 1f : 0f);
+            surfaceProperties.SetColor(
+                PortalShaderProperties.TerminalColor,
+                renderSettings != null ? renderSettings.RecursionEndColor : PortalRenderSettings.DefaultRecursionEndColor);
+            surfaceProperties.SetColor(
+                PortalShaderProperties.TerminalGlowColor,
+                renderSettings != null ? renderSettings.RecursionEndGlowColor : PortalRenderSettings.DefaultRecursionEndGlowColor);
+            surfaceProperties.SetFloat(
+                PortalShaderProperties.TerminalGlowIntensity,
+                renderSettings != null ? renderSettings.RecursionEndGlowIntensity : PortalRenderSettings.DefaultRecursionEndGlowIntensity);
             surfaceRenderer.SetPropertyBlock(surfaceProperties);
         }
 

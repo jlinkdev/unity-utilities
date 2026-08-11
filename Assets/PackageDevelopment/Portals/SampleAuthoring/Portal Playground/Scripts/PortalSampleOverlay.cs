@@ -17,7 +17,7 @@ namespace jlinkdev.UnityUtilities.Portals.Samples
             GUI.Label(new Rect(30f, 58f, 350f, 62f),
                 "WASD  Move    Mouse  Look    Esc  Release cursor\n" +
                 "Walk through either portal. The orange crate loops automatically.\n" +
-                "The smaller exit demonstrates uniform scale mapping.", bodyStyle);
+                "The face-to-face pair demonstrates bounded recursive rendering.", bodyStyle);
         }
     }
 }

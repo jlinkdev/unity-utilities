@@ -6,6 +6,10 @@ Shader "jlinkdev/Portals/Portal Surface"
         _Tint("Tint", Color) = (1, 1, 1, 1)
         _EdgeColor("Edge Color", Color) = (0.08, 0.75, 1, 1)
         _EdgeWidth("Edge Width", Range(0, 0.25)) = 0.025
+        [HideInInspector] _PortalTerminal("Portal Terminal", Float) = 0
+        [HDR] _TerminalColor("Recursion End Color", Color) = (0.005, 0.018, 0.045, 1)
+        [HDR] _TerminalGlowColor("Recursion End Glow", Color) = (0.04, 0.8, 1.6, 1)
+        _TerminalGlowIntensity("Recursion End Glow Intensity", Range(0, 4)) = 1.15
     }
 
     SubShader
@@ -33,6 +37,10 @@ Shader "jlinkdev/Portals/Portal Surface"
                 half4 _Tint;
                 half4 _EdgeColor;
                 half _EdgeWidth;
+                half _PortalTerminal;
+                half4 _TerminalColor;
+                half4 _TerminalGlowColor;
+                half _TerminalGlowIntensity;
             CBUFFER_END
 
             struct Attributes
@@ -61,6 +69,24 @@ Shader "jlinkdev/Portals/Portal Surface"
             {
                 float2 screenUV = input.screenPos.xy / max(input.screenPos.w, 0.0001);
                 half4 view = SAMPLE_TEXTURE2D(_PortalTexture, sampler_PortalTexture, screenUV) * _Tint;
+
+                // Give bounded recursion an intentional visual horizon. This is
+                // rendered only into the deepest texture, so shallower levels
+                // naturally inherit it without a temporal feedback dependency.
+                float2 terminalPosition = input.uv * 2.0 - 1.0;
+                terminalPosition.y *= 0.58;
+                float terminalRadius = length(terminalPosition);
+                half terminalFalloff = saturate(1.0h - terminalRadius);
+                half terminalCore = pow(terminalFalloff, 4.0h);
+                half terminalRing = pow(
+                    saturate(0.5h + 0.5h * cos(terminalRadius * 48.0h - _Time.y * 1.8h)),
+                    12.0h) * terminalFalloff;
+                half terminalHorizon = 1.0h - smoothstep(0.06h, 0.22h, terminalRadius);
+                half3 terminalView = _TerminalColor.rgb;
+                terminalView += _TerminalGlowColor.rgb * _TerminalGlowIntensity *
+                    (terminalCore * 0.22h + terminalRing * 0.12h + terminalHorizon * 0.72h);
+                view.rgb = lerp(view.rgb, terminalView, saturate(_PortalTerminal));
+
                 float2 edgeDistance = min(input.uv, 1.0 - input.uv);
                 half edge = 1.0h - smoothstep(0.0h, _EdgeWidth, min(edgeDistance.x, edgeDistance.y));
                 return lerp(view, _EdgeColor, edge * _EdgeColor.a);

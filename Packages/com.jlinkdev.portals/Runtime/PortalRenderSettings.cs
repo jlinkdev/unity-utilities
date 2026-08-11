@@ -14,6 +14,10 @@ namespace jlinkdev.UnityUtilities.Portals
         [SerializeField] private bool renderShadows = true;
         [SerializeField] private bool renderInSceneView;
         [SerializeField] private bool useHdr = true;
+        [Header("Recursion End")]
+        [SerializeField] private Color recursionEndColor = new Color(0.005f, 0.018f, 0.045f, 1f);
+        [SerializeField, ColorUsage(true, true)] private Color recursionEndGlowColor = new Color(0.04f, 0.8f, 1.6f, 1f);
+        [SerializeField, Range(0f, 4f)] private float recursionEndGlowIntensity = 1.15f;
 
         public int RecursionLimit => recursionLimit;
         public float RenderScale => renderScale;
@@ -22,9 +26,15 @@ namespace jlinkdev.UnityUtilities.Portals
         public bool RenderShadows => renderShadows;
         public bool RenderInSceneView => renderInSceneView;
         public bool UseHdr => useHdr;
+        public Color RecursionEndColor => recursionEndColor;
+        public Color RecursionEndGlowColor => recursionEndGlowColor;
+        public float RecursionEndGlowIntensity => recursionEndGlowIntensity;
 
         internal static int DefaultRecursionLimit => 3;
         internal static float DefaultRenderScale => 0.75f;
         internal static float DefaultNearClipOffset => MinimumNearClipOffset;
+        internal static Color DefaultRecursionEndColor => new Color(0.005f, 0.018f, 0.045f, 1f);
+        internal static Color DefaultRecursionEndGlowColor => new Color(0.04f, 0.8f, 1.6f, 1f);
+        internal static float DefaultRecursionEndGlowIntensity => 1.15f;
     }
 }

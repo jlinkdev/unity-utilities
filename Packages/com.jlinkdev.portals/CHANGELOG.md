@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Fixed recursive camera poses so every level advances through the same entry-to-exit transform instead of alternating back toward the source camera.
+- Added a configurable animated energy horizon for the final bounded recursion level.
 - Fixed traveller transition clones retaining the wrong side of the destination portal plane.
 - Added a small configurable clip-plane overlap to prevent cracks at the transition seam.
 - Added portal-surface depth bias so directly rendered travellers win sub-pixel depth ties at the seam.

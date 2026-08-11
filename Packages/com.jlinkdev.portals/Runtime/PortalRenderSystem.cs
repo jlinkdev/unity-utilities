@@ -107,21 +107,20 @@ namespace jlinkdev.UnityUtilities.Portals
             int depthCount = Mathf.Max(1, sourcePortal.RecursionLimit + 1);
             PortalRenderState state = GetState(sourcePortal, sourceCamera, depthCount);
             Matrix4x4[] poses = new Matrix4x4[depthCount];
-            Portal[] entries = new Portal[depthCount];
-            Portal[] exits = new Portal[depthCount];
 
-            Matrix4x4 pose = sourceCamera.transform.localToWorldMatrix;
-            Portal entry = sourcePortal;
-            Portal exit = sourcePortal.LinkedPortal;
+            Matrix4x4 sourcePose = sourceCamera.transform.localToWorldMatrix;
+            Portal exitPortal = sourcePortal.LinkedPortal;
             for (int depth = 0; depth < depthCount; depth++)
             {
-                pose = PortalMath.MapMatrix(entry.transform, exit.transform, pose);
-                poses[depth] = pose;
-                entries[depth] = entry;
-                exits[depth] = exit;
-                Portal swap = entry;
-                entry = exit;
-                exit = swap;
+                // Every nested view crosses the same visible portal pair again.
+                // Alternating the pair direction would apply the inverse transform
+                // on every second pass and collapse the recursion back toward the
+                // source camera instead of advancing the view through the chain.
+                poses[depth] = PortalMath.MapMatrixRepeated(
+                    sourcePortal.transform,
+                    exitPortal.transform,
+                    sourcePose,
+                    depth + 1);
             }
 
             for (int depth = depthCount - 1; depth >= 0; depth--)
@@ -137,16 +136,17 @@ namespace jlinkdev.UnityUtilities.Portals
                 portalCameraData.requiresColorTexture = false;
                 portalCameraData.requiresDepthTexture = true;
 
-                Portal clipPortal = exits[depth];
                 Vector4 clipPlane = PortalMath.CameraSpacePlane(
                     portalCamera,
-                    clipPortal.transform.position,
-                    clipPortal.transform.forward,
+                    exitPortal.transform.position,
+                    exitPortal.transform.forward,
                     sourcePortal.NearClipOffset);
                 portalCamera.projectionMatrix = sourceCamera.CalculateObliqueMatrix(clipPlane);
 
-                Portal portalVisibleInView = entries[depth];
-                portalVisibleInView.SetViewTexture(depth + 1 < depthCount ? state.textures[depth + 1] : Texture2D.blackTexture);
+                bool deepestPass = depth + 1 >= depthCount;
+                sourcePortal.SetViewTexture(
+                    deepestPass ? Texture2D.blackTexture : state.textures[depth + 1],
+                    deepestPass);
 
 #pragma warning disable CS0618
                 UniversalRenderPipeline.RenderSingleCamera(context, portalCamera);

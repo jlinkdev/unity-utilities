@@ -21,3 +21,6 @@ MonoBehaviour:
   renderShadows: 1
   renderInSceneView: 0
   useHdr: 1
+  recursionEndColor: {r: 0.005, g: 0.018, b: 0.045, a: 1}
+  recursionEndGlowColor: {r: 0.04, g: 0.8, b: 1.6, a: 1}
+  recursionEndGlowIntensity: 1.15

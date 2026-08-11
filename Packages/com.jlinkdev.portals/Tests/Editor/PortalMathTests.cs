@@ -42,6 +42,25 @@ namespace jlinkdev.UnityUtilities.Portals.Tests
         }
 
         [Test]
+        public void MapMatrixRepeated_AccumulatesTheSamePortalDirection()
+        {
+            Matrix4x4 source = Matrix4x4.TRS(
+                new Vector3(1.5f, 0.75f, -4f),
+                Quaternion.Euler(8f, 22f, 0f),
+                Vector3.one);
+
+            Matrix4x4 once = PortalMath.MapMatrix(entryObject.transform, exitObject.transform, source);
+            Matrix4x4 expectedTwice = PortalMath.MapMatrix(entryObject.transform, exitObject.transform, once);
+            Matrix4x4 repeated = PortalMath.MapMatrixRepeated(entryObject.transform, exitObject.transform, source, 2);
+            Matrix4x4 alternatingRoundTrip = PortalMath.MapMatrix(exitObject.transform, entryObject.transform, once);
+
+            Assert.That(Vector3.Distance(repeated.GetColumn(3), expectedTwice.GetColumn(3)), Is.LessThan(0.0001f));
+            Assert.That(Quaternion.Angle(repeated.rotation, expectedTwice.rotation), Is.LessThan(0.001f));
+            Assert.That(Vector3.Distance(alternatingRoundTrip.GetColumn(3), source.GetColumn(3)), Is.LessThan(0.0001f));
+            Assert.That(Vector3.Distance(repeated.GetColumn(3), source.GetColumn(3)), Is.GreaterThan(0.1f));
+        }
+
+        [Test]
         public void UniformScaleRatio_UsesPortalAperture()
         {
             entryObject.transform.localScale = Vector3.one;
