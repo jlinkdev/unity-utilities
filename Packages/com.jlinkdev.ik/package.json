@@ -1,7 +1,7 @@
 {
   "name": "com.jlinkdev.ik",
   "displayName": "jlinkdev IK",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "unity": "2022.3",
   "description": "Lightweight inverse-kinematics components for limbs, chains, aiming, and ground targets.",
   "author": {
