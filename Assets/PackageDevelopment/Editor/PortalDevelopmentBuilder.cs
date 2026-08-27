@@ -66,6 +66,10 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             Material orange = Material("Orange Clipped", "jlinkdev/Portals/Portal Clipped Lit", new Color(1f, 0.34f, 0.06f));
             Material magenta = Material("Magenta Clipped", "jlinkdev/Portals/Portal Clipped Lit", new Color(0.9f, 0.12f, 0.7f));
             Material neutral = Material("Environment", "Universal Render Pipeline/Lit", new Color(0.24f, 0.28f, 0.34f));
+            Material tabletop = Material("Size Lab Table", "Universal Render Pipeline/Lit", new Color(0.19f, 0.1f, 0.055f));
+            Material sizeLab = Material("Size Lab Cyan", "Universal Render Pipeline/Lit", new Color(0.04f, 0.68f, 0.86f));
+            Material ruler = Material("Size Lab Ruler", "Universal Render Pipeline/Lit", new Color(0.98f, 0.7f, 0.08f));
+            Material porcelain = Material("Size Lab Porcelain", "Universal Render Pipeline/Lit", new Color(0.88f, 0.92f, 0.95f));
             PortalRenderSettings settings = Settings();
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -80,6 +84,7 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             GameObject pair = CreatePortalPair(settings, portalMaterial, neutral);
             PrefabUtility.SaveAsPrefabAsset(pair, $"{AuthoringRoot}/Prefabs/Linked Portal Pair.prefab");
             CreateRecursiveDisplayPair(settings, portalMaterial, neutral);
+            CreateScaleLab(settings, portalMaterial, neutral, tabletop, sizeLab, ruler, porcelain, orange, magenta);
             CreatePlayer();
             CreateRigidbodyTraveller(orange);
             new GameObject("Sample Instructions").AddComponent<PortalSampleOverlay>();
@@ -133,6 +138,147 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             second.LinkedPortal = first;
         }
 
+        private static void CreateScaleLab(
+            PortalRenderSettings settings,
+            Material portalMaterial,
+            Material frameMaterial,
+            Material tabletopMaterial,
+            Material accentMaterial,
+            Material rulerMaterial,
+            Material porcelainMaterial,
+            Material travellerMaterial,
+            Material blockMaterial)
+        {
+            const float tableSurface = 1.25f;
+            const float stationZ = -6.5f;
+            GameObject lab = new GameObject("Size Lab — Recursive 1:4 Scale");
+
+            GameObject table = new GameObject("Dollhouse Tabletop");
+            table.transform.SetParent(lab.transform, false);
+            CreateCubeChild(table.transform, "Table Top", new Vector3(2f, tableSurface - 0.15f, stationZ), new Vector3(6.5f, 0.3f, 4.5f), tabletopMaterial);
+            CreateCubeChild(table.transform, "Table Leg NW", new Vector3(-0.7f, 0.475f, stationZ + 1.75f), new Vector3(0.35f, 0.95f, 0.35f), tabletopMaterial);
+            CreateCubeChild(table.transform, "Table Leg SW", new Vector3(-0.7f, 0.475f, stationZ - 1.75f), new Vector3(0.35f, 0.95f, 0.35f), tabletopMaterial);
+            CreateCubeChild(table.transform, "Table Leg NE", new Vector3(4.7f, 0.475f, stationZ + 1.75f), new Vector3(0.35f, 0.95f, 0.35f), tabletopMaterial);
+            CreateCubeChild(table.transform, "Table Leg SE", new Vector3(4.7f, 0.475f, stationZ - 1.75f), new Vector3(0.35f, 0.95f, 0.35f), tabletopMaterial);
+
+            GameObject runway = new GameObject("Recursive Scale Runway");
+            runway.transform.SetParent(lab.transform, false);
+            CreateCubeChild(runway.transform, "Runway", new Vector3(2f, tableSurface + 0.025f, stationZ), new Vector3(5.8f, 0.05f, 1.5f), accentMaterial);
+            CreateCubeChild(runway.transform, "North Safety Rail", new Vector3(2f, tableSurface + 0.18f, stationZ + 0.71f), new Vector3(5.8f, 0.36f, 0.08f), accentMaterial);
+            CreateCubeChild(runway.transform, "South Safety Rail", new Vector3(2f, tableSurface + 0.18f, stationZ - 0.71f), new Vector3(5.8f, 0.36f, 0.08f), accentMaterial);
+
+            GameObject pair = new GameObject("Recursive Scale Portal Pair — 1:4");
+            pair.transform.SetParent(lab.transform, false);
+            Portal fullSize = CreatePortal(
+                "Size Portal — Full Scale Entry",
+                pair.transform,
+                new Vector3(-5.5f, 2f, stationZ),
+                Quaternion.Euler(0f, 90f, 0f),
+                Vector3.one,
+                settings,
+                portalMaterial,
+                frameMaterial);
+            Portal dollhouse = CreatePortal(
+                "Size Portal — Dollhouse Exit 1:4",
+                pair.transform,
+                new Vector3(5f, tableSurface + 0.5f, stationZ),
+                Quaternion.Euler(0f, -90f, 0f),
+                Vector3.one * 0.25f,
+                settings,
+                portalMaterial,
+                accentMaterial);
+            fullSize.LinkedPortal = dollhouse;
+            dollhouse.LinkedPortal = fullSize;
+
+            GameObject room = new GameObject("Dollhouse Room");
+            room.transform.SetParent(lab.transform, false);
+            CreateCubeChild(room.transform, "Back Wall", new Vector3(2f, tableSurface + 0.85f, stationZ + 2.16f), new Vector3(6.4f, 1.7f, 0.12f), porcelainMaterial);
+            CreateCubeChild(room.transform, "Roof Valance", new Vector3(2f, tableSurface + 1.72f, stationZ + 1.4f), new Vector3(6.4f, 0.12f, 1.65f), porcelainMaterial);
+            CreateCubeChild(room.transform, "Window Left", new Vector3(0.6f, tableSurface + 0.88f, stationZ + 2.07f), new Vector3(0.12f, 1.25f, 0.08f), accentMaterial);
+            CreateCubeChild(room.transform, "Window Right", new Vector3(3.4f, tableSurface + 0.88f, stationZ + 2.07f), new Vector3(0.12f, 1.25f, 0.08f), accentMaterial);
+            CreateCubeChild(room.transform, "Window Top", new Vector3(2f, tableSurface + 1.45f, stationZ + 2.07f), new Vector3(2.9f, 0.12f, 0.08f), accentMaterial);
+            CreateCubeChild(room.transform, "Window Bottom", new Vector3(2f, tableSurface + 0.3f, stationZ + 2.07f), new Vector3(2.9f, 0.12f, 0.08f), accentMaterial);
+
+            GameObject ruler = new GameObject("Oversized Ruler");
+            ruler.transform.SetParent(lab.transform, false);
+            CreateCubeChild(ruler.transform, "Ruler Body", new Vector3(1.7f, tableSurface + 0.045f, stationZ - 1.45f), new Vector3(4.2f, 0.09f, 0.34f), rulerMaterial);
+            for (int tick = 0; tick <= 14; tick++)
+            {
+                float height = tick % 5 == 0 ? 0.22f : tick % 2 == 0 ? 0.15f : 0.1f;
+                CreateCubeChild(
+                    ruler.transform,
+                    $"Tick {tick:00}",
+                    new Vector3(-0.4f + tick * 0.3f, tableSurface + 0.095f, stationZ - 1.45f),
+                    new Vector3(0.025f, 0.03f, height),
+                    frameMaterial);
+            }
+
+            GameObject mug = new GameObject("Oversized Mug");
+            mug.transform.SetParent(lab.transform, false);
+            CreateCylinderChild(mug.transform, "Mug Body", new Vector3(3.7f, tableSurface + 0.52f, stationZ + 1.3f), new Vector3(0.62f, 0.52f, 0.62f), porcelainMaterial);
+            CreateCubeChild(mug.transform, "Handle Top", new Vector3(4.33f, tableSurface + 0.72f, stationZ + 1.3f), new Vector3(0.52f, 0.12f, 0.16f), porcelainMaterial);
+            CreateCubeChild(mug.transform, "Handle Bottom", new Vector3(4.33f, tableSurface + 0.3f, stationZ + 1.3f), new Vector3(0.52f, 0.12f, 0.16f), porcelainMaterial);
+            CreateCubeChild(mug.transform, "Handle Side", new Vector3(4.56f, tableSurface + 0.51f, stationZ + 1.3f), new Vector3(0.12f, 0.54f, 0.16f), porcelainMaterial);
+
+            for (int block = 0; block < 3; block++)
+            {
+                GameObject toy = CreateCubeChild(
+                    lab.transform,
+                    $"Toy Block {block + 1}",
+                    new Vector3(0.2f + block * 0.65f, tableSurface + 0.32f + block * 0.08f, stationZ + 1.35f),
+                    Vector3.one * (0.62f + block * 0.08f),
+                    blockMaterial);
+                toy.transform.rotation = Quaternion.Euler(block * 8f, block * 24f, block * 5f);
+            }
+
+            CreateScaleLegend(lab.transform, tableSurface, stationZ, accentMaterial, travellerMaterial);
+            CreateWorldLabel(
+                lab.transform,
+                "SIZE LAB  •  1:4",
+                new Vector3(2f, tableSurface + 1.45f, stationZ + 2.08f),
+                Quaternion.identity,
+                new Color(0.3f, 0.92f, 1f),
+                0.045f);
+            CreateWorldLabel(
+                lab.transform,
+                "ENTER LARGE  •  EXIT SMALL  •  REVERSE TO GROW",
+                new Vector3(2f, tableSurface + 1.08f, stationZ + 2.075f),
+                Quaternion.identity,
+                new Color(0.95f, 0.78f, 0.22f),
+                0.022f);
+
+            GameObject crate = CreateCube("Recursive Scaling Crate", new Vector3(-1.4f, 0.45f, stationZ), Vector3.one * 0.65f, travellerMaterial);
+            crate.transform.SetParent(lab.transform, true);
+            Rigidbody body = crate.AddComponent<Rigidbody>();
+            body.useGravity = false;
+            body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            crate.AddComponent<PortalTraveller>();
+            PortalSampleRigidbodyLoop loop = crate.AddComponent<PortalSampleRigidbodyLoop>();
+            SerializedObject serializedLoop = new SerializedObject(loop);
+            serializedLoop.FindProperty("launchVelocity").vector3Value = new Vector3(-3.2f, 0f, 0f);
+            serializedLoop.FindProperty("resetAfterSeconds").floatValue = 20f;
+            serializedLoop.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void CreateScaleLegend(Transform parent, float tableSurface, float stationZ, Material accentMaterial, Material travellerMaterial)
+        {
+            GameObject legend = new GameObject("Scale Reference — 1x 1/4x 1/16x");
+            legend.transform.SetParent(parent, false);
+            float[] scales = { 0.72f, 0.18f, 0.045f };
+            float x = 2.15f;
+            for (int i = 0; i < scales.Length; i++)
+            {
+                float size = scales[i];
+                CreateCubeChild(
+                    legend.transform,
+                    i == 0 ? "1x" : i == 1 ? "1/4x" : "1/16x",
+                    new Vector3(x, tableSurface + size * 0.5f, stationZ - 1.82f),
+                    Vector3.one * size,
+                    i == 1 ? accentMaterial : travellerMaterial);
+                x += size + 0.28f;
+            }
+        }
+
         private static Portal CreatePortal(string name, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, PortalRenderSettings settings, Material portalMaterial, Material frameMaterial)
         {
             GameObject root = new GameObject(name);
@@ -174,8 +320,8 @@ namespace jlinkdev.UnityUtilities.Portals.Development
         private static void CreatePlayer()
         {
             GameObject player = new GameObject("Portal Explorer");
-            player.transform.position = new Vector3(-4f, 0.05f, -7f);
-            player.transform.rotation = Quaternion.Euler(0f, 24f, 0f);
+            player.transform.position = new Vector3(-0.5f, 0.05f, -10.5f);
+            player.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             CharacterController controller = player.AddComponent<CharacterController>();
             controller.height = 1.8f;
             controller.radius = 0.35f;
@@ -200,7 +346,7 @@ namespace jlinkdev.UnityUtilities.Portals.Development
 
         private static void CreateRigidbodyTraveller(Material material)
         {
-            GameObject crate = CreateCube("Rigidbody Portal Crate", new Vector3(0f, 1.15f, -6f), Vector3.one * 0.75f, material);
+            GameObject crate = CreateCube("1:1 Rigidbody Portal Crate", new Vector3(0f, 1.15f, -3.5f), Vector3.one * 0.75f, material);
             Rigidbody body = crate.AddComponent<Rigidbody>();
             body.useGravity = false;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -216,6 +362,44 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             gameObject.transform.localScale = scale;
             gameObject.GetComponent<MeshRenderer>().sharedMaterial = material;
             return gameObject;
+        }
+
+        private static GameObject CreateCubeChild(Transform parent, string name, Vector3 position, Vector3 scale, Material material)
+        {
+            GameObject child = CreateCube(name, position, scale, material);
+            child.transform.SetParent(parent, true);
+            return child;
+        }
+
+        private static GameObject CreateCylinderChild(Transform parent, string name, Vector3 position, Vector3 scale, Material material)
+        {
+            GameObject child = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            child.name = name;
+            child.transform.SetPositionAndRotation(position, Quaternion.identity);
+            child.transform.localScale = scale;
+            child.GetComponent<MeshRenderer>().sharedMaterial = material;
+            child.transform.SetParent(parent, true);
+            return child;
+        }
+
+        private static void CreateWorldLabel(
+            Transform parent,
+            string text,
+            Vector3 position,
+            Quaternion rotation,
+            Color color,
+            float characterSize = 0.12f)
+        {
+            GameObject labelObject = new GameObject(text);
+            labelObject.transform.SetParent(parent, false);
+            labelObject.transform.SetPositionAndRotation(position, rotation);
+            TextMesh label = labelObject.AddComponent<TextMesh>();
+            label.text = text;
+            label.anchor = TextAnchor.MiddleCenter;
+            label.alignment = TextAlignment.Center;
+            label.characterSize = characterSize;
+            label.fontSize = 64;
+            label.color = color;
         }
 
         private static Material Material(string name, string shaderName, Color color)

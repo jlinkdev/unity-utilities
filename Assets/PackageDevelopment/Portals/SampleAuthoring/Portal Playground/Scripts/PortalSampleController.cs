@@ -15,8 +15,20 @@ namespace jlinkdev.UnityUtilities.Portals.Samples
         [SerializeField, Min(0f)] private float gravity = 18f;
 
         private CharacterController controller;
+        private Camera gameplayCamera;
+        private Vector3 startPosition;
+        private Quaternion startRotation;
+        private Vector3 startScale;
+        private float referenceWorldScale;
+        private float baseNearClipPlane;
         private float pitch;
         private Vector3 velocity;
+
+        public static PortalSampleController Active { get; private set; }
+
+        public float CurrentScaleRatio => referenceWorldScale > 0f
+            ? WorldScale(transform) / referenceWorldScale
+            : 1f;
 
         public Vector3 PortalVelocity
         {
@@ -26,15 +38,36 @@ namespace jlinkdev.UnityUtilities.Portals.Samples
 
         private void Awake()
         {
+            Active = this;
             controller = GetComponent<CharacterController>();
             if (cameraPivot == null && Camera.main != null)
                 cameraPivot = Camera.main.transform;
+
+            gameplayCamera = cameraPivot != null ? cameraPivot.GetComponent<Camera>() : Camera.main;
+            startPosition = transform.position;
+            startRotation = transform.rotation;
+            startScale = transform.localScale;
+            referenceWorldScale = WorldScale(transform);
+            baseNearClipPlane = gameplayCamera != null ? gameplayCamera.nearClipPlane : 0.05f;
+            ApplyScaleSettings();
             CapturePointer(true);
+        }
+
+        private void OnDestroy()
+        {
+            if (Active == this)
+                Active = null;
         }
 
         private void Update()
         {
             HandlePointer();
+            if (ReadReset())
+            {
+                ResetExplorer();
+                return;
+            }
+
             Vector2 moveInput = ReadMove();
             Vector2 lookInput = ReadLook();
 
@@ -43,15 +76,46 @@ namespace jlinkdev.UnityUtilities.Portals.Samples
             if (cameraPivot != null)
                 cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
 
-            Vector3 planar = (transform.right * moveInput.x + transform.forward * moveInput.y) * moveSpeed;
+            float scale = Mathf.Max(CurrentScaleRatio, 0.001f);
+            Vector3 planar = (transform.right * moveInput.x + transform.forward * moveInput.y) * (moveSpeed * scale);
             velocity.x = planar.x;
             velocity.z = planar.z;
             if (controller.isGrounded && velocity.y < 0f)
-                velocity.y = -2f;
+                velocity.y = -2f * scale;
             else
-                velocity.y -= gravity * Time.deltaTime;
+                velocity.y -= gravity * scale * Time.deltaTime;
 
             controller.Move(velocity * Time.deltaTime);
+            ApplyScaleSettings();
+        }
+
+        private void ResetExplorer()
+        {
+            bool wasEnabled = controller.enabled;
+            controller.enabled = false;
+            transform.SetPositionAndRotation(startPosition, startRotation);
+            transform.localScale = startScale;
+            controller.enabled = wasEnabled;
+            velocity = Vector3.zero;
+            pitch = 0f;
+            if (cameraPivot != null)
+                cameraPivot.localRotation = Quaternion.identity;
+            ApplyScaleSettings();
+            Physics.SyncTransforms();
+        }
+
+        private void ApplyScaleSettings()
+        {
+            if (gameplayCamera == null)
+                return;
+
+            gameplayCamera.nearClipPlane = Mathf.Max(0.001f, baseNearClipPlane * CurrentScaleRatio);
+        }
+
+        private static float WorldScale(Transform target)
+        {
+            Vector3 scale = target.lossyScale;
+            return Mathf.Pow(Mathf.Max(Mathf.Abs(scale.x * scale.y * scale.z), 0.000000001f), 1f / 3f);
         }
 
         private static Vector2 ReadMove()
@@ -76,6 +140,15 @@ namespace jlinkdev.UnityUtilities.Portals.Samples
             return Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
 #else
             return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * 10f;
+#endif
+        }
+
+        private static bool ReadReset()
+        {
+#if ENABLE_INPUT_SYSTEM
+            return Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
+#else
+            return Input.GetKeyDown(KeyCode.R);
 #endif
         }
 

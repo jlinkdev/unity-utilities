@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Expanded the Portal Playground sample with a tabletop Size Lab, recursive 1:4 traversal, scale-aware first-person movement, and a live scale readout.
 - Added a main-camera-only near-plane aperture cap to prevent the source world flashing through the portal during camera traversal.
 - Stabilized close-range oblique portal-camera planes to prevent degenerate-frustum errors during camera traversal.
 - Enabled traversal on the recursive playground pair and audited all sample portal links and trigger references.

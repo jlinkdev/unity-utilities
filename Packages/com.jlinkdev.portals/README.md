@@ -15,7 +15,7 @@ Seamless, linked planar portals for the Universal Render Pipeline. The package r
 3. Add `PortalTraveller` to anything that should pass through a portal.
 4. Use a supplied portal-clipped material on traveller visuals when you want clean cross-plane slicing.
 
-The runtime does not depend on any input package. Import **Portal Playground** from Package Manager for a complete scene and a small sample controller.
+The runtime does not depend on any input package. Import **Portal Playground** from Package Manager for a complete scene with 1:1 traversal, bounded recursion, Rigidbody transitions, and a recursive 1:4 tabletop Size Lab.
 
 ## Rendering
 

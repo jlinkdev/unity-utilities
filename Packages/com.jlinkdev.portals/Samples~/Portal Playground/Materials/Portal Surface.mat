@@ -33,6 +33,8 @@ Material:
     - _PortalTerminal: 0
     - _TerminalGlowIntensity: 1.15
     m_Colors:
+    - _BackColor: {r: 0.006, g: 0.01, b: 0.018, a: 1}
+    - _BackGlowColor: {r: 0.015, g: 0.22, b: 0.3, a: 1}
     - _EdgeColor: {r: 0.079999976, g: 0.75, b: 1, a: 1}
     - _TerminalColor: {r: 0.005, g: 0.018, b: 0.045, a: 1}
     - _TerminalGlowColor: {r: 0.04, g: 0.8, b: 1.6, a: 1}

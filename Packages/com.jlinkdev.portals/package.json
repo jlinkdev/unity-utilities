@@ -14,7 +14,7 @@
   "samples": [
     {
       "displayName": "Portal Playground",
-      "description": "A ready-to-run scene demonstrating linked views, bounded recursion, Rigidbody and CharacterController traversal, and clipping.",
+      "description": "A ready-to-run scene demonstrating linked views, bounded recursion, Rigidbody and CharacterController traversal, clipping, and recursive uniform scaling.",
       "path": "Samples~/Portal Playground"
     }
   ]
