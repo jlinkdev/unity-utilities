@@ -13,6 +13,7 @@ all embedded packages together.
 | Forcefields | `com.jlinkdev.forcefields` | Professional URP visual forcefields and impact ripples |
 | Portals | `com.jlinkdev.portals` | Initial package implementation |
 | World Scanning | `com.jlinkdev.world-scanning` | Focused Unity 6 URP scan pulse package |
+| Volumetric Rain | `com.jlinkdev.volumetric-rain` | Particleless Unity 6 URP rain, haze, and wet/dry box volumes |
 | Beams | `com.jlinkdev.beams` | `1.0.0-pre.1` release candidate beam construction kit |
 
 ## Install from Git
@@ -54,6 +55,12 @@ Beams:
 
 ```text
 https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.beams
+```
+
+Volumetric Rain:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.volumetric-rain
 ```
 
 Pin a tag or commit by appending `#<revision>` to the URL.

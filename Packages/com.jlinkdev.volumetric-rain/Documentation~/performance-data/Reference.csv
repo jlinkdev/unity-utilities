@@ -1,0 +1,7 @@
+variant,scenario,gpu_samples,gpu_median_ms,gpu_p95_ms,synchronized_render_median_ms
+Reference,default,300,10.9773,11.4870,13.6028
+Reference,no_noise,300,5.5721,6.4049,8.2377
+Reference,large_cells,300,5.5793,6.4146,8.3133
+Reference,sparse,300,4.8435,5.6625,7.4400
+Reference,no_haze,300,11.1480,11.6357,13.7208
+Reference,off,0,NaN,NaN,2.0714

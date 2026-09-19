@@ -1,0 +1,7 @@
+{
+ "name": "jlinkdev.VolumetricRain.Benchmarks",
+ "references": ["jlinkdev.VolumetricRain", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+ "includePlatforms": ["Editor"],
+ "optionalUnityReferences": ["TestAssemblies"],
+ "autoReferenced": false
+}

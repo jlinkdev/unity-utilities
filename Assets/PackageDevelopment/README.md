@@ -14,3 +14,22 @@ The editable Portal Playground source lives at
 The builder regenerates the scene and prefab, configures this host project for
 URP, and publishes an identical copy to
 `Packages/com.jlinkdev.portals/Samples~/Portal Playground` for UPM import.
+
+## Volumetric Rain sample workflow
+
+The saved Rain Laboratory source lives at
+`Assets/PackageDevelopment/VolumetricRain/SampleAuthoring/Rain Laboratory`.
+Its standalone UPM sample is in
+`Packages/com.jlinkdev.volumetric-rain/Samples~/Rain Laboratory`.
+The package's Tools menu can generate a fresh laboratory without replacing existing assets.
+The development-only `RainBuildValidation.Build` method produces a Windows smoke
+player under `Logs/VolumetricRain/Player` and restores pipeline settings afterward.
+
+The new `Volume Laboratory` folder alongside Rain Laboratory demonstrates a bounded
+rain box and a dry canopy. Both samples are distributed independently through UPM.
+Use **Tools > jlinkdev > Volumetric Rain > Create Volume Laboratory** to generate
+another copy without changing the original laboratory.
+
+`VolumetricRain/Benchmark` contains the development-only GPU benchmark and original
+reference shader. Run it in an isolated project: it opens an empty scene. See the
+package's `Documentation~/performance.md` for measurements and reproduction.

@@ -1,0 +1,10 @@
+variant,scenario,gpu_samples,gpu_median_ms,gpu_p95_ms,synchronized_render_median_ms
+Final,default,300,5.7738,6.6335,8.4900
+Final,no_noise,300,5.4303,6.2431,8.0541
+Final,large_cells,300,3.1181,3.8126,5.6168
+Final,sparse,300,3.2911,4.0228,5.7711
+Final,no_haze,300,5.4561,6.2876,8.0975
+Final,off,0,NaN,NaN,2.0015
+Final,bounded,300,3.7094,4.5504,6.2601
+Final,sheltered,300,4.9027,5.8511,7.5592
+Final,fully_dry,300,0.1400,0.1416,2.3670

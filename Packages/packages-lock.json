@@ -41,6 +41,14 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.volumetric-rain": {
+      "version": "file:com.jlinkdev.volumetric-rain",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.3"
+      }
+    },
     "com.jlinkdev.world-scanning": {
       "version": "file:com.jlinkdev.world-scanning",
       "depth": 0,
