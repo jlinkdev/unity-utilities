@@ -1,0 +1,12 @@
+variant,scenario,gpu_samples,gpu_median_ms,gpu_p95_ms,synchronized_render_median_ms
+Fog030,default,300,5.7505,7.4652,8.8420
+Fog030,no_noise,300,5.3719,7.4237,8.3351
+Fog030,large_cells,300,3.0797,4.4710,5.6557
+Fog030,sparse,300,3.2351,4.6469,5.9444
+Fog030,no_haze,300,5.4136,7.1698,8.5504
+Fog030,off,0,NaN,NaN,2.0412
+Fog030,bounded,300,3.6700,5.4295,6.2607
+Fog030,sheltered,300,4.8486,6.5853,7.4978
+Fog030,fully_dry,300,0.1382,0.1421,2.2355
+Fog030,fog_global,300,0.7608,1.4909,3.1523
+Fog030,fog_bounded,300,0.6313,1.1510,2.9060

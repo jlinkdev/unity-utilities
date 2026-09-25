@@ -1,12 +1,38 @@
 {
   "name": "com.jlinkdev.volumetric-rain",
   "displayName": "jlinkdev Volumetric Rain",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "unity": "6000.0",
-  "description": "Particleless world-space rain: analytic procedural streaks, depth occlusion, and distance haze for Unity 6 URP Render Graph.",
+  "description": "Particleless world-space rain and fog-only volumes with depth occlusion and exclusions for Unity 6 URP Render Graph.",
   "license": "MIT",
-  "author": { "name": "Justin Link" },
-  "keywords": ["rain", "volumetric", "procedural", "urp"],
-  "dependencies": { "com.unity.render-pipelines.universal": "17.0.3" },
-  "samples": [{ "displayName": "Rain Laboratory", "description": "Self-contained greybox evaluation scene, rain profile, and URP renderer/pipeline assets.", "path": "Samples~/Rain Laboratory" }, { "displayName": "Volume Laboratory", "description": "Bounded rain and a dry canopy interior, with rain visible through the open front.", "path": "Samples~/Volume Laboratory" }]
+  "author": {
+    "name": "Justin Link"
+  },
+  "keywords": [
+    "rain",
+    "volumetric",
+    "procedural",
+    "urp",
+    "fog"
+  ],
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.3"
+  },
+  "samples": [
+    {
+      "displayName": "Rain Laboratory",
+      "description": "Self-contained greybox evaluation scene, rain profile, and URP renderer/pipeline assets.",
+      "path": "Samples~/Rain Laboratory"
+    },
+    {
+      "displayName": "Volume Laboratory",
+      "description": "Bounded rain and a dry canopy interior, with rain visible through the open front.",
+      "path": "Samples~/Volume Laboratory"
+    },
+    {
+      "displayName": "Fog Laboratory",
+      "description": "Fog-only volume with a clear canopy interior and its own URP pipeline.",
+      "path": "Samples~/Fog Laboratory"
+    }
+  ]
 }

@@ -104,3 +104,26 @@ For a package installed as a local/Git dependency in another project, add
 and install Unity Test Framework to expose the package tests. The development-only
 player builder lives in this repository's `Assets/PackageDevelopment` and is not
 part of the distributed package.
+
+## 0.3.0 fog modes — 2026-09-25
+
+- **8/8 EditMode tests passed** in the independent Unity 6000.0.58f1 / URP 17.0.3
+  project, including new fog mode GPU assertions: near fog at zero rain density,
+  independence from rain controls, camera intensity, fog color, Max Distance,
+  zero fog density, box silhouettes and overlaps, exclusions and clear interiors,
+  zero streak contribution/traversal, opaque-depth occlusion, perspective and
+  orthographic cameras, unbounded fog, rain-only rendering and runtime mode changes.
+- Built Fog Laboratory as a Windows x64 Development player. All six combinations
+  of rendering mode and volume keyword survived stripping and compiled without
+  shader warnings/errors. The 960x540 demo capture was visually inspected.
+- Fog benchmark measured 300 frames per case after 120 warm-up frames. See
+  [performance](performance.md). All six original comparison PNGs remained
+  byte-identical; existing combined-mode defaults preserve appearance.
+- Artifacts: `Logs/rain-fog-tests.xml`, `Logs/rain-fog-build.log`,
+  `Logs/rain-fog-performance.xml`, `Logs/VolumetricRain/fog-demo.png`.
+- Installed the exported **0.3.0 tarball** into the independent project; UPM reports
+  `source: local-tarball`. **8/8 EditMode and 3/3 PlayMode tests passed** against it.
+- The Fog Laboratory player started on D3D11 without logged rendering errors, then
+  was stopped after the smoke check. This startup check was separate from profiling.
+- Final import results: `Logs/rain-fog-tarball-tests.xml`,
+  `Logs/rain-fog-play-tests.xml`, `Logs/rain-fog-player.log`.

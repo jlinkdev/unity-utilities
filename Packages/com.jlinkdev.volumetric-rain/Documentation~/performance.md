@@ -104,3 +104,23 @@ CSV, hardware metadata, and captures are written to that directory. The reposito
 run artifacts are in `Logs/VolumetricRain/Performance`. Small CSV records and
 capture hashes accompany this document under `performance-data`; images and logs
 are not included in the distributed package.
+
+## Fog-only follow-up — 0.3.0, 2026-09-25
+
+Measured using the same Unity 6000.0.58f1 / URP 17.0.3 / D3D11 / RTX 2060 SUPER
+fixture at 1920×1080, 120 warm-up frames and 300 measured frames per case:
+
+| Mode/domain | GPU median | GPU p95 |
+| --- | ---: | ---: |
+| Default Rain And Fog | 5.75 ms | 7.47 ms |
+| Fog Only, unbounded | 0.76 ms | 1.49 ms |
+| Fog Only, bounded 30×20×40 m box | 0.63 ms | 1.15 ms |
+
+Fog Only uses density 0.8, extinction 0.015, noise strength 0.35 and 12 fog samples.
+It fills near regions too, so these are different rendered effects, not equal-image
+quality comparisons. It compiles out streak traversal. Timings are exploratory
+editor measurements and will vary by GPU, resolution, box coverage and noise cost.
+
+All six original unbounded scenario captures are byte-identical to the recorded
+pre-mode implementation. Data is in `performance-data/Fog030.csv`; captures and
+raw output are under `Logs/VolumetricRain/Performance/Fog030-*`.

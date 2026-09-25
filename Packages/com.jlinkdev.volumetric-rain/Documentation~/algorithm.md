@@ -73,3 +73,12 @@ Rain and exclusion boxes clip the integration domain analytically before DDA.
 See [volume implementation](volumes.md) for interval union/subtraction, per-grid
 budget sharing, haze sampling, and limits. See [performance results](performance.md)
 for controlled before/after captures and GPU timings.
+## Rain and fog variants (0.3.0)
+
+A local multi-compile selects combined rendering, Rain Only, or Fog Only, separately
+from the bounded-volume variant. Fog Only excludes the RainTraverse function and
+its call sites, pixel footprint derivatives, and rain-space budget calculation.
+It integrates each clipped interval from its entry point with no Mid/Far weighting.
+Rain Only excludes fog quadrature. Independent fog radiance/density uniforms are
+snapshotted per camera, with legacy values selected for unchanged combined profiles.
+The Fog Only integration limit is Max Distance alone, independent of rain ranges.

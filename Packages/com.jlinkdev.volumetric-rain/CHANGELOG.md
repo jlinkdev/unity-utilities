@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 — 2026-09-25
+
+- Add Rain And Fog, Rain Only, and Fog Only profile modes. Fog Only compiles out streak traversal and integrates the full visible volume from the near plane; Rain Only compiles out fog integration.
+- Add independent fog density, color, brightness and scattering. Existing combined profiles retain rain-linked haze by default; Independent Fog Settings opts into separate appearance controls.
+- Make Fog Only independent of rain density, geometry, motion, transition distances and cell budget, including pass eligibility and Max Distance.
+- Adapt the profile inspector to each mode and add Fog Laboratory, mode-switching/depth/exclusion render regressions, documentation and fog benchmark cases.
+
 ## 0.2.1 — 2026-09-19
 
 - Distance fields commit on Enter/focus loss and no longer silently rewrite other distance fields during inspector validation. Invalid ordering and insufficient traversal budgets are explained in the profile inspector; rendering still applies safe limits without modifying the asset.

@@ -32,7 +32,7 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
             var rain = cameraData.camera.GetComponent<VolumetricRainCamera>();
             var profile = cameraData.isSceneViewCamera ? sceneViewProfile :
                 (rain != null && rain.isActiveAndEnabled ? rain.profile : null);
-            if (profile == null || profile.density <= 0 || (!cameraData.isSceneViewCamera && rain.intensity <= 0)) return;
+            if (profile == null || (!profile.HasRain && !profile.HasFog) || (!cameraData.isSceneViewCamera && rain.intensity <= 0)) return;
             renderer.EnqueuePass(pass);
         }
 
@@ -104,7 +104,8 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
                 public Vector4 field, distances, appearance, noise, offset, offsetCells, right, up, forward, color;
                 public int steps, hazeSteps, debug, seed;
                 public readonly PassVolumeData volumes = new PassVolumeData();
-                public bool bounded, useVolumes;
+                public bool bounded, useVolumes, fogOnly, rainOnly;
+                public Vector4 fogColor, fogAppearance;
             }
 
             public RainPass(Material material, RainRendererFeature owner)
@@ -139,6 +140,14 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
                 var destination = graph.CreateTexture(desc);
                 using (var builder = graph.AddRasterRenderPass<PassData>("Volumetric Rain", out var data))
                 {
+                    data.fogOnly = p.renderMode == RainRenderMode.FogOnly;
+                    data.rainOnly = p.renderMode == RainRenderMode.RainOnly;
+                    float intensity = camera.isSceneViewCamera ? 1 : Mathf.Clamp01(rain.intensity);
+                    bool separateFog = p.UsesIndependentFog;
+                    data.fogColor = separateFog ? p.fogColor : p.rainColor;
+                    data.fogAppearance = new Vector4(Mathf.Max(0, separateFog ? p.fogBrightness : p.brightness),
+                        Mathf.Max(0, p.hazeExtinction), Mathf.Max(0, separateFog ? p.fogScattering : p.scattering),
+                        (separateFog ? Mathf.Max(0, p.fogDensity) : Mathf.Clamp01(p.density)) * intensity);
                     data.bounded = bounded;
                     data.volumes.rainCount = volumeScratch.rainCount;
                     data.volumes.dryCount = volumeScratch.dryCount;
@@ -165,7 +174,7 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
                     float near = Mathf.Max(0, p.nearFade);
                     float mid = Mathf.Max(near + 0.1f, p.midDistance);
                     float far = Mathf.Max(mid + 0.1f, p.farDistance);
-                    data.distances = new Vector4(near, mid, far, Mathf.Max(far, p.maxDistance));
+                    data.distances = new Vector4(near, mid, far, data.fogOnly ? Mathf.Max(1, p.maxDistance) : Mathf.Max(far, p.maxDistance));
                     data.appearance = new Vector4(Mathf.Max(0, p.brightness), Mathf.Max(0, p.streakOpacity),
                         Mathf.Max(0, p.hazeExtinction), Mathf.Max(0, p.scattering));
                     data.noise = new Vector4(Mathf.Max(0.001f, p.noiseScale), Mathf.Clamp01(p.noiseStrength), 0, 0);
@@ -183,6 +192,9 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
                         // Set parameters at execution time: each camera gets its recorded snapshot.
                         var m = d.material;
                         CoreUtils.SetKeyword(m, "_RAIN_VOLUMES", d.useVolumes);
+                        CoreUtils.SetKeyword(m, "_FOG_ONLY", d.fogOnly);
+                        CoreUtils.SetKeyword(m, "_RAIN_ONLY", d.rainOnly);
+                        m.SetVector("_FogColor", d.fogColor); m.SetVector("_FogAppearance", d.fogAppearance);
                         m.SetInt("_RainBounded", d.bounded ? 1 : 0);
                         m.SetInt("_RainBoxCount", d.volumes.rainCount);
                         m.SetInt("_RainDryBoxCount", d.volumes.dryCount);

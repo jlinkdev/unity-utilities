@@ -47,19 +47,31 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
         [MenuItem("Tools/jlinkdev/Volumetric Rain/Create Volume Laboratory")]
         public static void CreateVolumeLaboratory() => CreateLaboratory(true);
 
-        private static void CreateLaboratory(bool withVolumes)
+        [MenuItem("Tools/jlinkdev/Volumetric Rain/Create Fog Laboratory")]
+        public static void CreateFogLaboratory() => CreateLaboratory(true, true);
+
+        private static void CreateLaboratory(bool withVolumes, bool fogOnly = false)
         {
             // Follow the standard editor save flow before opening a new scene.
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             const string root = "Assets/VolumetricRain";
             if (!AssetDatabase.IsValidFolder(root)) AssetDatabase.CreateFolder("Assets", "VolumetricRain");
-            string title = withVolumes ? "Volume Laboratory" : "Rain Laboratory";
+            string title = fogOnly ? "Fog Laboratory" : withVolumes ? "Volume Laboratory" : "Rain Laboratory";
             string folder = AssetDatabase.GenerateUniqueAssetPath(root + "/" + title);
             AssetDatabase.CreateFolder(root, System.IO.Path.GetFileName(folder));
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             SceneManager.SetActiveScene(scene);
 
             var profile = ScriptableObject.CreateInstance<RainProfile>();
+            if (fogOnly)
+            {
+                profile.renderMode = RainRenderMode.FogOnly;
+                profile.fogDensity = 1;
+                profile.hazeExtinction = .07f;
+                profile.fogColor = new Color(.55f,.68f,.8f);
+                profile.fogBrightness = 1;
+                profile.fogScattering = .8f;
+            }
             AssetDatabase.CreateAsset(profile, folder + "/Rain Profile.asset");
             var renderer = ScriptableObject.CreateInstance<UniversalRendererData>();
             AssetDatabase.CreateAsset(renderer, folder + "/Rain Renderer.asset");
@@ -67,7 +79,7 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
             feature.sceneViewProfile = profile;
             EditorUtility.SetDirty(feature);
             var pipeline = UniversalRenderPipelineAsset.Create(renderer);
-            pipeline.name = "Rain Laboratory Pipeline";
+            pipeline.name = title + " Pipeline";
             pipeline.supportsCameraDepthTexture = true;
             pipeline.msaaSampleCount = 1;
             AssetDatabase.CreateAsset(pipeline, folder + "/Rain Pipeline.asset");
@@ -95,15 +107,15 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
             MakeBox("Far wall", new Vector3(0, 5, 55), new Vector3(32, 10, 1), material);
             for (int i = 0; i < 8; i++)
                 MakeBox("Depth marker " + i, new Vector3(-7, 1.5f, i * 6), new Vector3(0.6f, 3, 0.6f), material);
-                        if (withVolumes)
+            if (withVolumes)
             {
                 profile.extent = RainExtent.VolumesOnly;
                 EditorUtility.SetDirty(profile);
-                var wet = new GameObject("Rain Volume - move or resize this box").AddComponent<RainVolume>();
+                var wet = new GameObject(fogOnly ? "Fog Volume - move or resize this box" : "Rain Volume - move or resize this box").AddComponent<RainVolume>();
                 wet.transform.position = new Vector3(0, 12, 25);
                 wet.size = new Vector3(50, 30, 90);
                 // The camera starts under a canopy. Rain remains visible beyond its open front.
-                var dry = new GameObject("Dry Volume - canopy interior").AddComponent<RainExclusionVolume>();
+                var dry = new GameObject(fogOnly ? "Fog Exclusion - canopy interior" : "Dry Volume - canopy interior").AddComponent<RainExclusionVolume>();
                 dry.transform.position = new Vector3(0, 2.5f, -9);
                 dry.size = new Vector3(10, 5, 10);
                 MakeBox("Canopy roof", new Vector3(0, 5.2f, -9), new Vector3(10.4f, .4f, 10.4f), material);
@@ -114,7 +126,7 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
             EditorSceneManager.SaveScene(scene, folder + "/" + title + ".unity");
             AssetDatabase.SaveAssets();
             Selection.activeObject = pipeline;
-            Debug.Log("Rain Laboratory created at " + folder + ". Press Play to activate its pipeline automatically. Previous pipeline settings are restored when the demo stops.");
+            Debug.Log(title + " created at " + folder + ". Press Play to activate its pipeline automatically. Previous pipeline settings are restored when the demo stops.");
         }
 
         private static void MakeBox(string name, Vector3 position, Vector3 scale, Material material)

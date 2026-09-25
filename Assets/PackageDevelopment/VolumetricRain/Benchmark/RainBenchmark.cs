@@ -76,10 +76,11 @@ public class RainBenchmark
             GraphicsSettings.defaultRenderPipeline=pipeline; QualitySettings.renderPipeline=pipeline;
             yield return null; yield return null;
             var scenarios = new List<string> { "default", "no_noise", "large_cells", "sparse", "no_haze", "off" };
-            if (variant != "Reference") scenarios.AddRange(new[] { "bounded", "sheltered", "fully_dry" });
+            if (variant != "Reference") scenarios.AddRange(new[] { "bounded", "sheltered", "fully_dry", "fog_global", "fog_bounded" });
             foreach (string scenario in scenarios)
             {
-                                wetBox.enabled = scenario == "bounded";
+                                profile.renderMode = scenario.StartsWith("fog_") ? RainRenderMode.FogOnly : RainRenderMode.RainAndFog;
+                wetBox.enabled = scenario == "bounded" || scenario == "fog_bounded";
                 profile.extent = wetBox.enabled ? RainExtent.VolumesOnly : RainExtent.Unbounded;
                 dryBox.enabled = scenario == "sheltered" || scenario == "fully_dry";
                 dryBox.size = scenario == "fully_dry" ? Vector3.one * 300 : new Vector3(10, 6, 10);

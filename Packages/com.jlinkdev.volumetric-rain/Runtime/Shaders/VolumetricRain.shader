@@ -12,11 +12,14 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma multi_compile_local _ _RAIN_VOLUMES
+            #pragma multi_compile_local _ _RAIN_ONLY _FOG_ONLY
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "RainField.hlsl"
             #include "RainVolumes.hlsl"
+
+            float4 _FogColor, _FogAppearance;
 
             half4 Frag(Varyings input) : SV_Target
             {
@@ -35,9 +38,11 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                 float3 scene = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
                 float3 ray = normalize(farPoint - origin);
                 float end = min(_RainDistances.w, max(0, dot(scene - origin, ray)));
+                #if !defined(_FOG_ONLY)
                 // Derivatives are evaluated before divergent traversal, including orthographic origins.
                 float footprintOrigin = max(length(ddx(origin)), length(ddy(origin))) * 0.5;
                 float footprintSlope = max(length(ddx(ray)), length(ddy(ray))) * 0.5;
+                #endif
                 #if defined(_RAIN_VOLUMES)
                     float2 wetIntervals[RAIN_MAX_INTERVALS];
                     int wetCount = RainWetIntervals(origin, ray, end, wetIntervals);
@@ -46,6 +51,8 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                 #else
                     float reservedVisits = 6.0;
                 #endif
+                float cost = 0, streaks = 0;
+                #if !defined(_FOG_ONLY)
                 float3 localOrigin = RainToLocal(origin);
                 float3 localRay = RainToLocal(ray);
                 float3 cellSize = _RainField.x * float3(1, 3, 1);
@@ -53,11 +60,11 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                 // Reserve six visits for boundary ties; fade before the cap can truncate streaks.
                 float budgetRange = max(1.0, _RainSteps - reservedVisits) / max(dot(abs(localRay), rcp(cellSize)), 0.0001);
                 float streakEnd = min(_RainDistances.z, budgetRange);
-                                // Honor the authored mid distance when the full range fits the budget.
+                // Honor the authored mid distance when the full range fits the budget.
                 // If the budget shortens the range, preserve the authored transition proportions.
                 float mid = _RainDistances.y * (streakEnd / _RainDistances.z);
-                float cost = 0;
-                float streaks = 0;
+
+
                 [unroll] for (int layer = 0; layer < 2; layer++)
                 {
                     int remaining = _RainSteps;
@@ -71,13 +78,18 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                     #endif
                 }
 
+                #else
+                    float mid = 0, streakEnd = 0;
+                #endif
+
                 // Only broad density is quadrature-sampled. Individual streaks are analytic.
                 float haze = 0;
+                #if !defined(_RAIN_ONLY)
                 #if defined(_RAIN_VOLUMES)
                     float totalWetLength = 0;
                     [loop] for(int a=0;a<wetCount;a++)
                         totalWetLength += max(0,wetIntervals[a].y - max(mid,wetIntervals[a].x));
-                    [branch] if (_RainAppearance.z > 0 && totalWetLength > 0)
+                    [branch] if (_FogAppearance.y > 0 && totalWetLength > 0)
                     [loop] for(int b=0;b<wetCount;b++)
                     {
                         float start = max(mid,wetIntervals[b].x), stop = wetIntervals[b].y;
@@ -88,23 +100,30 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                         [loop] for(int k=0;k<samples;k++)
                         {
                             float t=start+(k+0.5)*dt;
-                            float transition=smoothstep(mid,max(mid+0.001,streakEnd),t);
+                            float transition = 1;
+                            #if !defined(_FOG_ONLY)
+                                transition=smoothstep(mid,max(mid+0.001,streakEnd),t);
+                            #endif
                             haze += RainDensity(origin+ray*t)*transition*dt;
                         }
                     }
                 #else
                     // Preserve the original sample positions in the unbounded quality path.
                     float dt = end / _RainHazeSteps;
-                    [branch] if (_RainAppearance.z > 0 && end > mid)
+                    [branch] if (_FogAppearance.y > 0 && end > mid)
                     [loop] for (int k = 0; k < _RainHazeSteps; k++)
                     {
                         float t = (k + 0.5) * dt;
-                        float transition = smoothstep(mid, max(mid + 0.001, streakEnd), t);
+                        float transition = 1;
+                        #if !defined(_FOG_ONLY)
+                            transition = smoothstep(mid, max(mid + 0.001, streakEnd), t);
+                        #endif
                         [branch] if (transition > 0)
                             haze += RainDensity(origin + ray * t) * transition * dt;
                     }
                 #endif
-                float hazeTau = haze * _RainField.w * _RainAppearance.z;
+                #endif
+                float hazeTau = haze * _FogAppearance.w * _FogAppearance.y;
                 float hazeTransmission = exp(-hazeTau);
                 float streakAlpha = 1 - exp(-streaks * _RainAppearance.y);
                 if (_RainDebug == 1) return half4(streakAlpha.xxx, 1);
@@ -115,7 +134,8 @@ Shader "Hidden/jlinkdev/Volumetric Rain"
                     return half4(work, work * work, 1 - work, 1);
                 }
                 float3 rainLight = _RainColor.rgb * _RainAppearance.x;
-                float3 result = source.rgb * hazeTransmission + rainLight * _RainAppearance.w * (1 - hazeTransmission);
+                float3 fogLight = _FogColor.rgb * _FogAppearance.x;
+                float3 result = source.rgb * hazeTransmission + fogLight * _FogAppearance.z * (1 - hazeTransmission);
                 result = result * (1 - streakAlpha) + rainLight * streakAlpha;
                 return half4(result, source.a);
             }

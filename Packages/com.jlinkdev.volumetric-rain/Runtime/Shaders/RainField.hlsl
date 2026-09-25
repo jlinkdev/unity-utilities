@@ -31,6 +31,7 @@ float RainDensity(float3 world)
     return lerp(1, smoothstep(0.2, 0.8, lerp(lerp(a,b,f.y), lerp(c,d,f.y), f.z)), _RainNoise.y);
 }
 
+#if !defined(_FOG_ONLY)
 float RainTraverse(float3 ro, float3 rd, float3 worldOrigin, float3 worldRay, float sceneEnd,
     float mid, float far, float footprintOrigin, float footprintSlope, int layer, float begin, inout int remaining, inout float cost)
 {
@@ -98,4 +99,5 @@ float RainTraverse(float3 ro, float3 rd, float3 worldOrigin, float3 worldRay, fl
     }
     return sum;
 }
+#endif // !_FOG_ONLY
 #endif

@@ -6,19 +6,40 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
     [CustomEditor(typeof(RainProfile)), CanEditMultipleObjects]
     public sealed class RainProfileEditor : UnityEditor.Editor
     {
+        private static readonly System.Collections.Generic.HashSet<string> RainFields = new System.Collections.Generic.HashSet<string>
+        { "density", "cellSize", "streakLength", "streakWidth", "fallSpeed", "direction", "wind", "nearFade", "midDistance", "farDistance", "maxCellSteps", "rainColor", "brightness", "streakOpacity", "scattering" };
+        private static readonly System.Collections.Generic.HashSet<string> FogFields = new System.Collections.Generic.HashSet<string>
+        { "hazeExtinction", "hazeSteps", "scattering", "independentFogSettings", "fogDensity", "fogColor", "fogBrightness", "fogScattering" };
+        private static readonly System.Collections.Generic.HashSet<string> IndependentFogFields = new System.Collections.Generic.HashSet<string>
+        { "fogDensity", "fogColor", "fogBrightness", "fogScattering" };
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            var modeProperty = serializedObject.FindProperty("renderMode");
+            bool mixedMode = modeProperty.hasMultipleDifferentValues;
+            var mode = (RainRenderMode)modeProperty.enumValueIndex;
+            bool fogOnly = !mixedMode && mode == RainRenderMode.FogOnly;
+            bool rainOnly = !mixedMode && mode == RainRenderMode.RainOnly;
+            var separateProperty = serializedObject.FindProperty("independentFogSettings");
+            bool separateFog = mixedMode || fogOnly || separateProperty.hasMultipleDifferentValues || separateProperty.boolValue;
             var property = serializedObject.GetIterator();
             bool children = true;
             while (property.NextVisible(children))
             {
                 children = false;
+                if (fogOnly && RainFields.Contains(property.name)) continue;
+                if (rainOnly && FogFields.Contains(property.name)) continue;
+                if (!separateFog && IndependentFogFields.Contains(property.name)) continue;
+                if (fogOnly && property.name == "independentFogSettings") continue;
+                if (separateFog && property.name == "scattering") continue;
+                if (fogOnly && property.name == "fogDensity")
+                    EditorGUILayout.LabelField("Fog appearance", EditorStyles.boldLabel);
                 bool distance = property.name == "nearFade" || property.name == "midDistance" ||
                     property.name == "farDistance" || property.name == "maxDistance";
                 if (distance)
                 {
-                    if (property.name == "nearFade")
+                    if (property.name == "nearFade" || (fogOnly && property.name == "maxDistance"))
                         EditorGUILayout.LabelField("Distance and integration", EditorStyles.boldLabel);
                     var rect = EditorGUILayout.GetControlRect();
                     EditorGUI.BeginProperty(rect, GUIContent.none, property);
@@ -32,11 +53,19 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
                 else
                 {
                     using (new EditorGUI.DisabledScope(property.name == "m_Script"))
-                        EditorGUILayout.PropertyField(property,true);
+                        EditorGUILayout.PropertyField(property,
+                            property.name == "hazeExtinction" ? new GUIContent("Fog Extinction", "Extinction per metre, multiplied by fog density.") :
+                            property.name == "hazeSteps" ? new GUIContent("Fog Samples", "Density integration samples per pixel; volume fragments can add samples.") :
+                            new GUIContent(property.displayName,property.tooltip),true);
                 }
             }
             serializedObject.ApplyModifiedProperties();
             EditorGUILayout.HelpBox("Distances are measured from the viewing camera. Press Enter or leave a distance field to commit it. Editing one distance does not change the others.",MessageType.Info);
+            if (fogOnly)
+            {
+                EditorGUILayout.HelpBox("Fog Only fills the volume from the camera near plane up to Max Distance. Fog appearance is independent of the rain controls. Rain Volume and Rain Exclusion Volume components define its bounds.",MessageType.Info);
+                return;
+            }
             if (targets.Length != 1) return;
             var profile = (RainProfile)target;
             float mid = Mathf.Max(profile.nearFade + .1f,profile.midDistance);

@@ -12,8 +12,8 @@ namespace jlinkdev.UnityUtilities.VolumetricRain.Editor
         {
             DrawDefaultInspector();
             EditorGUILayout.HelpBox(target is RainVolume
-                ? "Set the camera's Rain Profile > Extent to Volumes Only. Overlapping rain boxes share one world-space field."
-                : "Removes both rain streaks and rain haze. Works with unbounded rain and bounded rain volumes.", MessageType.Info);
+                ? "Set the camera's Rain Profile > Extent to Volumes Only. Boxes contain rain, fog, or both according to the profile mode. Overlapping boxes share one field."
+                : "Removes rain and fog in every rendering mode. Works with unbounded rain and bounded rain volumes.", MessageType.Info);
         }
         private void OnSceneGUI()
         {

@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace jlinkdev.UnityUtilities.VolumetricRain
 {
+    public enum RainRenderMode { RainAndFog, RainOnly, FogOnly }
+
     public enum RainExtent { Unbounded, VolumesOnly }
 
     public enum RainDebugView { Composite, Streaks, Haze, TraversalCost }
@@ -9,6 +11,8 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
     [CreateAssetMenu(menuName = "jlinkdev/Volumetric Rain/Profile", fileName = "Rain Profile")]
     public sealed class RainProfile : ScriptableObject
     {
+        public RainRenderMode renderMode;
+
         [Tooltip("Volumes Only renders the union of enabled Rain Volume boxes. Exclusion boxes apply in either mode.")]
         public RainExtent extent;
 
@@ -43,6 +47,20 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
         [Min(0)] public float hazeExtinction = 0.015f;
         [Min(0)] public float scattering = 0.65f;
 
+        [Header("Independent fog appearance")]
+        [Tooltip("In Rain And Fog mode, use separate fog controls instead of the original rain-linked haze. Fog Only always uses these controls.")]
+        public bool independentFogSettings;
+        [Min(0), Tooltip("Fog density multiplier; independent of streak occupancy.")]
+        public float fogDensity = 0.8f;
+        [ColorUsage(false, true)] public Color fogColor = new Color(0.65f, 0.75f, 0.85f, 1);
+        [Min(0)] public float fogBrightness = 1.5f;
+        [Min(0)] public float fogScattering = 0.65f;
+
+        public bool UsesIndependentFog => renderMode == RainRenderMode.FogOnly || independentFogSettings;
+        public bool HasRain => renderMode != RainRenderMode.FogOnly && density > 0 && streakOpacity > 0;
+        public bool HasFog => renderMode != RainRenderMode.RainOnly && hazeExtinction > 0 &&
+            (UsesIndependentFog ? fogDensity > 0 : density > 0);
+
         public Vector3 Velocity => (direction.sqrMagnitude > 0.000001f ? direction.normalized : Vector3.down) * fallSpeed + wind;
 
         private void ClampValues()
@@ -65,12 +83,16 @@ namespace jlinkdev.UnityUtilities.VolumetricRain
             streakOpacity = Mathf.Max(0, streakOpacity);
             hazeExtinction = Mathf.Max(0, hazeExtinction);
             scattering = Mathf.Max(0, scattering);
+            fogDensity = Mathf.Max(0, fogDensity);
+            fogBrightness = Mathf.Max(0, fogBrightness);
+            fogScattering = Mathf.Max(0, fogScattering);
         }
 
         /// <summary>Explicitly normalize programmatic settings, including distance ordering.</summary>
         public void Sanitize()
         {
             ClampValues();
+            if (renderMode == RainRenderMode.FogOnly) return;
             midDistance = Mathf.Max(nearFade + 0.1f, midDistance);
             farDistance = Mathf.Max(midDistance + 0.1f, farDistance);
             maxDistance = Mathf.Max(farDistance, maxDistance);

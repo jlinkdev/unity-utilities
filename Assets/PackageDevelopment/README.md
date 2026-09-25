@@ -33,3 +33,6 @@ another copy without changing the original laboratory.
 `VolumetricRain/Benchmark` contains the development-only GPU benchmark and original
 reference shader. Run it in an isolated project: it opens an empty scene. See the
 package's `Documentation~/performance.md` for measurements and reproduction.
+`VolumetricRain/SampleAuthoring/Fog Laboratory` demonstrates Fog Only with the same
+inclusion/exclusion boxes. The package's **Create Fog Laboratory** menu generates a
+separate scene and assets, leaving existing rain laboratories intact.

@@ -1,4 +1,4 @@
-# Rain volumes and dry interiors
+# Rain/fog volumes and clear interiors
 
 The renderer still uses a fullscreen pass, but its integration domain can now be
 bounded in world space. The fullscreen triangle is only how rays are dispatched;
@@ -57,7 +57,9 @@ are conservatively reserved per additional interval when calculating the smooth
 distance fade. Fragmenting the view heavily can therefore shorten the effective
 streak range at small budgets; it cannot create unlimited traversal work.
 
-Haze integrates each wet interval after the near/mid transition. Samples are
+In Rain And Fog mode, haze integrates each wet interval after the near/mid transition.
+Fog Only integrates the whole interval independently of rain distances; Rain Only
+omits integration. See [fog modes](fog.md). Samples are
 allocated by wet length, with at least one per contributing interval. This keeps
 thin rain regions from disappearing between samples. The actual count can be up
 to Haze Steps + 11. Haze sample positions differ from unbounded integration because
