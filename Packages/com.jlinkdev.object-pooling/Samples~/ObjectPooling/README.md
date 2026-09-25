@@ -1,11 +1,16 @@
 # Object Pooling Sample
 
+## Run the included scene
+
+Open `Scenes/Object Pooling Demo.unity` in this imported sample and press Play.
+Use the on-screen overlay; no scene construction is required.
+
 This sample demonstrates two object pooling setup styles:
 
 - `GameObjectPoolHandle`: one scene component configured with one prefab, capacity, and inactive parent.
 - `GameObjectPoolRegistry`: one scene component configured with one or more `GameObjectPoolDefinitionSet` assets, then used by passing prefab references to `Spawn`.
 
-## Scene Setup
+## Optional: rebuild or customize the scene
 
 1. Create three simple prefabs, for example a cube, sphere, and capsule. Add `PooledDemoObject` to each prefab, or let `ObjectPoolingDemoController` add it at runtime.
 2. Add scene objects named `Pool Handle`, `Pool Registry`, `Inactive Pooled Objects`, `Active Pooled Objects`, `Spawn Center`, `Demo Controller`, and `Demo Overlay`.

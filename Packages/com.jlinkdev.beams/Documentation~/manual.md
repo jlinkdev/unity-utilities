@@ -78,3 +78,19 @@ healing, pulling, highlighting, resource transfer, or something else.
 Beam time can be scaled, unscaled, or manual. Manual time makes deterministic
 previews, replays, and network-controlled presentations possible. `BeamPulseDriver`
 animates the standard single-pulse shader property and reports pulse completion.
+
+
+## Included features
+
+- Transform, ray/sphere-cast, and smoothed endpoint providers with surface metadata
+- Straight and cubic Bezier paths
+- Ordered resampling, sag, structural noise, branching, and electrical modifiers
+- Strand-based path data for primary, reflected-style custom, chained, and branching extensions
+- Neutral ray/sphere contact enter, stay, exit, tick, and polling APIs
+- Procedural camera-facing ribbon meshes and a Line Renderer compatibility adapter
+- Layered renderer groups, reusable render profiles, endpoint visuals, and shader pulse driving
+- A documented shader vertex-data and material-property contract
+- URP energy-beam shader with vertex displacement, flow, pulses, flicker, core, and halo controls
+- Shader Graph-compatible HLSL functions and native endpoint-mask, flow, pulse, and core/halo subgraphs
+- Four ready-to-assign URP beam materials
+- Editor creation menus, diagnostics, tests, and an importable demo

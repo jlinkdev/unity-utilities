@@ -1,53 +1,54 @@
 # jlinkdev IK
 
-Lightweight inverse-kinematics components under the
+Lightweight limb, chain, aiming, and ground-target IK components in the
 `jlinkdev.UnityUtilities.IK` namespace.
 
-## Included components
+## Requirements
 
-- `TwoBoneIK` solves a root/mid/tip limb with independent position, rotation,
-  and pole weights, safe reach clamping, and optional soft reach.
-- `FABRIKChain` solves a configurable joint chain.
-- `AimIK` rotates a joint chain toward a target.
-- `GroundProbe` positions a target from a physics raycast.
-- `IKTarget`, `PoleHint`, and `RotationLimit` provide supporting scene components.
+- Unity `2022.3` or newer.
+- No render pipeline dependency.
+- Unity Physics module for ground probing (installed as a package dependency).
 
-Solvers run in `LateUpdate` by default and can also be invoked through `Solve()`.
+These are declared requirements, not a test matrix for every editor and platform.
 
-## Animated two-arm integration
+## Installation
 
-Use one `TwoBoneIK` component per arm and assign a disjoint
-upper-arm/forearm/hand hierarchy to each. Target and pole transforms are read in
-world space. A uniformly scaled or world-rotated character hierarchy is
-supported because bone lengths are measured from the evaluated pose.
+In **Window > Package Manager**, choose **Add package from git URL** and paste:
 
-For deterministic Animator layering, disable `SolveInLateUpdate` and call
-`Solve()` manually from a project-owned `LateUpdate` driver after target poses
-have been updated:
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.ik
+```
 
-1. Let the Animator evaluate the base pose.
-2. Update both wrist target transforms and any elbow hints.
-3. Set `PositionWeight`, `RotationWeight`, and `PoleWeight`.
-4. Call `Solve()` once for each arm.
+Append `#<tag-or-commit>` to pin a revision. For a local checkout, use **Add package
+from disk** and select this package's `package.json`.
 
-At zero position and rotation weight, the solver leaves the evaluated Animator
-pose unchanged. `Weight` remains available as a combined backwards-compatible
-control that sets both position and rotation weights.
+## Quick start
 
-`SoftReach` is the fraction of total limb length used to soften the approach to
-full extension. Set it to zero for hard clamping. `IsTargetReachable`,
-`ReachError`, and `HasValidChain` expose runtime diagnostics.
+1. Add `TwoBoneIK` to a GameObject for the limb you want to control.
+2. Assign **Root**, **Mid**, and **Tip** to an upper-arm/forearm/hand hierarchy (or equivalent).
+3. Create a separate target Transform and assign **Target**; optionally assign a **Pole** for bend direction.
+4. Enter Play mode and move the target. Adjust **Position Weight**, **Rotation Weight**, and **Pole Weight**.
 
-The solver expects non-zero bone lengths and a hierarchy in which the forearm is
-a descendant of the upper arm and the hand is a descendant of the forearm.
-End-effector/contact-pose calibration and target smoothing belong to the
-implementing project.
+Solvers run in `LateUpdate` by default. For explicit Animator ordering, disable
+`SolveInLateUpdate` and call `Solve()` after updating targets; see the manual.
 
-## Status
+## Sample
 
-This package is experimental. `TwoBoneIK` has automated coverage for its core
-two-arm use cases, but avatar-specific interactive validation is still required.
-The other solver components may change while their remaining IK issues are
-identified and corrected.
+Import **IK** from the package's **Samples** tab. Open `Scenes/IK Demo.unity`
+and press Play. Use the overlay to choose a solver station and drag its target
+or pole controls. See the [sample guide](Samples~/IK/README.md).
 
-Import the included sample from Package Manager for setup and runtime controls.
+## Limitations
+
+- Experimental. `TwoBoneIK` has automated coverage, but avatar-specific interactive validation remains necessary.
+- Other solver components may change as remaining issues are corrected.
+- Two-bone chains require nonzero bone lengths and the expected ancestor hierarchy.
+- Contact-pose calibration and target smoothing belong to the consuming project.
+
+## Documentation
+
+[Components and animated-rig integration](Documentation~/manual.md) · [Changelog](CHANGELOG.md)
+
+## License
+
+MIT. See [LICENSE.md](LICENSE.md).

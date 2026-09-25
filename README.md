@@ -1,77 +1,63 @@
 # jlinkdev Unity Packages
 
-A Unity development project and monorepo for independently versioned UPM
-packages. Open the repository root directly in Unity to develop and validate
-all embedded packages together.
+Independent Unity Package Manager utilities. Install only the packages your
+project needs; each package includes setup instructions, a license, a changelog,
+and an importable demo.
 
 ## Packages
 
-| Package | Package ID | Status |
+| Package and quick start | Declared requirements | Maturity |
 | --- | --- | --- |
-| IK | `com.jlinkdev.ik` | Experimental; interactive validation remains incomplete |
-| Object Pooling | `com.jlinkdev.object-pooling` | Initial package extraction |
-| Forcefields | `com.jlinkdev.forcefields` | Professional URP visual forcefields and impact ripples |
-| Portals | `com.jlinkdev.portals` | Initial package implementation |
-| World Scanning | `com.jlinkdev.world-scanning` | Focused Unity 6 URP scan pulse package |
-| Volumetric Rain | `com.jlinkdev.volumetric-rain` | Particleless Unity 6 URP rain, haze, and wet/dry box volumes |
-| Beams | `com.jlinkdev.beams` | `1.0.0-pre.1` release candidate beam construction kit |
+| [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3; any pipeline | Experimental; avatar validation remains necessary. |
+| [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3; any pipeline | Initial extraction; no package-specific automated tests yet. |
+| [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
+| [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
+| [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |
+| [Volumetric Rain and Fog](Packages/com.jlinkdev.volumetric-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
+| [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
 
-## Install from Git
+Requirements are declared minimums, not a claim that every newer editor, graphics
+API, or platform has been tested. Each guide describes scope and known limitations.
+Consult the license inside each package; Portals carries a different notice from
+the MIT packages.
 
-Add only the packages a project needs through Package Manager using their
-repository subfolder URLs.
+## Install
 
-IK:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.ik
-```
-
-Object Pooling:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.object-pooling
-```
-
-Forcefields:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.forcefields
-```
-
-Portals:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.portals
-```
-
-World Scanning:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.world-scanning
-```
-
-Beams:
-
-```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.beams
-```
-
-Volumetric Rain:
+In **Window > Package Manager**, choose **Add package from git URL**. Copy the
+package-specific URL from its quick start. For example:
 
 ```text
 https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.volumetric-rain
 ```
 
-Pin a tag or commit by appending `#<revision>` to the URL.
+Append `#<tag-or-commit>` to pin a revision. For a local checkout, choose **Add
+package from disk** and select the desired package's `package.json`.
 
-## Development
+## Try a demo
 
-The host project currently targets Unity `6000.3.21f1`. Each package declares
-its own minimum supported Editor in `package.json`; compatibility at that
-minimum should be covered by a separate validation run before stable releases.
+Select an installed package in Package Manager, expand **Samples**, and import a
+demo. Open the scene described in its sample README under
+`Assets/Samples/<display-name>/<version>/`. Rendering samples require their stated
+pipeline; sample guides explain any additional renderer setup or temporary changes.
 
-Each package owns its manifest, assemblies, documentation, changelog, and
-samples, and should keep its tests within its own package directory. If one
-package begins using another, declare both the UPM package dependency in
-`package.json` and the assembly reference in its `.asmdef`.
+Rain includes **Rain Laboratory**, **Volume Laboratory**, and **Fog Laboratory**.
+Every other package includes one focused demo.
+
+## Develop and validate
+
+Open this repository root in Unity `6000.3.21f1` to work on the embedded packages.
+Package runtime code lives in `Runtime`, editor tooling in `Editor`, detailed docs
+in `Documentation~`, importable demos in `Samples~`, and existing automated tests
+in `Tests`. Host-only fixtures and authoring assets live under
+[Assets/PackageDevelopment](Assets/PackageDevelopment/README.md).
+
+Run the static packaging check from the repository root with Python 3.9 or newer:
+
+```text
+python scripts/validate-packages.py
+```
+
+This checks manifests, guide structure, local documentation links, sample scenes,
+and assembly definitions. It does not compile Unity code or certify compatibility.
+See [contributing and release checks](CONTRIBUTING.md) for development conventions
+and the Unity validation required before publishing a release.

@@ -51,3 +51,15 @@ Set the Custom Function name to `WorldScanEvaluate` for `Band`, `Fill`, `Coverag
 ## Camera stacking
 
 The feature evaluates independently on each eligible camera. In a URP camera stack, normally enable the feature on the base renderer and avoid applying it again on an overlay renderer unless the overlay has independent depth-bearing world content.
+
+
+## Included features
+
+- Up to 16 concurrent world-space pulses with allocation-free runtime updates
+- Spherical and height-limited cylindrical scan shapes
+- Profile assets for range, duration, curves, color, band, trail, grid, edges, noise, and distance fade
+- URP Renderer Feature compositing from camera depth and normals
+- `ScanEmitter`, handle-based scripting API, receiver callbacks, and completion events
+- HLSL helpers for Shader Graph and a ready-to-use reveal Lit shader
+- Timeline track and clip support
+- Scene-view gizmos, setup validation, custom inspectors, EditMode tests, and a focused greybox sample

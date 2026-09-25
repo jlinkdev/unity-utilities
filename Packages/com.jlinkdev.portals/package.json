@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "unity": "2022.3",
   "description": "Seamless paired planar portals for URP, including recursive rendering, physical traversal, clipping, scale mapping, editor tooling, and samples.",
+  "license": "SEE LICENSE IN LICENSE.md",
   "author": {
     "name": "Justin Link"
   },

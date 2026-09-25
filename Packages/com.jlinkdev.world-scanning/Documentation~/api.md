@@ -39,3 +39,22 @@ private void OnScanned(ScanHit hit)
 ## Lifecycle result
 
 `ScanEndedEvent.Reason` is `Completed`, `Cancelled`, or `Replaced`. Use this distinction when scans drive cooldowns, missions, audio, or pooled effects.
+
+
+## Minimal component example
+
+```csharp
+using jlinkdev.UnityUtilities.WorldScanning;
+using UnityEngine;
+
+public sealed class ScannerTool : MonoBehaviour
+{
+    [SerializeField] private ScanProfile profile;
+
+    public void Scan()
+    {
+        ScanHandle handle = ScanSystem.Emit(transform.position, profile);
+        handle.SetIntensity(0.8f);
+    }
+}
+```

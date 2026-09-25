@@ -45,3 +45,20 @@ field.AddImpact(worldPosition, worldNormal, strength, radius);
 Subscribe to `ImpactAdded` to coordinate audio, particles, decals, or camera feedback without making those systems package dependencies.
 
 `ForcefieldCollisionEmitter` is an optional convenience adapter. It filters collision layers, maps relative velocity to visual strength, and forwards up to four contact points.
+
+
+## Design
+
+`Forcefield` writes per-instance state through `MaterialPropertyBlock`, allowing many shields to share the supplied material. Impacts are stored in a fixed ring buffer and evaluated in the shader; no impact objects, coroutines, or material clones are created. Impact positions use the forcefield root's local space, so ripples remain attached while a field moves.
+
+Use **Spherical** propagation for sphere-like shells. Use **Surface Distance** for arbitrary convex closed meshes. Concave meshes can produce visually unexpected propagation because the generic mode measures direct world-space distance rather than mesh geodesics.
+
+## Presets
+
+Six starting presets are included under `Runtime/Presets`: Clean Energy, Hex Defense, Plasma Containment, Stealth Field, Overloaded, and Minimal Mobile. Presets contain only effect configuration and can be applied or blended at runtime.
+
+```csharp
+forcefield.BlendToPreset(overloadedPreset, 0.75f);
+forcefield.Intensity = 0.65f;
+forcefield.ClearImpacts();
+```

@@ -1,8 +1,13 @@
 # IK Sample
 
+## Run the included scene
+
+Open `Scenes/IK Demo.unity` in this imported sample and press Play.
+Use the on-screen overlay; no scene construction is required.
+
 This sample supports a runtime UI similar to the object pooling sample, but uses grid controls to move IK targets and pole hints.
 
-## Scene Setup
+## Optional: rebuild or customize the scene
 
 Create one scene named `IK Demo` with separate station roots for the fixed controller stations:
 

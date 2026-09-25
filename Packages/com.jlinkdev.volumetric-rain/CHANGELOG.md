@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
+
 ## 0.3.0 — 2026-09-25
 
 - Add Rain And Fog, Rain Only, and Fog Only profile modes. Fog Only compiles out streak traversal and integrates the full visible volume from the near plane; Rain Only compiles out fog integration.

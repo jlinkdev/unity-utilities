@@ -1,54 +1,55 @@
 # jlinkdev World Scanning
 
-A focused, production-oriented world scan system for Unity's Universal Render Pipeline. Emit spherical or cylindrical pulses that travel through scene geometry, draw a triplanar world grid and geometry accents, reveal compatible materials, and notify gameplay objects when the scan front reaches them.
+World-space scan pulses for URP, with surface bands, grids, geometry accents,
+material reveal helpers, receiver callbacks, and Timeline integration.
 
 ## Requirements
 
-- Unity 6 (`6000.0` or newer)
-- Universal Render Pipeline 17
-- Render Graph enabled (the Unity 6 URP default)
+- Unity 6 (`6000.0` or newer).
+- URP `17.0.3` or a compatible newer version, with **Render Graph enabled**.
+- Timeline `1.8.7` (declared as a package dependency).
 
-## Features
+These are declared requirements, not a test matrix for every editor and platform.
 
-- Up to 16 concurrent world-space pulses with allocation-free runtime updates
-- Spherical and height-limited cylindrical scan shapes
-- Profile assets for range, duration, curves, color, band, trail, grid, edges, noise, and distance fade
-- URP Renderer Feature compositing from camera depth and normals
-- `ScanEmitter`, handle-based scripting API, receiver callbacks, and completion events
-- HLSL helpers for Shader Graph and a ready-to-use reveal Lit shader
-- Timeline track and clip support
-- Scene-view gizmos, setup validation, custom inspectors, EditMode tests, and a focused greybox sample
+## Installation
+
+In **Window > Package Manager**, choose **Add package from git URL** and paste:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.world-scanning
+```
+
+Append `#<tag-or-commit>` to pin a revision. For a local checkout, use **Add package
+from disk** and select this package's `package.json`.
 
 ## Quick start
 
-1. Add **World Scan Renderer Feature** to the Universal Renderer Data used by your camera. You can do this with **Tools > jlinkdev > World Scanning > Add Renderer Feature**.
+1. Add **World Scan Renderer Feature** to the Universal Renderer Data used by your camera, or use **Tools > jlinkdev > World Scanning > Add Renderer Feature**.
 2. Create a profile with **Assets > Create > jlinkdev > World Scanning > Scan Profile**.
-3. Add a `ScanEmitter` to a GameObject and assign the profile.
-4. Call `Emit()` from gameplay, animation, a UnityEvent, or the component inspector while playing.
+3. Add `ScanEmitter` to a GameObject and assign the profile.
+4. Call `Emit()` from gameplay, a UnityEvent, or the component inspector during Play.
 
-```csharp
-using jlinkdev.UnityUtilities.WorldScanning;
-using UnityEngine;
+For a code-driven scan, see the complete example in the API guide.
 
-public sealed class ScannerTool : MonoBehaviour
-{
-    [SerializeField] private ScanProfile profile;
+## Sample
 
-    public void Scan()
-    {
-        ScanHandle handle = ScanSystem.Emit(transform.position, profile);
-        handle.SetIntensity(0.8f);
-    }
-}
-```
+Import **World Scan Demo** from the package's **Samples** tab. Open
+`Scenes/World Scan Demo.unity` and press Play. Use **Emit Pulse** and **Next Profile**
+to explore spherical and cylindrical scans. Configure the renderer feature first;
+the sample does not change your project's pipeline settings.
+See the [sample guide](<Samples~/World Scan Demo/README.md>).
 
-Import **World Scan Demo** from Package Manager's Samples tab for a complete renderer setup and a professional greybox showcase.
+## Limitations
 
-See [the manual](Documentation~/manual.md), [API guide](Documentation~/api.md), and [performance and troubleshooting guide](Documentation~/performance-and-troubleshooting.md).
+- Initial `0.1.0` release; validate camera stacks, graphics APIs, and target hardware.
+- Up to 16 concurrent pulses; overlapping scans increase per-pixel rendering cost.
+- Render Graph URP only; no Compatibility Mode, Built-in, or HDRP support.
+- No sonar simulation, persistent fog of war, terrain discovery data, or minimap rendering.
 
-## Scope
+## Documentation
 
-This package owns world scan pulses and scan-driven reveal hooks. It intentionally does not include waterline, underwater, sonar simulation, fog-of-war persistence, terrain discovery data, or minimap rendering.
+[Manual](Documentation~/manual.md) · [API](Documentation~/api.md) ·
+[Performance and troubleshooting](Documentation~/performance-and-troubleshooting.md) · [Changelog](CHANGELOG.md)
 
 ## License
 

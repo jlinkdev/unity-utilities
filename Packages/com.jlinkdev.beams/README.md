@@ -1,40 +1,56 @@
 # jlinkdev Beams
 
-A composable, gameplay-neutral beam construction kit for Unity. The package owns
-beam endpoints, strand geometry, presentation, and contact-ready paths; projects
-decide what a beam means.
+A composable beam kit with endpoints, curved and branching paths, animated URP
+materials, and physics contact events. Gameplay behavior stays in your project.
 
-## Features
+## Requirements
 
-- Transform, ray/sphere-cast, and smoothed endpoint providers with surface metadata
-- Straight and cubic Bezier paths
-- Ordered resampling, sag, structural noise, branching, and electrical modifiers
-- Strand-based path data for primary, reflected-style custom, chained, and branching extensions
-- Neutral ray/sphere contact enter, stay, exit, tick, and polling APIs
-- Procedural camera-facing ribbon meshes and a Line Renderer compatibility adapter
-- Layered renderer groups, reusable render profiles, endpoint visuals, and shader pulse driving
-- A documented shader vertex-data and material-property contract
-- URP energy-beam shader with vertex displacement, flow, pulses, flicker, core, and halo controls
-- Shader Graph-compatible HLSL functions and native endpoint-mask, flow, pulse, and core/halo subgraphs
-- Four ready-to-assign URP beam materials
-- Editor creation menus, diagnostics, tests, and an importable demo
+- Unity 6 (`6000.0` or newer).
+- URP `17.0.3` or a compatible newer version; the included materials use URP.
+- Unity Physics module (installed as a package dependency).
+
+These are declared requirements, not a test matrix for every editor and platform.
+
+## Installation
+
+In **Window > Package Manager**, choose **Add package from git URL** and paste:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.beams
+```
+
+Append `#<tag-or-commit>` to pin a revision. For a local checkout, use **Add package
+from disk** and select this package's `package.json`.
 
 ## Quick start
 
-1. Choose **GameObject > jlinkdev > Beams > Continuous Beam**.
-2. Move its `Beam Target` child.
-3. Reorder or add path modifiers on the `Beam` component.
-4. Assign one of the materials under `Runtime/Materials`, or create a custom
-   material using the documented shader contract.
+1. Use an active URP pipeline, then choose **GameObject > jlinkdev > Beams > Continuous Beam**.
+2. Move the generated `Beam Target` child to set the endpoint.
+3. Add or reorder path modifiers on `Beam` to change its shape.
+4. Assign a material from `Runtime/Materials`, or author one using the shader contract.
 
-For code-driven behavior, subscribe to `BeamPhysicsContacts` events or read the
-beam's current `BeamPathBuffer`; the package never assigns gameplay meaning.
+Subscribe to `BeamPhysicsContacts` events when your game needs contact responses.
 
-## Scope
+## Sample
 
-The package reports geometry and contacts but does not implement damage, health,
-forces, resource transfer, teams, or other gameplay concepts.
+Import **Beam Kit Demo** from the package's **Samples** tab. Open
+`Scenes/Beam Kit Demo.unity` in the imported folder and press Play. Targets animate,
+pulses trigger automatically, and the overlay displays contact counts.
+See the [sample guide](<Samples~/Beam Kit Demo/README.md>).
 
-See the [manual](Documentation~/manual.md), [API guide](Documentation~/api.md),
-[architecture notes](Documentation~/architecture.md), [shader contract](Documentation~/shader-contract.md),
-and [performance guide](Documentation~/performance-and-troubleshooting.md).
+## Limitations
+
+- Release candidate (`1.0.0-pre.1`); validate the target project before shipping.
+- Contacts follow CPU paths, not visual shader displacement.
+- Branch count, segment count, and physics query frequency affect cost.
+- Damage, health, forces, teams, and resource transfer are outside the package.
+
+## Documentation
+
+[Manual](Documentation~/manual.md) · [API](Documentation~/api.md) ·
+[Architecture](Documentation~/architecture.md) · [Shader contract](Documentation~/shader-contract.md) ·
+[Performance and troubleshooting](Documentation~/performance-and-troubleshooting.md) · [Changelog](CHANGELOG.md)
+
+## License
+
+MIT. See [LICENSE.md](LICENSE.md).

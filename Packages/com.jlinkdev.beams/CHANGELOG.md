@@ -2,6 +2,11 @@
 
 All notable changes to this package are documented here.
 
+## [Unreleased]
+
+- Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
+- Add the Beam Kit Demo guide and update architecture notes to describe the implemented contact APIs.
+
 ## [1.0.0-pre.1] - 2026-08-11
 
 ### Added

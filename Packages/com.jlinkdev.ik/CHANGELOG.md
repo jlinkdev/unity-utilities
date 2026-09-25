@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+- Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
+- Add manifest license metadata matching the existing package license notice.
+
 ## [0.2.0] - 2026-08-27
 
 - Added independent position, rotation, and pole weights to `TwoBoneIK`.

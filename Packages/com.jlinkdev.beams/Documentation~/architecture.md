@@ -21,6 +21,7 @@ or mesh data every frame.
 
 ## Gameplay neutrality
 
-Future contact APIs will report colliders, positions, normals, strand indices,
-distance along the strand, and contact lifecycle. They will not define damage,
-healing, forces, factions, resources, or receiver semantics.
+`BeamPhysicsContacts` reports colliders, positions, normals, strand and segment
+indices, distance along the strand, and enter/stay/exit/tick events. Callers can
+also poll contacts. These APIs do not define damage, healing, forces, factions,
+resources, or receiver semantics. See the [API guide](api.md) for integration.

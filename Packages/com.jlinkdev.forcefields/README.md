@@ -1,48 +1,59 @@
 # jlinkdev Forcefields
 
-Professional, renderer-focused forcefields for the Universal Render Pipeline. The package combines Fresnel energy, screen-space refraction, depth intersections, procedural patterns, and allocation-free impact ripples without imposing health, damage, or combat rules.
+URP forcefield surfaces with Fresnel glow, refraction, depth intersections,
+reusable presets, and impact ripples. The package supplies visuals without combat rules.
 
 ## Requirements
 
-- Unity 2022.3 or newer
-- Universal Render Pipeline 14 or newer
-- **Opaque Texture** enabled for refraction
-- **Depth Texture** enabled for intersection glow
+- Unity `2022.3` or newer.
+- URP `14.0.11` or a compatible newer version.
+- Enable **Opaque Texture** for refraction and **Depth Texture** for intersection glow.
 
-The effect still renders its surface, Fresnel, pattern, and impacts when either camera texture is unavailable.
+These are declared requirements, not a test matrix for every editor and platform.
+
+## Installation
+
+In **Window > Package Manager**, choose **Add package from git URL** and paste:
+
+```text
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.forcefields
+```
+
+Append `#<tag-or-commit>` to pin a revision. For a local checkout, use **Add package
+from disk** and select this package's `package.json`.
 
 ## Quick start
 
 1. Choose **GameObject > jlinkdev > Forcefields > Create Forcefield Sphere**.
-2. Assign any supplied `ForcefieldPreset`.
-3. Trigger visual hits from your own systems:
+2. Assign a preset from `Runtime/Presets` to its `Forcefield` component.
+3. Add `ForcefieldCollisionEmitter` if physics contacts should create visual hits.
+4. For scripted hits, call `AddImpact` on your `Forcefield` reference:
 
 ```csharp
-using jlinkdev.UnityUtilities.Forcefields;
-
-forcefield.AddImpact(hit.point, hit.normal, strength: 1f, radius: 0.04f);
-```
-
-Add `ForcefieldCollisionEmitter` when ordinary physics contacts should produce visual hits automatically.
-
-## Design
-
-`Forcefield` writes per-instance state through `MaterialPropertyBlock`, allowing many shields to share the supplied material. Impacts are stored in a fixed ring buffer and evaluated in the shader; no impact objects, coroutines, or material clones are created. Impact positions use the forcefield root's local space, so ripples remain attached while a field moves.
-
-Use **Spherical** propagation for sphere-like shells. Use **Surface Distance** for arbitrary convex closed meshes. Concave meshes can produce visually unexpected propagation because the generic mode measures direct world-space distance rather than mesh geodesics.
-
-## Presets
-
-Six production-ready starting points are included under `Runtime/Presets`: Clean Energy, Hex Defense, Plasma Containment, Stealth Field, Overloaded, and Minimal Mobile. Presets contain only effect configuration and can be applied or blended at runtime.
-
-```csharp
-forcefield.BlendToPreset(overloadedPreset, 0.75f);
-forcefield.Intensity = 0.65f;
-forcefield.ClearImpacts();
+// field is a Forcefield; hit is a RaycastHit from your game's targeting code.
+field.AddImpact(hit.point, hit.normal, strength: 1f, radius: 0.04f);
 ```
 
 ## Sample
 
-Import **Forcefield Showcase** from Package Manager. Open the included scene and enter Play mode to explore every preset, click-to-impact interaction, automatic impacts, and a stress-test wall.
+Import **Forcefield Showcase** from the package's **Samples** tab. Open
+`Scenes/Forcefield Showcase.unity` and press Play. Click fields, blend presets,
+or enable the stress wall. The sample uses your active URP pipeline.
+See the [sample guide](<Samples~/Forcefield Showcase/README.md>).
 
-Additional guidance is available under `Documentation~`.
+## Limitations
+
+- Initial `0.1.0` release; profile representative scenes on your target hardware.
+- Screen-space refraction includes opaque geometry, not other transparent surfaces.
+- Missing depth/opaque textures disable their associated features, not the entire effect.
+- Generic ripple propagation measures direct distance, not paths along a concave mesh.
+- Transparent surface overlap can require sorting adjustments.
+
+## Documentation
+
+[Manual and design](Documentation~/Forcefields.md) · [Performance](Documentation~/Performance.md) ·
+[Troubleshooting](Documentation~/Troubleshooting.md) · [Changelog](CHANGELOG.md)
+
+## License
+
+MIT. See [LICENSE.md](LICENSE.md).

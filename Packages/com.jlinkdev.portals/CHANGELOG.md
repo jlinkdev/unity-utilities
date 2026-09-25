@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
+- Add manifest license metadata matching the existing package license notice.
+
 - Expanded the Portal Playground sample with a tabletop Size Lab, recursive 1:4 traversal, scale-aware first-person movement, and a live scale readout.
 - Added a main-camera-only near-plane aperture cap to prevent the source world flashing through the portal during camera traversal.
 - Stabilized close-range oblique portal-camera planes to prevent degenerate-frustum errors during camera traversal.

@@ -2,6 +2,11 @@
 
 All notable changes to this package are documented here.
 
+## [Unreleased]
+
+- Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
+- Add manifest license metadata matching the existing package license notice.
+
 ## [0.1.0] - 2026-08-11
 
 ### Added
