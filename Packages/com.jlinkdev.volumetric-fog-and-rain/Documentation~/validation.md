@@ -166,3 +166,25 @@ Artifacts (local, not distributed in the package):
 These checks use the minimum-version isolated project. They do not extend the
 platform/pipeline coverage listed above, establish arbitrary transparent-layer
 correctness, or measure a performance advantage over particle rain.
+
+
+## 0.4.1 early-pass MSAA fix - 2026-09-25
+
+- Reproduced the 0.4.0 bug with real transparent geometry: 1x passed, while 8x
+  failed with Render Graph's `Mismatch in Fragment dimensions` after fog replaced
+  the color attachment with a single-sample texture.
+- Removed the forced single-sample override. The composite retains the active
+  color descriptor's sample count, including 1x for an already-resolved source.
+- The patched local UPM tarball passes **15/15 EditMode tests** in Unity
+  **6000.0.58f1 / URP 17.0.3 / D3D11 / Linear**, on an RTX 2060 SUPER.
+- New regressions test Before Transparent Capture and Before Transparents at
+  both **1x and 8x MSAA**. A test renderer feature verifies the actual color and
+  depth attachment sample counts before transparent geometry, preventing a
+  silent 1x fallback. Pixel assertions cover glass blended over fog and glass
+  reading the opaque-color capture. Unexpected rendering errors fail the tests.
+- Artifacts: `Logs/fog-msaa-before2.xml`, `Logs/fog-msaa-before2.log`,
+  `Logs/fog-msaa-fixed.xml`, and `Logs/fog-msaa-fixed.log`.
+  Export: `Logs/VolumetricFogAndRain/com.jlinkdev.volumetric-fog-and-rain-0.4.1.tgz`.
+- This patch does not extend validation to other graphics APIs or reproduce a
+  consuming project's custom glass pass. It validates standard URP transparent
+  geometry and a refraction-style test material using the same attachments.

@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -235,6 +236,75 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
             }
         }
 
+        [UnityTest]
+        public IEnumerator EarlyFogThenTransparentsAt1xMsaa() => EarlyFogThenTransparents(1);
+
+        [UnityTest]
+        public IEnumerator EarlyFogThenTransparentsAt8xMsaa() => EarlyFogThenTransparents(8);
+
+        private static IEnumerator EarlyFogThenTransparents(int samples)
+        {
+            using (var r = new Rig(samples, true))
+            {
+                yield return null; yield return null;
+                r.feature.outputMode = FogOutputMode.Premultiplied;
+                var quad = r.Own(GameObject.CreatePrimitive(PrimitiveType.Quad));
+                quad.layer = Rig.Layer;
+                quad.transform.position = new Vector3(0,0,2);
+                quad.transform.localScale = Vector3.one * 10;
+                var material = r.Own(new Material(Shader.Find("Hidden/jlinkdev/Fog Test Transparent")));
+                material.SetColor("_Color", new Color(.4f,0,0,.5f));
+                quad.GetComponent<Renderer>().sharedMaterial = material;
+                foreach (var point in new[] { RainInjectionPoint.BeforeTransparentCapture, RainInjectionPoint.BeforeTransparents })
+                {
+                    r.feature.injectionPoint = point;
+                    // Establish the same scene without the effect, including real glass blending.
+                    r.rain.intensity = 0;
+                    Color glass = r.Center(r.Capture());
+                    Color glassReference = new Color(.4f,0,0,.5f);
+                    if (QualitySettings.activeColorSpace == ColorSpace.Linear) glassReference = glassReference.linear;
+                    AssertColor(glass, glassReference, .01f, "glass reference");
+                    Assert.That(r.probe.depthSamples, Is.EqualTo(samples), "test must use the requested MSAA depth attachment");
+                    Assert.That(r.probe.colorSamples, Is.EqualTo(samples), "reference MSAA color attachment");
+                    r.rain.intensity = 1;
+                    Color result = r.Center(r.Capture());
+                    Assert.That(r.probe.colorSamples, Is.EqualTo(samples), "fog must preserve active color samples at " + point);
+                    Assert.That(r.probe.depthSamples, Is.EqualTo(samples), "fog must remain compatible with geometry depth at " + point);
+                    float transmittance = Mathf.Exp(-.8f);
+                    Color expected = glass + Color.white * ((1-transmittance)*(1-glass.a));
+                    expected.a = 1-(1-glass.a)*transmittance;
+                    AssertColor(result, expected, .02f, "glass over fog at " + samples + "x / " + point);
+                    // Exercise a glass material that reads the opaque capture as well.
+                    material.SetFloat("_UseCapture", 1);
+                    float captured = r.Center(r.Capture()).r;
+                    Assert.That(captured, Is.EqualTo(point == RainInjectionPoint.BeforeTransparentCapture ? 1-transmittance : 0).Within(.02f), "MSAA refraction capture order");
+                    material.SetFloat("_UseCapture", 0);
+                }
+                LogAssert.NoUnexpectedReceived();
+            }
+        }
+
+        // Observe actual Render Graph attachments immediately before transparent geometry.
+        // Checking the URP asset alone would miss a test silently falling back to 1x.
+        private sealed class AttachmentProbe : ScriptableRendererFeature
+        {
+            public int colorSamples, depthSamples;
+            private ProbePass pass;
+            public override void Create() => pass = new ProbePass(this);
+            public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) => renderer.EnqueuePass(pass);
+            private sealed class ProbePass : ScriptableRenderPass
+            {
+                private readonly AttachmentProbe owner;
+                public ProbePass(AttachmentProbe owner) { this.owner = owner; renderPassEvent = RenderPassEvent.BeforeRenderingTransparents; }
+                public override void RecordRenderGraph(RenderGraph graph, ContextContainer frameData)
+                {
+                    var resources = frameData.Get<UniversalResourceData>();
+                    owner.colorSamples = (int)graph.GetTextureDesc(resources.activeColorTexture).msaaSamples;
+                    owner.depthSamples = (int)graph.GetTextureDesc(resources.activeDepthTexture).msaaSamples;
+                }
+            }
+        }
+
         private static Color Over(Color premult, Color background)
         {
             Color result = premult + background*(1-premult.a); result.a = 1; return result;
@@ -256,25 +326,33 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
             public readonly RainProfile profile;
             public readonly RainRendererFeature feature;
             public readonly RainVolume box;
+            public readonly AttachmentProbe probe;
             private readonly List<Object> objects = new List<Object>();
             private readonly RenderPipelineAsset graphics = GraphicsSettings.defaultRenderPipeline, quality = QualitySettings.renderPipeline;
             private readonly RenderTexture active = RenderTexture.active;
             private readonly Light sun = RenderSettings.sun;
             private readonly RenderTexture target;
             private readonly Texture2D pixels;
+            private readonly RenderTexture resolved;
             public T Own<T>(T obj) where T : Object { objects.Add(obj); return obj; }
             public RainVolume Box(string name)
             {
                 var obj=Own(new GameObject(name)); obj.layer=Layer; return obj.AddComponent<RainVolume>();
             }
-            public Rig()
+            public Rig(int samples = 1, bool inspectAttachments = false)
             {
                 var renderer=Own(ScriptableObject.CreateInstance<UniversalRendererData>());
                 renderer.postProcessData=AssetDatabase.LoadAssetAtPath<PostProcessData>("Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset");
                 feature=Own(ScriptableObject.CreateInstance<RainRendererFeature>());
-                renderer.rendererFeatures.Add(feature); feature.Create(); renderer.SetDirty();
+                renderer.rendererFeatures.Add(feature); feature.Create();
+                if (inspectAttachments)
+                {
+                    probe = Own(ScriptableObject.CreateInstance<AttachmentProbe>());
+                    probe.Create(); renderer.rendererFeatures.Add(probe);
+                }
+                renderer.SetDirty();
                 var pipeline=Own(UniversalRenderPipelineAsset.Create(renderer));
-                pipeline.supportsCameraOpaqueTexture=true; pipeline.supportsCameraDepthTexture=true; pipeline.supportsHDR=true; pipeline.colorGradingMode=ColorGradingMode.HighDynamicRange; pipeline.msaaSampleCount=1;
+                pipeline.supportsCameraOpaqueTexture=true; pipeline.supportsCameraDepthTexture=true; pipeline.supportsHDR=true; pipeline.colorGradingMode=ColorGradingMode.HighDynamicRange; pipeline.msaaSampleCount=samples;
                 profile=Own(ScriptableObject.CreateInstance<RainProfile>());
                 profile.renderMode=RainRenderMode.FogOnly; profile.extent=RainExtent.VolumesOnly;
                 profile.noiseStrength=0; profile.fogDensity=1; profile.hazeExtinction=.2f;
@@ -282,24 +360,28 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
                 var go=Own(new GameObject("Fog feature test camera",typeof(Camera),typeof(VolumetricRainCamera)));
                 camera=go.GetComponent<Camera>(); camera.enabled=false; camera.cullingMask=1<<Layer;
                 camera.clearFlags=CameraClearFlags.SolidColor; camera.backgroundColor=Color.clear;
-                camera.nearClipPlane=.1f; camera.farClipPlane=150; camera.orthographic=true; camera.orthographicSize=4; camera.allowHDR=true;
+                camera.nearClipPlane=.1f; camera.farClipPlane=150; camera.orthographic=true; camera.orthographicSize=4; camera.allowHDR=true; camera.allowMSAA=true;
                 rain=go.GetComponent<VolumetricRainCamera>(); rain.profile=profile; rain.freezeTime=true; rain.fixedTime=2;
                 box=Box("Fog slab"); box.transform.position=new Vector3(0,0,5); box.size=Vector3.one*4;
-                target=Own(new RenderTexture(128,128,24,RenderTextureFormat.ARGBHalf)); target.Create();
+                target=Own(new RenderTexture(128,128,24,RenderTextureFormat.ARGBHalf)); target.antiAliasing=samples;
+                Assert.That(SystemInfo.GetRenderTextureSupportedMSAASampleCount(target.descriptor), Is.EqualTo(samples), "requested test MSAA must be supported");
+                target.Create();
+                if (samples > 1) { resolved=Own(new RenderTexture(128,128,0,RenderTextureFormat.ARGBHalf)); resolved.Create(); }
                 pixels=Own(new Texture2D(128,128,TextureFormat.RGBAFloat,false,true));
                 GraphicsSettings.defaultRenderPipeline=pipeline; QualitySettings.renderPipeline=pipeline;
             }
             public Color[] Capture()
             {
                 RenderPipeline.SubmitRenderRequest(camera,new UniversalRenderPipeline.SingleCameraRequest {destination=target});
-                RenderTexture.active=target; pixels.ReadPixels(new Rect(0,0,128,128),0,0); pixels.Apply(); return pixels.GetPixels();
+                if (resolved != null) target.ResolveAntiAliasedSurface(resolved);
+                RenderTexture.active=resolved != null ? resolved : target; pixels.ReadPixels(new Rect(0,0,128,128),0,0); pixels.Apply(); return pixels.GetPixels();
             }
             public Color Center(Color[] image) => image[64*128+64];
             public Color At(Color[] image,float x,float y) => image[Mathf.Clamp((int)((y+4)/8*128),0,127)*128+Mathf.Clamp((int)((x+4)/8*128),0,127)];
             public void Dispose()
             {
                 GraphicsSettings.defaultRenderPipeline=graphics; QualitySettings.renderPipeline=quality; RenderSettings.sun=sun;
-                RenderTexture.active=active; target.Release();
+                RenderTexture.active=active; target.Release(); if (resolved != null) resolved.Release();
                 for(int i=objects.Count-1;i>=0;i--) Object.DestroyImmediate(objects[i]);
             }
         }

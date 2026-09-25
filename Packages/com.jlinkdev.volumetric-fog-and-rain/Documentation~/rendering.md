@@ -16,7 +16,9 @@ The capture setting targets URP's standard opaque-color copy. It does not reorde
 custom refraction captures; those must be scheduled explicitly relative to this
 feature. Enable Opaque Texture if your refractive materials need that capture.
 The feature requests depth and an intermediate color target at every supported
-point. Verify custom renderer features and camera setups with Frame Debugger.
+point. Its composite preserves the active color attachment's MSAA sample count,
+so later geometry can pair it with the existing depth attachment. It does not
+force MSAA on a target that URP has already resolved. Verify custom renderer features and camera setups with Frame Debugger.
 
 Timing cannot reconstruct transparent depth. Ordinary blended surfaces generally
 leave only the opaque surface behind them in the depth buffer. Running after them

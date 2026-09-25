@@ -1,7 +1,7 @@
 {
   "name": "com.jlinkdev.volumetric-fog-and-rain",
   "displayName": "jlinkdev Volumetric Fog and Rain",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "unity": "6000.0",
   "description": "Particleless world-space rain and fog-only volumes with depth occlusion and exclusions for Unity 6 URP Render Graph.",
   "license": "MIT",

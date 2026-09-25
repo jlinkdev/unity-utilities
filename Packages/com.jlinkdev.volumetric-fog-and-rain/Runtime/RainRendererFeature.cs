@@ -193,7 +193,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
                 desc.name = "Volumetric Fog and Rain Composite";
                 desc.clearBuffer = false;
                 desc.depthBufferBits = 0;
-                desc.msaaSamples = MSAASamples.None;
+                // This becomes cameraColor. Later geometry pairs it with the existing depth
+                // attachment, so retain the active color's MSAA count (including 1x after resolve).
                 var destination = graph.CreateTexture(desc);
                 using (var builder = graph.AddRasterRenderPass<PassData>("Volumetric Fog and Rain", out var data))
                 {

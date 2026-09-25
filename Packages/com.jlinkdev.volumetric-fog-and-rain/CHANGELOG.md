@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 - 2026-09-25
+
+- Preserve the active color attachment's MSAA sample count in the fog/rain composite. Early injection now remains compatible with the existing depth attachment when transparent geometry renders afterward.
+- Add 1x and 8x MSAA rendering regressions for both early injection points, including transparent blending, opaque-color capture, and actual color/depth attachment sample counts.
+
 ## 0.4.0 — 2026-09-25
 
 - Rename the package ID/folder to com.jlinkdev.volumetric-fog-and-rain, namespace and assemblies to VolumetricFogAndRain, and public branding/menu paths to Volumetric Fog and Rain. Preserve asset GUIDs and add Unity type migration metadata.
