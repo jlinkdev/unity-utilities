@@ -72,6 +72,6 @@ Before publishing a version:
   samples without depending on host-only files. Reinstall that artifact for the
   final smoke check, then publish and provide a pinned Git revision or archive.
 
-Keep validation records with the package when available. Volumetric Rain's
-[validation record](Packages/com.jlinkdev.volumetric-rain/Documentation~/validation.md)
+Keep validation records with the package when available. Volumetric Fog and Rain's
+[validation record](Packages/com.jlinkdev.volumetric-fog-and-rain/Documentation~/validation.md)
 is an existing example; its results apply to that package and those tested versions.

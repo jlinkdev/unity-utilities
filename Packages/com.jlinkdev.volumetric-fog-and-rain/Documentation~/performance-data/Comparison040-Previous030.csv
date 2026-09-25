@@ -1,0 +1,5 @@
+variant,scenario,gpu_samples,gpu_median_ms,gpu_p95_ms,synchronized_render_median_ms
+Previous030,default,300,8.4948,11.0126,12.8524
+Previous030,no_noise,300,8.4380,10.9363,12.5373
+Previous030,fog_global,300,0.7844,2.8570,4.7006
+Previous030,fog_bounded,300,0.6513,1.3972,4.0600

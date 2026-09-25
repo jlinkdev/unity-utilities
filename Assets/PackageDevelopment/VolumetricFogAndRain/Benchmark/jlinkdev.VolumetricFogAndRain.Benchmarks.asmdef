@@ -1,0 +1,7 @@
+{
+ "name": "jlinkdev.VolumetricFogAndRain.Benchmarks",
+ "references": ["jlinkdev.VolumetricFogAndRain", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+ "includePlatforms": ["Editor"],
+ "optionalUnityReferences": ["TestAssemblies"],
+ "autoReferenced": false
+}

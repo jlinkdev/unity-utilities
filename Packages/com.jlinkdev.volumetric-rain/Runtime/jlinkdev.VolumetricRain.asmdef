@@ -1,6 +1,0 @@
-{
-  "name": "jlinkdev.VolumetricRain",
-  "rootNamespace": "jlinkdev.UnityUtilities.VolumetricRain",
-  "references": ["Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
-  "autoReferenced": true
-}

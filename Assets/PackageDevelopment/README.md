@@ -18,21 +18,21 @@ URP, and publishes an identical copy to
 ## Volumetric Rain sample workflow
 
 The saved Rain Laboratory source lives at
-`Assets/PackageDevelopment/VolumetricRain/SampleAuthoring/Rain Laboratory`.
+`Assets/PackageDevelopment/VolumetricFogAndRain/SampleAuthoring/Rain Laboratory`.
 Its standalone UPM sample is in
-`Packages/com.jlinkdev.volumetric-rain/Samples~/Rain Laboratory`.
+`Packages/com.jlinkdev.volumetric-fog-and-rain/Samples~/Rain Laboratory`.
 The package's Tools menu can generate a fresh laboratory without replacing existing assets.
 The development-only `RainBuildValidation.Build` method produces a Windows smoke
 player under `Logs/VolumetricRain/Player` and restores pipeline settings afterward.
 
 The new `Volume Laboratory` folder alongside Rain Laboratory demonstrates a bounded
 rain box and a dry canopy. Both samples are distributed independently through UPM.
-Use **Tools > jlinkdev > Volumetric Rain > Create Volume Laboratory** to generate
+Use **Tools > jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory** to generate
 another copy without changing the original laboratory.
 
-`VolumetricRain/Benchmark` contains the development-only GPU benchmark and original
+`VolumetricFogAndRain/Benchmark` contains the development-only GPU benchmark and original
 reference shader. Run it in an isolated project: it opens an empty scene. See the
 package's `Documentation~/performance.md` for measurements and reproduction.
-`VolumetricRain/SampleAuthoring/Fog Laboratory` demonstrates Fog Only with the same
+`VolumetricFogAndRain/SampleAuthoring/Fog Laboratory` demonstrates Fog Only with the same
 inclusion/exclusion boxes. The package's **Create Fog Laboratory** menu generates a
 separate scene and assets, leaving existing rain laboratories intact.

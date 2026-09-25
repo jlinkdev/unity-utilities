@@ -1,0 +1,6 @@
+{
+  "name": "jlinkdev.VolumetricFogAndRain.Editor",
+  "references": ["jlinkdev.VolumetricFogAndRain", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Universal.Editor"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

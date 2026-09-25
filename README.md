@@ -13,7 +13,7 @@ and an importable demo.
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
 | [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |
-| [Volumetric Rain and Fog](Packages/com.jlinkdev.volumetric-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
+| [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
 | [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
 
 Requirements are declared minimums, not a claim that every newer editor, graphics
@@ -27,7 +27,7 @@ In **Window > Package Manager**, choose **Add package from git URL**. Copy the
 package-specific URL from its quick start. For example:
 
 ```text
-https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.volumetric-rain
+https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.volumetric-fog-and-rain
 ```
 
 Append `#<tag-or-commit>` to pin a revision. For a local checkout, choose **Add

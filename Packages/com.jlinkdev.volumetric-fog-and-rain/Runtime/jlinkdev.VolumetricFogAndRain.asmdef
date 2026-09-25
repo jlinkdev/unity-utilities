@@ -1,0 +1,6 @@
+{
+  "name": "jlinkdev.VolumetricFogAndRain",
+  "rootNamespace": "jlinkdev.UnityUtilities.VolumetricFogAndRain",
+  "references": ["Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+  "autoReferenced": true
+}

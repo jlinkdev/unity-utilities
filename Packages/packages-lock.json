@@ -41,8 +41,8 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
-    "com.jlinkdev.volumetric-rain": {
-      "version": "file:com.jlinkdev.volumetric-rain",
+    "com.jlinkdev.volumetric-fog-and-rain": {
+      "version": "file:com.jlinkdev.volumetric-fog-and-rain",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
