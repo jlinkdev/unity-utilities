@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Rain Profile
   m_EditorClassIdentifier: 
   extent: 1
-  density: 0.8
+  density: 1
   cellSize: 0.65
   streakLength: 0.35
-  streakWidth: 0.008
+  streakWidth: 0.005
   fallSpeed: 12
   direction: {x: 0, y: -1, z: 0}
   wind: {x: 1, y: 0, z: 0}
   seed: 1234
-  nearFade: 0.3
+  nearFade: 10
   midDistance: 12
   farDistance: 30
   maxDistance: 100
