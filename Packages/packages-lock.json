@@ -26,6 +26,19 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.interactive-fog": {
+      "version": "file:com.jlinkdev.interactive-fog",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.3",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.screencapture": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
     "com.jlinkdev.object-pooling": {
       "version": "file:com.jlinkdev.object-pooling",
       "depth": 0,

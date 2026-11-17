@@ -14,6 +14,7 @@ and an importable demo.
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
 | [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |
 | [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
+| [Interactive Fog](Packages/com.jlinkdev.interactive-fog/README.md) | Unity 6; URP 17.0.3; Render Graph; compute-capable desktop GPU | Interactive 3D ground-fog prototype; [validation record](Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md). |
 | [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
 
 Requirements are declared minimums, not a claim that every newer editor, graphics

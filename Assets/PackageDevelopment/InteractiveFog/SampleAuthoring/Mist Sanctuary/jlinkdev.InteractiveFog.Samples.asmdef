@@ -1,0 +1,5 @@
+{
+  "name": "jlinkdev.InteractiveFog.Samples",
+  "references": ["jlinkdev.InteractiveFog", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+  "autoReferenced": true
+}

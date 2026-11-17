@@ -1,0 +1,7 @@
+{
+  "name": "jlinkdev.InteractiveFog.PlayModeTests",
+  "references": ["jlinkdev.InteractiveFog"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "autoReferenced": false
+}

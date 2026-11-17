@@ -36,3 +36,25 @@ package's `Documentation~/performance.md` for measurements and reproduction.
 `VolumetricFogAndRain/SampleAuthoring/Fog Laboratory` demonstrates Fog Only with the same
 inclusion/exclusion boxes. The package's **Create Fog Laboratory** menu generates a
 separate scene and assets, leaving existing rain laboratories intact.
+
+## Interactive Fog sample workflow
+
+`InteractiveFog/SampleAuthoring/Mist Sanctuary` contains the editable fog sample.
+`Editor/InteractiveFogDevelopmentBuilder.cs` builds its stone hall, dedicated URP
+pipeline, and demonstration. Use **Tools > jlinkdev > Interactive Fog > Rebuild
+Mist Sanctuary (Development)**, or the `BuildAll` batch entry point in
+`jlinkdev.UnityUtilities.InteractiveFog.Development.InteractiveFogDevelopmentBuilder`.
+The builder replaces its generated scene; run it in an isolated project.
+
+`BuildPlayer` is intended only for a disposable validation project: it selects
+Linear color space, windowed player dimensions, and frame timing, then builds a
+Windows sample. `Publish` copies the authoring sample into the installed local
+package's `Samples~` folder. `InteractiveFogValidation.Capture` provides editor
+diagnostic images; final quality checks use the running player's offscreen capture
+sequence. See the [package validation record](../../Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md).
+
+The sample follows a closed animation spline and has no input controller. Use
+`--fog-full-rate` for its 60 fps capture and `--fog-coarse` for the matched
+curl/wisp control; omit sequence flags when benchmarking.
+
+Interactive Fog recovery review: `InteractiveFogDevelopmentBuilder.BuildPreviewPlayer` builds the isolated project's generated sample without publishing it over the host or package authoring assets. Use `--fog-recovery` to stop the animated explorer after ten seconds and capture a 40-second sequence; add `--fog-no-recovery` for a matched control. The regular `BuildPlayer` still publishes its generated sample.
