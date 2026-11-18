@@ -14,7 +14,7 @@ Add this folder as a local package through **Window → Package Manager → + �
 
 ## Quick start
 
-1. Open **Tools > jlinkdev > Interactive Fog > Setup**. Select the Universal Renderer Data used by your camera and click **Configure Selected Renderer**. This adds or repairs the fog feature and assigns its shader; other renderer features are retained.
+1. Open **Tools > jlinkdev > Interactive Fog > Setup**. Choose your pipeline and camera; the window resolves its renderer override. Confirm the Universal Renderer Data and click **Configure Selected Renderer**. This adds or repairs the fog feature and assigns its shader; other renderer features are retained.
 2. Enable the selected pipeline's depth texture and ensure **Render Graph** is enabled. Cameras using a renderer override need the feature on that renderer too.
 3. Create **Ground Mist**, **Cumulus** or **Dry Ice** from the setup window, or **GameObject > Effects > Interactive Fog**. The new volume has its compute shader and matching shared profile assigned.
 4. Position the volume at floor height and set **Size (m)**. Bounds are world-aligned; rotation and scale are ignored. Assign **Sun** and optional point lights under **Lighting**.

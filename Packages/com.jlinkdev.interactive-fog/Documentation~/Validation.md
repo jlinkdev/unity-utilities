@@ -24,7 +24,7 @@ The Unity 6000.3.21f1 host also imports and compiles the package, with the tuned
 
 ## Automated and player checks
 
-- **56 Edit Mode tests pass.** Coverage includes conservative transport, initial coverage, long-running height, interaction, zero drag, coordinate resets, wake decay, recovery, profile equivalence and swapping, obstacle-mask invalidation, optimized/reference work equivalence, and Planar2D column-mass conservation, recovery, zero drag, obstacle invalidation, backend switching and cached-shape equivalence. Cumulus-specific checks cover morphology swaps, recovery, agreement between the detail cache and filtered resting target, solid-wall light occlusion, coverage changes that preserve live wakes, and detail-map fades against empty regions on both backends.
+- **66 Edit Mode tests pass.** Coverage includes conservative transport, initial coverage, long-running height, interaction, zero drag, coordinate resets, wake decay, recovery, profile equivalence and swapping, obstacle-mask invalidation, optimized/reference work equivalence, and Planar2D column-mass conservation, recovery, zero drag, obstacle invalidation, backend switching and cached-shape equivalence. Cumulus-specific checks cover morphology swaps, recovery, agreement between the detail cache and filtered resting target, solid-wall light occlusion, coverage changes that preserve live wakes, and detail-map fades against empty regions on both backends.
 
 - **6 Play Mode tests pass**, covering camera-independent simulation and complete resource release for both backends, including the optional Cumulus detail cache.
 
@@ -135,6 +135,6 @@ The host editor compiles and exposes the setup menu. Native Inspector layout ins
 
 ## Camera renderer setup
 
-The setup suite passes 59 Edit Mode tests and six Play Mode tests on Unity 6000.0.58f1 / URP 17.0.3 / Windows DX11. Camera-specific checks cover new and repeated renderer registration, preservation of the existing list/default and global pipeline references, and grouped Undo. The sample builds and completes a 20-second capture after removing runtime pipeline switching. A host-editor render on Unity 6000.3.21f1 confirms the camera override draws fog under the existing project pipeline; the three profiles, simulation and shader files are unchanged.
+The suite passes 66 Edit Mode tests and six Play Mode tests on Unity 6000.0.58f1 / URP 17.0.3 / Windows DX11. Camera-specific checks cover new and repeated renderer registration, preservation of the existing list/default and global pipeline references, grouped Undo, camera override/default fallback lookup without adding components, and overlay-camera rejection before asset changes. The sample builds and completes a 20-second capture after removing runtime pipeline switching. A host-editor render on Unity 6000.3.21f1 confirms the camera override draws fog under the existing project pipeline; the three profiles, simulation and shader files are unchanged.
 
 Renderer selection is a per-camera list index. Projects using multiple quality pipelines must maintain compatible renderer indices or update the camera override when changing pipelines. The standalone validation build explicitly selects its own pipeline at build time; sample runtime code does not select a pipeline.

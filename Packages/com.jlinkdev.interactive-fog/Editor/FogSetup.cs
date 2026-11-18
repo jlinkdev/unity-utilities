@@ -78,6 +78,23 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Editor
         }
         [MenuItem("Tools/jlinkdev/Interactive Fog/Setup")]
         public static void OpenSetup() => EditorWindow.GetWindow<FogSetupWindow>("Fog Setup");
+        /// <summary>Resolve a camera override with URP's default fallback, without adding camera components.</summary>
+        public static UniversalRendererData GetCameraRenderer(UniversalRenderPipelineAsset pipeline, Camera camera)
+        {
+            if(!pipeline) return null;
+            int index=-1;
+            var cameraData=camera?camera.GetComponent<UniversalAdditionalCameraData>():null;
+            if(cameraData)
+                using(var data=new SerializedObject(cameraData)) index=data.FindProperty("m_RendererIndex").intValue;
+            using(var data=new SerializedObject(pipeline))
+            {
+                var list=data.FindProperty("m_RendererDataList");
+                if(index<0 || index>=list.arraySize || !list.GetArrayElementAtIndex(index).objectReferenceValue)
+                    index=data.FindProperty("m_DefaultRendererIndex").intValue;
+                return index>=0 && index<list.arraySize
+                    ? list.GetArrayElementAtIndex(index).objectReferenceValue as UniversalRendererData : null;
+            }
+        }
         public static int AssignRendererToCamera(UniversalRenderPipelineAsset pipeline, UniversalRendererData renderer, Camera camera)
         {
             if(!pipeline || !AssetDatabase.Contains(pipeline)) throw new System.ArgumentException("Select a saved URP pipeline asset.");
@@ -85,6 +102,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Editor
             if(!camera || EditorUtility.IsPersistent(camera) || !camera.gameObject.scene.IsValid())
                 throw new System.ArgumentException("Select a scene camera.");
             if(EditorApplication.isPlaying) throw new System.InvalidOperationException("Assign the camera renderer outside Play Mode.");
+            var cameraData=camera.GetComponent<UniversalAdditionalCameraData>();
+            if(cameraData && cameraData.renderType==CameraRenderType.Overlay)
+                throw new System.ArgumentException("Fog requires a base camera; overlay cameras do not render the effect.");
             Undo.IncrementCurrentGroup();
             int group=Undo.GetCurrentGroup();Undo.SetCurrentGroupName("Assign fog camera renderer");
             int index=-1;
@@ -100,7 +120,6 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Editor
                     data.ApplyModifiedProperties();
                 }
             }
-            var cameraData=camera.GetComponent<UniversalAdditionalCameraData>();
             if(!cameraData) cameraData=Undo.AddComponent<UniversalAdditionalCameraData>(camera.gameObject);
             Undo.RecordObject(cameraData,"Assign fog camera renderer");cameraData.SetRenderer(index);
             PrefabUtility.RecordPrefabInstancePropertyModifications(cameraData);
@@ -134,30 +153,34 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Editor
             pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             camera=Selection.activeGameObject?Selection.activeGameObject.GetComponent<Camera>():null;
             if(!camera) camera=Camera.main;
-            if(pipeline)
-            {
-                using(var data=new SerializedObject(pipeline))
-                {
-                    var list=data.FindProperty("m_RendererDataList");var index=data.FindProperty("m_DefaultRendererIndex");
-                    if(list!=null && index!=null && index.intValue>=0 && index.intValue<list.arraySize)
-                        renderer=list.GetArrayElementAtIndex(index.intValue).objectReferenceValue as UniversalRendererData;
-                }
-            }
+            renderer=FogSetup.GetCameraRenderer(pipeline,camera);
         }
         void OnGUI()
         {
             scroll=EditorGUILayout.BeginScrollView(scroll);
             EditorGUILayout.LabelField("1. Choose the camera's renderer",EditorStyles.boldLabel);
+            EditorGUI.BeginChangeCheck();
             pipeline=(UniversalRenderPipelineAsset)EditorGUILayout.ObjectField("Pipeline",pipeline,typeof(UniversalRenderPipelineAsset),false);
+            camera=(Camera)EditorGUILayout.ObjectField("Camera",camera,typeof(Camera),true);
+            if(EditorGUI.EndChangeCheck()) renderer=FogSetup.GetCameraRenderer(pipeline,camera);
             renderer=(UniversalRendererData)EditorGUILayout.ObjectField("Renderer",renderer,typeof(UniversalRendererData),false);
-            EditorGUILayout.HelpBox("Select the renderer used by your camera. The initial selection is the active pipeline's default; cameras can override it. Configuration adds or repairs one fog feature without replacing other features.",MessageType.Info);
+            var currentRenderer=FogSetup.GetCameraRenderer(pipeline,camera);
+            var cameraData=camera?camera.GetComponent<UniversalAdditionalCameraData>():null;
+            bool overlay=cameraData && cameraData.renderType==CameraRenderType.Overlay;
+            if(overlay) EditorGUILayout.HelpBox("Overlay cameras do not render fog. Select the base camera in the stack.",MessageType.Warning);
+            else if(camera && !currentRenderer) EditorGUILayout.HelpBox("This camera does not resolve to a Universal Renderer in the selected pipeline. Choose a Universal Renderer asset and register it below.",MessageType.Warning);
+            else if(camera && currentRenderer!=renderer)
+            {
+                EditorGUILayout.HelpBox("The chosen renderer differs from the camera's current renderer. Register and assign it below to use it on this camera.",MessageType.Info);
+                if(GUILayout.Button("Use Camera's Current Renderer")) renderer=currentRenderer;
+            }
+            EditorGUILayout.HelpBox("Choosing a camera or pipeline selects its current renderer, including camera overrides. Configure adds or repairs one fog feature on the selected asset; all cameras using that renderer share the change.",MessageType.Info);
             using(new EditorGUI.DisabledScope(!renderer || !AssetDatabase.Contains(renderer)))
                 if(GUILayout.Button("Configure Selected Renderer")) FogSetup.ConfigureRenderer(renderer);
-            camera=(Camera)EditorGUILayout.ObjectField("Camera",camera,typeof(Camera),true);
             EditorGUILayout.HelpBox("For a dedicated camera renderer, choose that renderer above, then register and assign it here. This appends or reuses its entry without changing the pipeline's default renderer or project pipeline references. Save the scene afterward.",MessageType.Info);
             if(pipeline && pipeline!=GraphicsSettings.currentRenderPipeline)
                 EditorGUILayout.HelpBox("This pipeline is not currently active. The camera override takes effect only when this pipeline is active.",MessageType.Warning);
-            using(new EditorGUI.DisabledScope(EditorApplication.isPlaying || !pipeline || !AssetDatabase.Contains(pipeline) || !renderer || !AssetDatabase.Contains(renderer) || !camera || EditorUtility.IsPersistent(camera)))
+            using(new EditorGUI.DisabledScope(EditorApplication.isPlaying || overlay || !pipeline || !AssetDatabase.Contains(pipeline) || !renderer || !AssetDatabase.Contains(renderer) || !camera || EditorUtility.IsPersistent(camera)))
                 if(GUILayout.Button("Register Renderer and Assign Camera")) FogSetup.AssignRendererToCamera(pipeline,renderer,camera);
             if(pipeline && !pipeline.supportsCameraDepthTexture && GUILayout.Button("Enable Depth Texture on Selected Pipeline"))
             { Undo.RecordObject(pipeline,"Enable fog depth texture");pipeline.supportsCameraDepthTexture=true;EditorUtility.SetDirty(pipeline);AssetDatabase.SaveAssetIfDirty(pipeline); }

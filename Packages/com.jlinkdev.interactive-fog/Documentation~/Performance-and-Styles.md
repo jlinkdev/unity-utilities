@@ -23,13 +23,9 @@ The volume Inspector groups **Bounds**, **Simulation and Rendering Quality**, **
 Reduced modes store HDR radiance, transmittance and depth, then reconstruct at full resolution with depth-weighted taps. Pixels without a compatible-depth tap fall back to full-resolution integration to preserve thin silhouettes. This fallback limits the saving in scenes with many depth discontinuities. No temporal history is used. Reduced modes can soften fine detail and produce spatial or moving-edge differences; compare at the intended camera angle and display resolution.
 
 ```csharp
-
 fog.simulationBackend = FogSimulationBackend.Planar2D;
-
 fog.renderResolution = FogRenderResolution.Half;
-
 fog.Initialize(); // Backend changes restart the field; render resolution alone does not.
-
 ```
 
 For the closest behavior to Volume3D/Full, start with Volume3D/Half and compare at the intended camera angle. Planar2D/Half is a lower-memory option for ground-focused effects where approximate vertical behavior is acceptable. Keep Full available for close inspection and fine silhouettes.
@@ -50,7 +46,11 @@ For the closest behavior to Volume3D/Full, start with Volume3D/Half and compare 
 
 Fog Height, extinction and coverage also change how much raymarch work survives empty-space checks and early opacity termination. They are artistic controls, not reliable quality tiers. **Detail = 0**, **Turbulence = 0** and **Wisp Displacement = 0** currently change the result but do not eliminate all associated shader calculations. Rest Recovery is behavior, not a meaningful primary cost knob.
 
-Defaults are 128 x 24 x 128, 30 Hz, 24 pressure iterations and 96 ray steps. The Mist Sanctuary sample uses 160 x 32 x 160 and 112 ray steps. Volume3D texture allocations are 40 MiB and 82.25 MiB respectively. Planar2D allocations are 4.625 MiB and 7.836 MiB respectively. These exclude camera targets and driver overhead. Reduced rendering adds 12 bytes per integration pixel for radiance/transmittance and depth: about 2.64 MiB at half resolution or 0.66 MiB at quarter resolution for a 1280 x 720 camera, plus the full-resolution composite target.
+Defaults are 128 x 24 x 128, 30 Hz, 24 pressure iterations and 96 ray steps. The Mist Sanctuary sample uses 160 x 32 x 160 and 112 ray steps. For Ground Mist, Volume3D texture allocations are 40 MiB and 82.25 MiB respectively. Planar2D allocations are 4.625 MiB and 7.836 MiB respectively. These exclude camera targets and driver overhead. Reduced rendering adds 12 bytes per integration pixel for radiance/transmittance and depth: about 2.64 MiB at half resolution or 0.66 MiB at quarter resolution for a 1280 x 720 camera, plus the full-resolution composite target.
+
+### Low camera angles
+
+Check quality and frame time at floor level as well as the normal gameplay view. Grazing views can cover more of the screen with fog and keep more ray samples inside the volume; depth-edge reconstruction fallback can also reduce the benefit of Half/Quarter rendering. Compare milliseconds in the same scene and camera path with VSync and frame caps disabled for measurement. Further optimization of this workload remains an open investigation; current measurements do not isolate its dominant GPU cost.
 
 ## Exact-work optimizations
 
@@ -72,7 +72,7 @@ Assign `Runtime/Styles/Cumulus.asset` for dense connected cloud banks (Density 1
 
 Cloud-style controls:
 
-- **Style Type** selects the ground-mist or clustered-cloud recovery target.
+- **Style Type** selects Ground Mist, Cumulus or Dry Ice. Choose Cumulus to expose the cloud-specific controls below.
 - **Puff Size** controls the horizontal scale of cloud clusters in metres (preset 1.25). It affects Cumulus only.
 - **Fog Height** controls cloud and plume height (preset 1.6 m). Keep volume Size Y above the style height with room for displacement; 2 m accommodates the preset.
 - **Plume Lift** adds gentle vertical stirring to Cumulus in Volume3D. It has no vertical transport effect in Planar2D. This is an artistic force, not a temperature or buoyancy simulation.

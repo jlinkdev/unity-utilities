@@ -1,6 +1,6 @@
 # Mist Sanctuary
 
-Open `Scenes/Mist Sanctuary.unity`. Before the first Play, open **Tools > jlinkdev > Interactive Fog > Setup**, keep the active project pipeline selected, choose the imported `Settings/Mist Renderer.asset`, and assign **Sanctuary camera** in the Camera field. Click **Register Renderer and Assign Camera**, then save the scene and press Play. The character automatically follows a closed, 20-second spline path, with a procedural gait and a timed blade sweep. There is no input controller, CharacterController, keyboard/mouse handling, or input-backend requirement.
+Open `Scenes/Mist Sanctuary.unity`. Before the first Play, open **Tools > jlinkdev > Interactive Fog > Setup**, keep the active project pipeline selected, assign **Sanctuary camera** in the Camera field, then choose the imported `Settings/Mist Renderer.asset`. Click **Register Renderer and Assign Camera**, then save the scene and press Play. The character automatically follows a closed, 20-second spline path, with a procedural gait and a timed blade sweep. There is no input controller, CharacterController, keyboard/mouse handling, or input-backend requirement.
 
 The `MistSanctuary` component exposes the world-space `pathPoints` array. Use at least four points to reshape the closed Catmull–Rom path. The fixed observation camera makes residual wakes easy to follow; the final two seconds switch to a low view. This is an animation demonstration, not a navigation or collision system; author the path clear of solid geometry.
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Setup follows the selected camera renderer override, reports mismatched renderer selections, and rejects overlay cameras before changing assets.
+
 - Mist Sanctuary uses an explicit camera renderer override instead of switching the project pipeline at runtime. Setup can register and assign a dedicated camera renderer with Undo while preserving the pipeline default.
 
 - Added a targeted renderer setup window and creation commands for all three styles. Renderer configuration is idempotent and records Undo; independent profile copies preserve tuning and avoid overwriting assets.

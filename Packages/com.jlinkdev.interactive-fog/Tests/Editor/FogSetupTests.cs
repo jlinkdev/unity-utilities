@@ -85,6 +85,40 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Tests
             using(var data=new SerializedObject(pipeline)) Assert.That(data.FindProperty("m_RendererDataList").arraySize,Is.EqualTo(1));
             using(var data=new SerializedObject(cameraData)) Assert.That(data.FindProperty("m_RendererIndex").intValue,Is.EqualTo(-1));
         }
+        [TestCase(-2)] [TestCase(-1)] [TestCase(0)] [TestCase(1)] [TestCase(2)] [TestCase(99)]
+        public void CameraRendererLookupHonorsOverrideAndFallbackWithoutChangingCamera(int index)
+        {
+            var first=ScriptableObject.CreateInstance<UniversalRendererData>();AssetDatabase.CreateAsset(first,folder+"/First.asset");
+            var fallback=ScriptableObject.CreateInstance<UniversalRendererData>();AssetDatabase.CreateAsset(fallback,folder+"/Default.asset");
+            var pipeline=UniversalRenderPipelineAsset.Create(first);AssetDatabase.CreateAsset(pipeline,folder+"/Pipeline.asset");
+            using(var data=new SerializedObject(pipeline))
+            {
+                var list=data.FindProperty("m_RendererDataList");list.arraySize=3;
+                list.GetArrayElementAtIndex(1).objectReferenceValue=fallback;
+                list.GetArrayElementAtIndex(2).objectReferenceValue=null;
+                data.FindProperty("m_DefaultRendererIndex").intValue=1;data.ApplyModifiedPropertiesWithoutUndo();
+            }
+            root=new GameObject("Lookup camera");var camera=root.AddComponent<Camera>();
+            UniversalAdditionalCameraData cameraData=null;
+            if(index!=-2) { cameraData=root.AddComponent<UniversalAdditionalCameraData>();cameraData.SetRenderer(index); }
+            Assert.That(FogSetup.GetCameraRenderer(pipeline,camera),Is.SameAs(index==0?first:fallback));
+            Assert.That(FogSetup.GetCameraRenderer(pipeline,null),Is.SameAs(fallback));
+            Assert.That(FogSetup.GetCameraRenderer(null,camera),Is.Null);
+            Assert.That(root.GetComponent<UniversalAdditionalCameraData>(),Is.SameAs(cameraData));
+            if(cameraData) using(var data=new SerializedObject(cameraData)) Assert.That(data.FindProperty("m_RendererIndex").intValue,Is.EqualTo(index));
+        }
+        [Test] public void OverlayCameraIsRejectedBeforeChangingPipeline()
+        {
+            var original=ScriptableObject.CreateInstance<UniversalRendererData>();AssetDatabase.CreateAsset(original,folder+"/Original.asset");
+            var fog=ScriptableObject.CreateInstance<UniversalRendererData>();AssetDatabase.CreateAsset(fog,folder+"/Fog.asset");
+            var pipeline=UniversalRenderPipelineAsset.Create(original);AssetDatabase.CreateAsset(pipeline,folder+"/Pipeline.asset");
+            root=new GameObject("Overlay camera");var camera=root.AddComponent<Camera>();
+            var cameraData=root.AddComponent<UniversalAdditionalCameraData>();cameraData.renderType=CameraRenderType.Overlay;
+            string before=EditorJsonUtility.ToJson(pipeline);string cameraBefore=EditorJsonUtility.ToJson(cameraData);
+            Assert.Throws<System.ArgumentException>(()=>FogSetup.AssignRendererToCamera(pipeline,fog,camera));
+            Assert.That(EditorJsonUtility.ToJson(pipeline),Is.EqualTo(before));
+            Assert.That(EditorJsonUtility.ToJson(cameraData),Is.EqualTo(cameraBefore));
+        }
     }
 }
 #endif
