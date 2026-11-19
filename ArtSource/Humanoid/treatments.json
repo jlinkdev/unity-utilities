@@ -1,0 +1,15 @@
+{
+  "Reduction Study": {
+    "triangles": 3000, "head_sides": 12, "torso_planes": 0, "smooth_passes": 4,
+    "patch_angle": 0, "patch_radius": 0, "relief_meters": 0, "seed": 18
+  },
+  "Sculpted Planes": {
+    "triangles": 2400, "head_sides": 8, "torso_planes": 8, "smooth_passes": 9,
+    "patch_angle": 29, "patch_radius": 0.105, "relief_meters": 0, "seed": 42
+  },
+  "Offset Planes": {
+    "triangles": 2150, "head_sides": 7, "torso_planes": 6, "smooth_passes": 7,
+    "patch_angle": 40, "patch_radius": 0.080, "relief_meters": 0.0035, "seed": 91,
+    "waist_inset_meters": 0.009, "hip_blend_meters": 0.265
+  }
+}
