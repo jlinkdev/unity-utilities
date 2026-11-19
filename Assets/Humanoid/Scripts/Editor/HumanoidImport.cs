@@ -9,10 +9,12 @@ namespace JLinkDev.HumanoidStudio.Editor
     {
         internal const string Root = "Assets/Humanoid";
         internal const string JointSweep = Root + "/Animations/Joint Sweep.fbx";
+        const string CharacterMotion = Root + "/Animations/Character Motion.fbx";
 
         void OnPreprocessModel()
         {
-            if (assetPath != JointSweep && !assetPath.StartsWith(Root + "/Models/", StringComparison.Ordinal)) return;
+            if (assetPath != JointSweep && assetPath != CharacterMotion &&
+                !assetPath.StartsWith(Root + "/Models/", StringComparison.Ordinal)) return;
             var importer = (ModelImporter)assetImporter;
             importer.animationType = ModelImporterAnimationType.Human;
             importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;

@@ -10,7 +10,9 @@ Open [Character Playground](<../../Assets/Humanoid/Scenes/Character Playground.u
 
 Drop the [Humanoid prefab](<../../Assets/Humanoid/Prefabs/Humanoid.prefab>) onto a floor with a collider to use it elsewhere. It uses the [Humanoid model](<../../Assets/Humanoid/Models/Humanoid/Humanoid.fbx>), shown as Offset Planes in the mesh study. For scripted control, disable `HumanoidKeyboardInput` and call `SetMovement(worldDirection, gait)` on `HumanoidCharacterController`. Movement persists until changed. Pass `Vector3.zero` to stop. Call `Interact()` or `SwordSwipe()` for a one-shot action.
 
-The [Animator Controller](<../../Assets/Humanoid/Animations/Humanoid Locomotion.controller>) blends idle, walk, jog, and sprint using measured horizontal speed in meters per second. The capsule handles travel, gravity, and collision. Moving turns use the same gait as the character steers. The source FBX contains Quaternius's Universal Animation Library Standard animations. Unity imports the six clips used here as Humanoid motions. [Included CC0 license](<../../Assets/Humanoid/Animations/License.txt>)
+The [Animator Controller](<../../Assets/Humanoid/Animations/Humanoid Locomotion.controller>) blends the [authored idle, walk, jog, and sprint](<../../Assets/Humanoid/Animations/Character Motion.fbx>) using horizontal speed in meters per second. The feet move backward during contact at the controller's walk, jog, and sprint speeds of 1.5, 3.2, and 5.5 m/s. All three moving cycles begin on left-foot contact so the footsteps stay in phase when blending. The capsule handles travel, gravity, and collision. Interact and Sword Swipe use Quaternius's original clips. [Included CC0 license](<../../Assets/Humanoid/Animations/License.txt>)
+
+To rebuild the four locomotion takes from the anatomical rig, run `blender --background --factory-startup --python-exit-code 1 --python ArtSource/Humanoid/generate_locomotion.py` from the repository root. Keep the FBX's Unity metadata with it. It stores the character's avatar reference pose and loop settings. [Locomotion comparison](<Locomotion comparison.gif>)
 
 ## Mesh treatments
 
@@ -26,6 +28,8 @@ All three variants replace the face with a continuous jaw-to-crown surface, simp
 **Sculpted Planes** is the closest match to the reference across the chest and waist. The jaw-to-neck transition is still abrupt, and narrow facets bunch at the bent knees. [Motion comparison](<Motion comparison.png>) · [Bind comparison](<Bind comparison.png>)
 
 Offset Planes turns diagonals that bridge the thighs toward the midline and blends thigh rotation into the pelvis over a 0.265 m band. At peak knee lift the existing planes form a short angular fold. Median bind-pose triangle area across the front hip is 31.5 cm², compared with 29.6 cm² in the original mesh and 5.6 cm² in the subdivided study. These measurements use face centers 0.79–0.96 m above the floor, within 0.18 m of the midline and forward of Blender Y = −0.035 m. Sampling the Unity sweep at 30 fps found no self-intersections within the hip bend over 193 poses. The lowered hand briefly clips the outer thigh during the sweep. [Three treatments at the same knee lift](<Offset hip comparison.png>)
+
+The playable model grades upper-thigh weights from the inner groin to the outer hip. Below the saddle, each inner thigh follows its own leg and the pelvis. Across 49 sampled poses per gait, the maximum upper-thigh and hip edge stretch fell from 1.98× to 1.48× bind length in the jog and from 2.17× to 1.64× in the sprint. A separate 193-pose check per clip found no intersecting nonadjacent faces in that region during the jog, sprint, or joint sweep.
 
 Offset Planes now fits the outer corners of its rotating sections to the target trunk width. At 1.075 m above the floor, its bind-pose waist measures 26.1 cm across and 19.0 cm deep. The previous section measured 32.1 cm across and 18.6 cm deep. [Earlier and revised silhouettes](<Offset waist comparison.png>)
 

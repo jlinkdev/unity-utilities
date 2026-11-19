@@ -304,6 +304,49 @@ def refine_hip_bend(body, blend_height):
     bm.free()
 
 
+def refine_thigh_weights(body):
+    """Grade thigh rotation from the lower groin up to the outer hip."""
+    def fade(t):
+        t = max(0, min(1, t))
+        return t*t*(3 - 2*t)
+
+    pelvis, left, right = [body.vertex_groups[n] for n in ("pelvis", "thigh_l", "thigh_r")]
+    for vertex in body.data.vertices:
+        x, _, z = vertex.co
+        if not .675 < z < 1.045:
+            continue
+        weights = {g.group: g.weight for g in vertex.groups}
+        groups = (pelvis, left, right)
+        old = [weights.get(g.index, 0) for g in groups]
+        total = sum(old)
+        if total <= .3:
+            continue
+
+        outer = fade(abs(x) / .150)
+        bottom = .625 + .065*outer
+        top = .865 + .170*outer
+        leg = fade((top - z) / (top - bottom))
+        left_side = float(x > 0)
+        across = fade((z - .785) / .065)
+        left_share = left_side + across*(fade(.5 + x/.105) - left_side)
+        target = (1-leg, leg*left_share, leg*(1-left_share))
+        amount = .60 * fade((z-.675)/.060) * fade((1.045-z)/.075)
+        updated = [v + amount*(total*f - v) for v, f in zip(old, target)]
+
+        # Below the saddle the inner thigh belongs to a single leg. Give the
+        # pelvis the larger share of any residual pull from the opposite leg.
+        own, other = (1, 2) if x > 0 else (2, 1)
+        excess = updated[other] * (1 - fade((z-.770)/.063))
+        updated[other] -= excess
+        updated[own] += .35*excess
+        updated[0] += .65*excess
+        for group, weight in zip(groups, updated):
+            if weight > 0:
+                group.add([vertex.index], weight, 'REPLACE')
+            elif group.index in weights:
+                group.remove([vertex.index])
+
+
 def generate():
     bpy.ops.wm.open_mainfile(filepath=str(HERE / "Anatomical Base.blend"))
     base = bpy.data.objects["Anatomical Base"]
@@ -329,6 +372,9 @@ def generate():
         for f in body.data.polygons:
             f.use_smooth = False
         normalize_skin(body, rig)
+        if cfg.get('hip_blend_meters'):
+            refine_thigh_weights(body)
+            normalize_skin(body, rig)
         bm = bmesh.new()
         bm.from_mesh(body.data)
         if any(not e.is_manifold for e in bm.edges) or any(f.calc_area() < 1e-12 for f in bm.faces):
