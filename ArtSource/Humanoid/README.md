@@ -6,13 +6,15 @@ Open [Humanoid Review](<../../Assets/Humanoid/Scenes/Humanoid Review.unity>) in 
 
 ## Playable character
 
-Open [Character Playground](<../../Assets/Humanoid/Scenes/Character Playground.unity>), press **Play**, and focus the Game view. WASD walks and steers in world space. Hold Shift to jog or Ctrl to sprint. E interacts and Space plays a sword swipe. Both actions pause travel, finish once, and return to locomotion. The sword swipe animates the character's hand and arm.
+Open [Character Playground](<../../Assets/Humanoid/Scenes/Character Playground.unity>), press **Play**, and focus the Game view. WASD walks and steers in world space. Hold Shift to jog or Ctrl to sprint. Tap the left or right arrow while stationary for a quarter turn. E interacts and Space plays a sword swipe. Both actions pause travel, finish once, and return to locomotion. The sword swipe animates the character's hand and arm.
 
 Drop the [Humanoid prefab](<../../Assets/Humanoid/Prefabs/Humanoid.prefab>) onto a floor with a collider to use it elsewhere. It uses the [Humanoid model](<../../Assets/Humanoid/Models/Humanoid/Humanoid.fbx>), shown as Offset Planes in the mesh study. For scripted control, disable `HumanoidKeyboardInput` and call `SetMovement(worldDirection, gait)` on `HumanoidCharacterController`. Movement persists until changed. Pass `Vector3.zero` to stop. Call `Interact()` or `SwordSwipe()` for a one-shot action.
 
 The [Animator Controller](<../../Assets/Humanoid/Animations/Humanoid Locomotion.controller>) blends the [authored idle, walk, jog, and sprint](<../../Assets/Humanoid/Animations/Character Motion.fbx>) using horizontal speed in meters per second. The feet move backward during contact at the controller's walk, jog, and sprint speeds of 1.5, 3.2, and 5.5 m/s. All three moving cycles begin on left-foot contact so the footsteps stay in phase when blending. The capsule handles travel, gravity, and collision. Interact and Sword Swipe use Quaternius's original clips. [Included CC0 license](<../../Assets/Humanoid/Animations/License.txt>)
 
 To rebuild the four locomotion takes from the anatomical rig, run `blender --background --factory-startup --python-exit-code 1 --python ArtSource/Humanoid/generate_locomotion.py` from the repository root. Keep the FBX's Unity metadata with it. It stores the character's avatar reference pose and loop settings. [Locomotion comparison](<Locomotion comparison.gif>)
+
+The motor eases into moving corners and brakes for a sharp reversal before stepping around. For a standing interaction, call `FaceDirection(worldDirection)`. The character selects the closest authored left or right step turn (45°, 90°, 135°, or 180°) and scales its rotation to the requested heading. Each step finishes with the feet planted. Held movement resumes after the turn. To rebuild the eight takes, run `blender --background --factory-startup --python-exit-code 1 --python ArtSource/Humanoid/generate_turns.py`. [Step Turns](<../../Assets/Humanoid/Animations/Step Turns.fbx>)
 
 ## Mesh treatments
 

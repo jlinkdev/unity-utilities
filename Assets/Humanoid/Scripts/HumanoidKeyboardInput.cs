@@ -24,6 +24,11 @@ namespace JLinkDev.HumanoidStudio
             float z = (keys.wKey.isPressed ? 1 : 0) - (keys.sKey.isPressed ? 1 : 0);
             var gait = keys.ctrlKey.isPressed ? Gait.Sprint : keys.shiftKey.isPressed ? Gait.Jog : Gait.Walk;
             character.SetMovement(new Vector3(x, 0, z), gait);
+            if (x == 0 && z == 0)
+            {
+                if (keys.leftArrowKey.wasPressedThisFrame) character.FaceDirection(-transform.right);
+                else if (keys.rightArrowKey.wasPressedThisFrame) character.FaceDirection(transform.right);
+            }
             if (keys.eKey.wasPressedThisFrame) character.Interact();
             if (keys.spaceKey.wasPressedThisFrame) character.SwordSwipe();
         }

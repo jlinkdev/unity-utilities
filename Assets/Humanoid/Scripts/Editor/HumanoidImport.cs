@@ -13,7 +13,7 @@ namespace JLinkDev.HumanoidStudio.Editor
 
         void OnPreprocessModel()
         {
-            if (assetPath != JointSweep && assetPath != CharacterMotion &&
+            if (assetPath != JointSweep && assetPath != CharacterMotion && assetPath != Root + "/Animations/Step Turns.fbx" &&
                 !assetPath.StartsWith(Root + "/Models/", StringComparison.Ordinal)) return;
             var importer = (ModelImporter)assetImporter;
             importer.animationType = ModelImporterAnimationType.Human;

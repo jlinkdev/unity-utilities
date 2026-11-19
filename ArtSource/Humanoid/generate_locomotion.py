@@ -214,7 +214,7 @@ def frame_pose(rig, phase, speed, period, gait):
     return p
 
 
-def generate():
+def bake_takes(output, takes, pose_at_frame):
     bpy.ops.wm.open_mainfile(filepath=str(HERE/"Anatomical Base.blend"))
     scene = bpy.context.scene
     scene.render.fps = 60
@@ -224,11 +224,11 @@ def generate():
     for bone in rig.pose.bones:
         bone.rotation_mode = 'QUATERNION'
         bone.matrix_basis = Matrix.Identity(4)
-    for name,frames,speed in (("Relaxed Idle",168,0),("Walk",60,1.5),("Jog",44,3.2),("Sprint",36,5.5)):
+    for name, frames, parameter in takes:
         action = bpy.data.actions.new(name)
         rig.animation_data.action = action
         for f in range(frames+1):
-            pose = frame_pose(rig,f/frames,speed,frames/60,name)
+            pose = pose_at_frame(rig, f/frames, parameter, frames/60, name)
             for key in pose.rotation:
                 bone = rig.pose.bones[key]
                 bone.keyframe_insert(data_path="rotation_quaternion",frame=f+1,group=key)
@@ -251,10 +251,10 @@ def generate():
     for track in rig.animation_data.nla_tracks:
         track.mute = False
     scene.frame_set(0)
-    bpy.ops.export_scene.fbx(filepath=str(OUTPUT),use_selection=True,object_types={'ARMATURE'},
+    bpy.ops.export_scene.fbx(filepath=str(output),use_selection=True,object_types={'ARMATURE'},
         add_leaf_bones=False,bake_anim=True,bake_anim_use_all_actions=False,bake_anim_use_nla_strips=True,
         bake_anim_simplify_factor=0,axis_forward='-Z',axis_up='Y',apply_scale_options='FBX_SCALE_UNITS')
 
 
 if __name__ == "__main__":
-    generate()
+    bake_takes(OUTPUT, (("Relaxed Idle",168,0),("Walk",60,1.5),("Jog",44,3.2),("Sprint",36,5.5)), frame_pose)
