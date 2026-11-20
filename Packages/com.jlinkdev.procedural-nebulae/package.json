@@ -1,0 +1,11 @@
+{
+  "name": "com.jlinkdev.procedural-nebulae",
+  "displayName": "jlinkdev Procedural Nebulae",
+  "version": "1.0.0",
+  "unity": "6000.0",
+  "description": "Fly through seeded volumes of star-lit gas and dust in URP.",
+  "license": "MIT",
+  "author": { "name": "Justin Link" },
+  "dependencies": { "com.unity.render-pipelines.universal": "17.0.3" },
+  "samples": [{ "displayName": "Starlit Passage", "description": "A looping flight past a golden emission cavity, dark dust folds and a violet companion star.", "path": "Samples~/Starlit Passage" }]
+}

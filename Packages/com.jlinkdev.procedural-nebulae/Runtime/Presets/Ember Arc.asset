@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b14132ea77148339fe9a44023666c36, type: 3}
+  m_Name: Ember Arc
+  m_EditorClassIdentifier:
+  defaultFormSeed: 91
+  defaultDetailSeed: 1049
+  settings:
+    shape: 5
+    structureWarp: 0
+    structureWarpStrength: 1.25
+    baseWarpStrength: 1.25
+    varyBankLayout: 1
+    foldFrequency: 5.2
+    coverage: 0.60
+    cloudBody: 0.86
+    wisps: 0.69
+    surfaceDetail: 0.88
+    plumeScale: 1
+    edgeSoftness: 0.028
+    extinction: 42
+    shadowFill: {r: 0.093, g: 0.083, b: 0.159, a: 1}
+    litDust: {r: 0.43, g: 0.37, b: 0.53, a: 1}
+    outerGas: {r: 0.91, g: 0.32, b: 0.29, a: 1}
+    innerGas: {r: 1, g: 0.79, b: 0.37, a: 1}
+    transitionGas: {r: 0.22, g: 0.80, b: 0.90, a: 1}
+    gasBrightness: 0.82

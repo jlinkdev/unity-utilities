@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b14132ea77148339fe9a44023666c36, type: 3}
+  m_Name: Tidal Veil
+  m_EditorClassIdentifier:
+  defaultFormSeed: 91
+  defaultDetailSeed: 1049
+  settings:
+    shape: 4
+    layeredCurtain: 0
+    foregroundShelf: 1
+    varyBankLayout: 1
+    shapeTexture: {fileID: 11700000, guid: a7498d563720f6549ad8b51a1d44f713, type: 2}
+    shapeDisplacement: 0.055
+    surfaceDetail: 0.94
+    foldRelief: 0.9
+    rearCrease: 0.85
+    bankFormation: 0
+    structureWarp: 0
+    structureWarpStrength: 1.25
+    baseWarp: 0
+    baseWarpStrength: 1.25
+    foldFrequency: 4.8
+    coverage: 0.6
+    cloudBody: 0.94
+    wisps: 0.06
+    plumeScale: 1
+    edgeSoftness: 0.028
+    extinction: 31
+    shadowFill: {r: 0.033, g: 0.058, b: 0.115, a: 1}
+    litDust: {r: 0.44, g: 0.63, b: 0.83, a: 1}
+    outerGas: {r: 0.3, g: 0.25, b: 0.63, a: 1}
+    innerGas: {r: 0.84, g: 0.96, b: 0.91, a: 1}
+    transitionGas: {r: 0.105, g: 0.70, b: 0.71, a: 1}
+    gasBrightness: 0

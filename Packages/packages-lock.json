@@ -54,6 +54,14 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.procedural-nebulae": {
+      "version": "file:com.jlinkdev.procedural-nebulae",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.3"
+      }
+    },
     "com.jlinkdev.volumetric-fog-and-rain": {
       "version": "file:com.jlinkdev.volumetric-fog-and-rain",
       "depth": 0,

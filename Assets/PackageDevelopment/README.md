@@ -6,6 +6,12 @@ that exercise multiple packages but should not ship in any UPM package.
 Package-specific samples belong in that package's `Samples~` directory, and
 package-specific automated tests belong in that package's `Tests` directory.
 
+## Procedural Nebulae sample workflow
+
+Open [Starlit Passage](<ProceduralNebulae/SampleAuthoring/Starlit Passage/Starlit Passage.unity>) in the host project and press **Play**. Its Flight Camera is assigned the **Starlit Passage Renderer** override.
+
+The distributable copy lives in `Packages/com.jlinkdev.procedural-nebulae/Samples~/Starlit Passage`. When transferring edits, retain each copy’s metadata and local asset references. Both scenes use the package’s Starlit Banks prefab.
+
 ## Portal sample workflow
 
 The editable Portal Playground source lives at

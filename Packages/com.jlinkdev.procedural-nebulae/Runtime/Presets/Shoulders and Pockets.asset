@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b14132ea77148339fe9a44023666c36, type: 3}
+  m_Name: Shoulders and Pockets
+  m_EditorClassIdentifier:
+  defaultFormSeed: 91
+  defaultDetailSeed: 1049
+  settings:
+    shape: 4
+    layeredCurtain: 0
+    shapeTexture: {fileID: 11700000, guid: a7498d563720f6549ad8b51a1d44f713, type: 2}
+    shapeDisplacement: 0.055
+    foldFrequency: 4.8
+    coverage: 0.6
+    cloudBody: 0.94
+    wisps: 0.06
+    plumeScale: 1
+    edgeSoftness: 0.028
+    extinction: 31
+    shadowFill: {r: 0.14, g: 0.14, b: 0.14, a: 1}
+    litDust: {r: 0.86, g: 0.86, b: 0.86, a: 1}
+    outerGas: {r: 1, g: 1, b: 1, a: 1}
+    innerGas: {r: 1, g: 1, b: 1, a: 1}
+    transitionGas: {r: 0, g: 0, b: 0, a: 0}
+    gasBrightness: 0
