@@ -14,13 +14,17 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Samples
         public FogStyleProfile referenceStyle;
         public Transform actor;
         public Camera view;
-        public Transform leftBoot, rightBoot, weapon;
+        public Transform bladeTip;
         [Tooltip("Closed world-space animation path. At least four points are required.")]
         public Vector3[] pathPoints = { new(-2,0,-3), new(1.8f,0,-3), new(2.8f,0,.8f), new(0,0,2.4f), new(-4.7f,0,.3f), new(-3.3f,0,-2) };
         public bool lowCamera;
         [Tooltip("Walk the first pass, then hold still at ten seconds to inspect fog recovery.")]
         public bool recoveryPreview;
-        float time, gait, gaitWeight, attackTime = -1;
+        static readonly int Speed = Animator.StringToHash("Speed");
+        static readonly int Corner = Animator.StringToHash("Corner");
+        static readonly int Swipe = Animator.StringToHash("Base Layer.Sword Swipe");
+        Animator explorer;
+        float time;
         Vector3 bladePrevious;
         Vector3 previousPosition;
         string capturePath;
@@ -38,7 +42,13 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Samples
         readonly FrameTiming[] timing = new FrameTiming[1];
         void OnEnable()
         {
-            if(actor) actor.position=SamplePath(0);
+            time = 0;
+            if (actor)
+            {
+                actor.position = SamplePath(0);
+                explorer = actor.GetComponent<Animator>();
+            }
+            if (bladeTip) bladePrevious = bladeTip.position;
             previousPosition = actor ? actor.position : Vector3.zero;
         }
         void Start()
@@ -97,32 +107,22 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Samples
         void Update()
         {
             float dt = Mathf.Min(Time.deltaTime, .05f); time += dt;
-            if (!actor || !view) return;
+            if (!explorer || !view || dt <= 0) return;
             float t=recoveryPreview?Mathf.Min(time,10):time%20;
             float progress=t<2?0:t<5?Mathf.Lerp(0,.2f,(t-2)/3):t<8?Mathf.Lerp(.2f,.52f,(t-5)/3):
-                t<10?Mathf.Lerp(.52f,.65f,(t-8)/2):t<14?.65f:t<18?Mathf.Lerp(.65f,1,(t-14)/4):1;
+                t<10?Mathf.Lerp(.52f,.65f,(t-8)/2):Mathf.Lerp(.65f,1,Mathf.InverseLerp(14.75f,18,t));
             actor.position=SamplePath(progress);
-            if(t>=12 && t-dt<12) Gust();
+            if(t>=12 && t-dt<12) explorer.CrossFadeInFixedTime(Swipe, .08f, 0, 0);
             bool useLowCamera=lowCamera || captureLowCamera || t>=18;
             Vector3 delta = actor.position - previousPosition;
+            float previousYaw = actor.eulerAngles.y;
             if (delta.sqrMagnitude > .00001f) actor.rotation = Quaternion.Slerp(actor.rotation, Quaternion.LookRotation(delta), dt * 9);
             previousPosition = actor.position;
-            float actualSpeed=delta.magnitude/Mathf.Max(dt,.001f); gait+=actualSpeed*dt*7;
-            gaitWeight=Mathf.Lerp(gaitWeight,Mathf.Clamp01(actualSpeed),1-Mathf.Exp(-dt*10));
-            AnimateFoot(leftBoot,-1,actualSpeed,0); AnimateFoot(rightBoot,1,actualSpeed,Mathf.PI);
-            if(weapon)
-            {
-                if(attackTime>=0)
-                {
-                    attackTime+=dt; float f=Mathf.Clamp01(attackTime/.45f);
-                    weapon.localRotation=Quaternion.Euler(12,Mathf.Lerp(-85,95,f),-12);
-                    Vector3 tip=weapon.TransformPoint(Vector3.forward*1.55f);
-                    fog.AddSweep(bladePrevious,tip,Vector3.ClampMagnitude((tip-bladePrevious)/Mathf.Max(dt,.001f),10),.42f,.06f);
-                    bladePrevious=tip;
-                    if(f>=1) attackTime=-1;
-                }
-                else weapon.localRotation=Quaternion.Slerp(weapon.localRotation,Quaternion.Euler(0,20,65),dt*7);
-            }
+            float speed = delta.magnitude / dt;
+            float turnRate = Mathf.Lerp(150, 120, Mathf.InverseLerp(3.2f, 5.5f, speed));
+            float corner = Mathf.DeltaAngle(previousYaw, actor.eulerAngles.y) / (dt * turnRate);
+            explorer.SetFloat(Speed, speed, .08f, dt);
+            explorer.SetFloat(Corner, Mathf.Clamp(corner, -1, 1), .07f, dt);
             Vector3 target=new(0,.45f,.3f);
             Quaternion rotation = Quaternion.Euler(useLowCamera ? 7 : 22, 0, 0);
             view.transform.position = target + rotation * new Vector3(0, 0, -8.8f);
@@ -136,18 +136,15 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Samples
                 c=pathPoints[(index+1)%pathPoints.Length],d=pathPoints[(index+2)%pathPoints.Length];
             return .5f*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
         }
-        void AnimateFoot(Transform foot,float side,float speed,float phase)
+        void LateUpdate()
         {
-            if(!foot) return;
-            float swing=Mathf.Sin(gait+phase)*gaitWeight;
-            foot.localPosition=new Vector3(side*.17f,.34f+Mathf.Max(0,swing)*.13f,swing*.24f);
-            foot.localRotation=Quaternion.Euler(swing*22,0,0);
-        }
-        void Gust()
-        {
-            if(!weapon) { fog.AddGust(actor.position+Vector3.up*.4f,actor.forward*5,1,.1f); return; }
-            attackTime=0; weapon.localRotation=Quaternion.Euler(12,-85,-12);
-            bladePrevious=weapon.TransformPoint(Vector3.forward*1.55f);
+            if (!bladeTip || !explorer || !fog) return;
+            // Read the animated tip after Mecanim poses the hand and before the fog advances.
+            Vector3 tip = bladeTip.position;
+            var state = explorer.GetCurrentAnimatorStateInfo(0);
+            if (state.fullPathHash == Swipe && state.normalizedTime >= .12f && state.normalizedTime <= .34f && Time.deltaTime > 0)
+                fog.AddSweep(bladePrevious, tip, Vector3.ClampMagnitude((tip - bladePrevious) / Time.deltaTime, 10), .42f, .06f);
+            bladePrevious = tip;
         }
         IEnumerator Capture()
         {

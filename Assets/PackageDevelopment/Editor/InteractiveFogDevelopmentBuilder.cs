@@ -40,7 +40,6 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             var dark = Material("Dark joints",new Color(.075f,.073f,.07f),.15f);
             var pale = Material("Pale edging",new Color(.47f,.45f,.41f),.2f);
             var bronze = Material("Brushed bronze",new Color(.4f,.22f,.075f),.5f,.6f);
-            var cloak = Material("Explorer ochre",new Color(.55f,.24f,.055f),.18f);
             var glow = Material("Lantern glass",new Color(.9f,.52f,.18f),.4f);
             glow.EnableKeyword("_EMISSION"); glow.SetColor("_EmissionColor",new Color(2.8f,1.1f,.25f)); EditorUtility.SetDirty(glow);
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
@@ -80,19 +79,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             fog.simulation=AssetDatabase.LoadAssetAtPath<ComputeShader>(FogSetup.PackageRoot+"/Runtime/Shaders/FogFluid.compute"); fog.sun=light;
             fog.localLights=Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
             fog.resolution=new Vector3Int(160,32,160); fog.raySteps=112;
-            var actor=new GameObject("Explorer").transform; actor.position=new Vector3(-2,0,-3);
-            var interactor=actor.gameObject.AddComponent<FogInteractor>(); interactor.radius=.28f; interactor.clearing=0; interactor.drag=2.8f;
-            Primitive("Coat",PrimitiveType.Capsule,actor,new Vector3(0,1.03f,0),new Vector3(.56f,.48f,.38f),cloak);
-            Primitive("Head",PrimitiveType.Sphere,actor,new Vector3(0,1.67f,0),new Vector3(.36f,.4f,.36f),bronze);
-            for(int side=-1;side<=1;side+=2)
-            {
-                var boot=Primitive(side<0?"Left boot":"Right boot",PrimitiveType.Capsule,actor,new Vector3(side*.17f,.34f,0),new Vector3(.19f,.34f,.22f),dark);
-                var foot=boot.AddComponent<FogInteractor>(); foot.radius=.19f; foot.height=0; foot.drag=3; foot.clearing=0;
-                Primitive("Arm",PrimitiveType.Capsule,actor,new Vector3(side*.37f,1.05f,0),new Vector3(.16f,.35f,.16f),cloak);
-            }
-            var weapon=new GameObject("Swept blade").transform; weapon.SetParent(actor,false); weapon.localPosition=new Vector3(.18f,.65f,.1f);
-            Cube("Blade",weapon,new Vector3(0,0,.8f),new Vector3(.055f,.09f,1.5f),pale);
-            foreach(var collider in actor.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(collider);
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Root + "/Characters/Explorer.prefab");
+            var actor = ((GameObject)PrefabUtility.InstantiatePrefab(prefab, scene)).transform;
+            actor.position = new Vector3(-2, 0, -3);
             var camera=new GameObject("Sanctuary camera").AddComponent<Camera>(); camera.tag="MainCamera"; camera.nearClipPlane=.05f; camera.farClipPlane=80;
             camera.clearFlags=CameraClearFlags.SolidColor; camera.backgroundColor=new Color(.025f,.04f,.055f); camera.fieldOfView=52;
             camera.transform.position=new Vector3(0,6.65f,-11.2f); camera.transform.LookAt(new Vector3(0,.45f,0));
@@ -102,7 +91,7 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             if(!grade.TryGet<Bloom>(out var bloom)) bloom=grade.Add<Bloom>(); bloom.intensity.Override(.18f); bloom.threshold.Override(1.1f);
             EditorUtility.SetDirty(grade); var volume=new GameObject("Sanctuary grading").AddComponent<Volume>(); volume.isGlobal=true; volume.sharedProfile=grade;
             FogSetup.AssignRendererToCamera(GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset ?? pipeline,renderer,camera);
-            var controller=new GameObject("Mist Sanctuary controls").AddComponent<MistSanctuary>(); controller.fog=fog; controller.actor=actor; controller.view=camera; controller.leftBoot=actor.Find("Left boot"); controller.rightBoot=actor.Find("Right boot"); controller.weapon=weapon;
+            var controller=new GameObject("Mist Sanctuary controls").AddComponent<MistSanctuary>(); controller.fog=fog; controller.actor=actor; controller.view=camera; controller.bladeTip = actor.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand).Find("Sword/Blade tip");
             controller.referenceStyle=AssetDatabase.LoadAssetAtPath<FogStyleProfile>(FogSetup.PackageRoot+"/Runtime/Styles/Sanctuary Ground Mist.asset");
             EditorSceneManager.SaveScene(scene,ScenePath); AssetDatabase.SaveAssets();
             Debug.Log("FOG_SAMPLE_BUILT "+ScenePath);
