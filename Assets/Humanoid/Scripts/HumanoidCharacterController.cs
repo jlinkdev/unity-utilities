@@ -12,6 +12,8 @@ namespace JLinkDev.HumanoidStudio
         public const float JogSpeed = 3.2f;
         public const float SprintSpeed = 5.5f;
         static readonly int Speed = Animator.StringToHash("Speed");
+        static readonly int Corner = Animator.StringToHash("Corner");
+        static readonly int LocomotionState = Animator.StringToHash("Base Layer.Locomotion");
         static readonly int InteractState = Animator.StringToHash("Base Layer.Interact");
         static readonly int SwordState = Animator.StringToHash("Base Layer.Sword Swipe");
         static readonly int ActionTag = Animator.StringToHash("Action");
@@ -90,16 +92,19 @@ namespace JLinkDev.HumanoidStudio
             if (dt <= 0f || !capsule.enabled) return;
             bool acting = actionRequested || PlayingAction();
             actionRequested = false;
-            float targetSpeed = acting || stepState != 0 ? 0f : Steer(dt);
+            float corner = 0f;
+            float targetSpeed = acting || stepState != 0 ? 0f : Steer(dt, out corner);
             forwardSpeed = acting || stepState != 0 ? 0f : Mathf.MoveTowards(forwardSpeed, targetSpeed, acceleration * dt);
             verticalSpeed = capsule.isGrounded && verticalSpeed < 0f ? -2f : verticalSpeed + Physics.gravity.y * dt;
             capsule.Move((transform.forward * forwardSpeed + Vector3.up * verticalSpeed) * dt);
             var velocity = capsule.velocity;
             animator.SetFloat(Speed, new Vector2(velocity.x, velocity.z).magnitude, 0.08f, dt);
+            animator.SetFloat(Corner, corner, .07f, dt);
         }
 
-        float Steer(float dt)
+        float Steer(float dt, out float corner)
         {
+            corner = 0f;
             float speed = desiredVelocity.magnitude;
             Vector3 heading = speed > 0f ? desiredVelocity / speed : requestedFacing;
             if (heading.sqrMagnitude == 0f)
@@ -131,9 +136,15 @@ namespace JLinkDev.HumanoidStudio
             float yaw = transform.eulerAngles.y;
             float limit = Mathf.Lerp(turnDegreesPerSecond, turnDegreesPerSecond * .5f, forwardSpeed / SprintSpeed);
             float nextYaw = Mathf.SmoothDampAngle(yaw, yaw + angle, ref steeringVelocity, .12f, limit, dt);
-            transform.rotation = Quaternion.AngleAxis(Mathf.DeltaAngle(yaw, nextYaw), Vector3.up) * transform.rotation;
+            float yawStep = Mathf.DeltaAngle(yaw, nextYaw);
+            transform.rotation = Quaternion.AngleAxis(yawStep, Vector3.up) * transform.rotation;
+            // Match the curvature of the authored jog and sprint strides.
+            float gaitBlend = Mathf.InverseLerp(JogSpeed, SprintSpeed, forwardSpeed);
+            float turnRate = Mathf.Lerp(150f, 120f, gaitBlend);
+            corner = Mathf.Clamp(yawStep / (dt * turnRate), -1f, 1f);
             if (magnitude < .2f) requestedFacing = Vector3.zero;
-            return speed * Mathf.Clamp01(Vector3.Dot(transform.forward, heading));
+            float carry = .65f * Mathf.InverseLerp(WalkSpeed, JogSpeed, forwardSpeed);
+            return speed * Mathf.Clamp(Vector3.Dot(transform.forward, heading), carry, 1f);
         }
 
         void LateUpdate()
@@ -151,13 +162,14 @@ namespace JLinkDev.HumanoidStudio
             transform.rotation = Quaternion.AngleAxis(yaw, Vector3.up) * stepStart;
             if (state.normalizedTime < 1f) return;
             stepState = 0;
-            animator.CrossFadeInFixedTime(Animator.StringToHash("Base Layer.Locomotion"), .08f, 0, 0);
-            if (queuedAction != 0)
+            if (queuedAction == 0)
             {
-                int action = queuedAction;
-                queuedAction = 0;
-                BeginAction(action);
+                animator.CrossFadeInFixedTime(LocomotionState, .08f, 0, 0);
+                return;
             }
+            int action = queuedAction;
+            queuedAction = 0;
+            BeginAction(action);
         }
 
         void OnDisable()
@@ -165,7 +177,7 @@ namespace JLinkDev.HumanoidStudio
             desiredVelocity = Vector3.zero;
             requestedFacing = Vector3.zero;
             if (stepState != 0 && animator && animator.isActiveAndEnabled && animator.isInitialized)
-                animator.Play("Base Layer.Locomotion", 0, 0);
+                animator.Play(LocomotionState, 0, 0);
             stepState = queuedAction = 0;
             steeringVelocity = 0;
             forwardSpeed = verticalSpeed = 0f;

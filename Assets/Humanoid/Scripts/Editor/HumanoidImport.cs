@@ -9,12 +9,23 @@ namespace JLinkDev.HumanoidStudio.Editor
     {
         internal const string Root = "Assets/Humanoid";
         internal const string JointSweep = Root + "/Animations/Joint Sweep.fbx";
-        const string CharacterMotion = Root + "/Animations/Character Motion.fbx";
+        // Only these sources use the anatomical rig. Props can share the Models folder.
+        static readonly HashSet<string> RigSources = new(StringComparer.Ordinal)
+        {
+            JointSweep,
+            Root + "/Animations/Character Motion.fbx",
+            Root + "/Animations/Step Turns.fbx",
+            Root + "/Animations/Running Turns.fbx",
+            Root + "/Animations/Character Actions.fbx",
+            Root + "/Models/Anatomical Base/Anatomical Base.fbx",
+            Root + "/Models/Reduction Study/Reduction Study.fbx",
+            Root + "/Models/Sculpted Planes/Sculpted Planes.fbx",
+            Root + "/Models/Humanoid/Humanoid.fbx"
+        };
 
         void OnPreprocessModel()
         {
-            if (assetPath != JointSweep && assetPath != CharacterMotion && assetPath != Root + "/Animations/Step Turns.fbx" &&
-                !assetPath.StartsWith(Root + "/Models/", StringComparison.Ordinal)) return;
+            if (!RigSources.Contains(assetPath)) return;
             var importer = (ModelImporter)assetImporter;
             importer.animationType = ModelImporterAnimationType.Human;
             importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
@@ -57,6 +68,5 @@ namespace JLinkDev.HumanoidStudio.Editor
             description.human = bones.ToArray();
             importer.humanDescription = description;
         }
-
     }
 }

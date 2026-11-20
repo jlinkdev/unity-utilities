@@ -1,4 +1,0 @@
-Anatomical Base | 26756 triangles | 1.729 m | valid Humanoid, 52 mapped | 53 skin bind matrices passed | hand travel 0.56 m | ankle height 0.07–0.28 m | posed/bind edge length p01–p99 0.88–1.15 | minimum 0.21, maximum 5.01
-Reduction Study | 3000 triangles | 1.725 m | valid Humanoid, 52 mapped | 53 skin bind matrices passed | hand travel 0.56 m | ankle height 0.07–0.28 m | posed/bind edge length p01–p99 0.81–1.18 | minimum 0.34, maximum 2.01
-Sculpted Planes | 2400 triangles | 1.724 m | valid Humanoid, 52 mapped | 53 skin bind matrices passed | hand travel 0.56 m | ankle height 0.07–0.28 m | posed/bind edge length p01–p99 0.81–1.19 | minimum 0.45, maximum 2.00
-Offset Planes | 2150 triangles | 1.725 m | valid Humanoid, 52 mapped | 53 skin bind matrices passed | hand travel 0.56 m | ankle height 0.07–0.28 m | posed/bind edge length p01–p99 0.80–1.18 | minimum 0.32, maximum 1.86

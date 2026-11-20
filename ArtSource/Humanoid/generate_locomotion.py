@@ -10,6 +10,10 @@ OUTPUT = HERE.parents[1] / "Assets/Humanoid/Animations/Character Motion.fbx"
 TAU = 2 * pi
 UP = Vector((0, 0, 1))
 X = Vector((1, 0, 0))
+RUNNING_FINGERS = (
+    ("index", (8, 22, 32), .018), ("middle", (12, 28, 39), .001),
+    ("ring", (16, 36, 47), -.010), ("pinky", (21, 43, 56), -.045),
+)
 
 
 class Pose:
@@ -61,7 +65,8 @@ class Pose:
         self.place(foot, delta=desired @ current.inverted())
         self.place(bones["ball"+side], delta=Quaternion(Quaternion(UP, toe_out) @ X, -toe_roll))
 
-    def hand(self, side, sign, forearm_angle, swing=None, wrist_roll=0, curl_scale=1):
+    def hand(self, side, sign, forearm_angle, swing=None, wrist_roll=0, curl_scale=1,
+             finger_shape=RUNNING_FINGERS):
         bones = self.rig.data.bones
         wrist = bones["hand"+side]
         middle = bones["middle_01"+side].head_local
@@ -79,12 +84,7 @@ class Pose:
             # Set the finger directions in the palm frame. The knuckles in this rest
             # mesh fan apart, so simply adding the same curl to each joint leaves gaps.
             inward = sign * fingers.cross(thumb)
-            for digit, angles, spread in (
-                ("index", (8, 22, 32), .018),
-                ("middle", (12, 28, 39), .001),
-                ("ring", (16, 36, 47), -.010),
-                ("pinky", (21, 43, 56), -.045),
-            ):
+            for digit, angles, spread in finger_shape:
                 for joint, angle in enumerate(angles, start=1):
                     bend = radians(angle * curl_scale + joint * swing)
                     direction = fingers*cos(bend) + inward*sin(bend) + thumb*spread
@@ -131,7 +131,7 @@ def foot_target(phase, speed, period, stance, gait):
     return forward + .125*(1-cos(roll)) + .063*sin(roll), .075 + .125*sin(roll) + .063*(cos(roll)-1) + lift, pitch, toe_roll
 
 
-def frame_pose(rig, phase, speed, period, gait):
+def frame_pose(rig, phase, speed, period, gait, corner=0):
     bones = rig.data.bones
     idle = speed == 0
     walk = gait == "Walk"
@@ -144,13 +144,24 @@ def frame_pose(rig, phase, speed, period, gait):
     p = Pose(rig)
     p.place(bones["Root"])
     targets = {}
+    foot_yaws = {}
     for side, sign in (("_l",1),("_r",-1)):
+        foot_yaws[side] = sign * radians(5 if idle else 2)
         local_phase = (phase + (0 if sign == 1 else .5)) % 1
         if idle:
             targets[side] = Vector((sign*.114, -.015-sign*.018, .073)), 0, 0
         else:
             fwd,z,pitch,toe_roll = foot_target(local_phase,speed,period,stance,gait)
-            targets[side] = Vector((sign*(.089 if sprint else .093),-fwd,z)), pitch, toe_roll
+            lateral = sign*(.089 if sprint else .093)
+            if corner:
+                # Put the contact on the circular path the motor travels. The
+                # outside foot has farther to travel during the same stance.
+                radius = speed / radians(corner * (120 if sprint else 150))
+                arc = fwd / radius
+                fwd = (radius - lateral) * sin(arc)
+                lateral = radius - (radius - lateral) * cos(arc)
+                foot_yaws[side] += arc
+            targets[side] = Vector((lateral,-fwd,z)), pitch, toe_roll
     pelvis = bones["pelvis"]
     if idle:
         z = .918 + .0015*breath
@@ -160,29 +171,34 @@ def frame_pose(rig, phase, speed, period, gait):
         height, bounce = (.829, .033) if sprint else (.850, .025)
         z = height - bounce*cos(2*TAU*(phase-.13))
     # The supporting leg limits hip height. The recovering foot follows the pelvis.
+    hip_shift = corner * (.064 if sprint else .045)
     for side,(ankle,_,_) in targets.items():
         if not idle and (phase + (0 if side == "_l" else .5)) % 1 > stance:
             continue
         hip = pelvis.head_local + Quaternion(UP,hip_yaw) @ (bones["thigh"+side].head_local-pelvis.head_local)
+        hip.x += hip_shift
         planar = (hip-ankle).xy.length
         reach = bones["thigh"+side].length + bones["calf"+side].length - .003
         z = min(z,ankle.z+sqrt(max(0,reach**2-planar**2))-(hip.z-pelvis.head_local.z))
     offset = Vector((.003*breath if idle else .014*sin(TAU*(phase+.03)),0,z-pelvis.head_local.z))
+    offset.x += hip_shift
     pelvis_rotation = Quaternion(UP, hip_yaw)
     p.place(pelvis,delta=pelvis_rotation,offset=offset)
     for side,sign in (("_l",1),("_r",-1)):
         hip = p.position["pelvis"] + pelvis_rotation @ (bones["thigh"+side].head_local-pelvis.head_local)
         ankle,pitch,toe_roll=targets[side]
-        p.leg(side,hip,ankle,pitch,sign*radians(5 if idle else 2),toe_roll)
+        p.leg(side,hip,ankle,pitch,foot_yaws[side],toe_roll)
     running = gait in ("Jog", "Sprint")
     settle = radians(1.2) * cos(2*TAU*(phase-.16)) if running else 0
     roll = radians(1.6) * sin(TAU*(phase+.03)) if running else 0
     side_axis = Vector((0, 1, 0))
+    bank = radians(corner * (14 if sprint else 10))
     for name, angle in (("spine_01",.45),("spine_02",.35),("spine_03",.20)):
         pitch = lean + settle + (radians(.35)*breath if idle else 0)
-        p.place(bones[name], delta=Quaternion(side_axis, roll*angle) @ Quaternion(X, pitch*angle)
-                @ Quaternion(UP, -hip_yaw*1.8*angle))
-    p.place(bones["neck_01"],delta=Quaternion(side_axis,-roll*.65) @ Quaternion(X,-(lean+settle)*.55))
+        p.place(bones[name], delta=Quaternion(side_axis, (roll+bank)*angle) @ Quaternion(X, pitch*angle)
+                @ Quaternion(UP, (-hip_yaw*1.8 + radians(6*corner))*angle))
+    p.place(bones["neck_01"],delta=Quaternion(UP,radians(7*corner)) @
+            Quaternion(side_axis,-roll*.65-bank*.30) @ Quaternion(X,-(lean+settle)*.55))
     p.place(bones["head"],delta=Quaternion(X,-lean*.25))
     for side,sign in (("_l",1),("_r",-1)):
         if running:
@@ -196,10 +212,11 @@ def frame_pose(rig, phase, speed, period, gait):
             upper = radians(-8 + (39 if sprint else 27)*swing)
             elbow = radians((89 if sprint else 77) + 13*cos(arm_phase - .26))
             lower = upper + elbow
+            carry = Quaternion(side_axis, bank*.65) @ Quaternion(UP, radians(6*corner))
             p.place(bones["upperarm"+side],
-                    direction=Vector((sign*(.13 - .05*swing), -sin(upper), -cos(upper))))
+                    direction=carry @ Vector((sign*(.13 - .05*swing), -sin(upper), -cos(upper))))
             p.place(bones["lowerarm"+side],
-                    direction=Vector((-sign*(.065 + .11*swing), -sin(lower), -cos(lower))))
+                    direction=carry @ Vector((-sign*(.065 + .11*swing), -sin(lower), -cos(lower))))
             wrist = lower + radians(4.5)*sin(arm_phase)
             wrist_roll = sign*radians(7 + 4*cos(arm_phase - .22))
             p.hand(side, sign, wrist, swing=cos(arm_phase-.30), wrist_roll=wrist_roll,
@@ -208,13 +225,13 @@ def frame_pose(rig, phase, speed, period, gait):
         p.place(bones["clavicle"+side])
         upper = radians(-3 + sign*breath*.6 if idle else -2-sign*17*stride)
         lower = upper + radians(12 if idle else 21)
-        p.place(bones["upperarm"+side],direction=Vector((sign*(.18 if idle else .13),-sin(upper),-cos(upper))))
+        p.place(bones["upperarm"+side],direction=Vector((sign*(.27 if idle else .13),-sin(upper),-cos(upper))))
         p.place(bones["lowerarm"+side],direction=Vector((sign*.035,-sin(lower),-cos(lower))))
         p.hand(side,sign,lower)
     return p
 
 
-def bake_takes(output, takes, pose_at_frame):
+def bake_takes(output, takes, pose_at_frame, authored_action=None):
     bpy.ops.wm.open_mainfile(filepath=str(HERE/"Anatomical Base.blend"))
     scene = bpy.context.scene
     scene.render.fps = 60
@@ -224,6 +241,7 @@ def bake_takes(output, takes, pose_at_frame):
     for bone in rig.pose.bones:
         bone.rotation_mode = 'QUATERNION'
         bone.matrix_basis = Matrix.Identity(4)
+    actions = []
     for name, frames, parameter in takes:
         action = bpy.data.actions.new(name)
         rig.animation_data.action = action
@@ -233,12 +251,21 @@ def bake_takes(output, takes, pose_at_frame):
                 bone = rig.pose.bones[key]
                 bone.keyframe_insert(data_path="rotation_quaternion",frame=f+1,group=key)
             rig.pose.bones["pelvis"].keyframe_insert(data_path="location",frame=f+1,group="pelvis")
+        actions.append(action)
+        rig.animation_data.action = None
+    if authored_action:
+        library = HERE / (authored_action + ".blend")
+        with bpy.data.libraries.load(str(library)) as (source, target):
+            if authored_action not in source.actions:
+                raise ValueError(f"{library} is missing the action {authored_action!r}")
+            target.actions = [authored_action]
+        actions.extend(target.actions)
+    for action in actions:
         track = rig.animation_data.nla_tracks.new()
-        track.name = name
-        strip = track.strips.new(name,1,action)
+        track.name = action.name
+        strip = track.strips.new(action.name,1,action)
         strip.extrapolation = 'NOTHING'
         track.mute = True
-        rig.animation_data.action = None
     # The FBX bind skeleton is the anatomical rest pose, independent of the last take.
     for bone in rig.pose.bones:
         bone.rotation_quaternion = Quaternion()
