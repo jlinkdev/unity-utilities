@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544a1e712d2c53fcb9a57225d06d93b0, type: 3}
+  m_Name: Gallery loops
+  m_EditorClassIdentifier:
+  recipe:
+    outline: 0
+    mount: 0
+    artworkSize: {x: 0.3, y: 0.4}
+    railWidth: 0.068
+    railDepth: 0.03
+    relief: 0.028
+    cornerFraction: 0.17
+    matWidth: 0.035
+    floatGap: 0.008
+    includeArtwork: 1
+    profile:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.12
+        inSlope: 0
+        outSlope: 0.8
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0.92
+        inSlope: 0.8
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    bands:
+    - shape: 0
+      anchor: 1
+      position: 0.015
+      width: 0.014
+      height: -0.007
+    - shape: 0
+      anchor: 2
+      position: 0.019000005
+      width: 0.022
+      height: 0.015
+    curveSegments: 16
+    uvLayout: 0
+    tileSize: 0.1

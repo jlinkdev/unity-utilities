@@ -1,0 +1,29 @@
+.bench { flex-grow: 1; flex-direction: row; color: rgb(239,236,220); }
+.side { width: 31%; min-width: 195px; max-width: 310px; background-color: rgb(29,38,38); padding: 12px 12px 10px 12px; }
+.title { font-size: 25px; -unity-font-style: bold; color: rgb(250,242,223); }
+.measure, .help, .foot, .notice { white-space: normal; font-size: 12px; color: rgb(195,203,187); }
+.measure { margin-bottom: 6px; }
+.section { font-size: 15px; -unity-font-style: bold; color: rgb(247,205,146); margin-top: 12px; margin-bottom: 4px; }
+.row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.bench Button { color: rgb(243,238,220); background-color: rgb(56,69,66); border-width: 0; border-radius: 5px; margin: 2px; padding: 4px 8px; }
+.bench Button:hover { background-color: rgb(78,90,82); }
+.bench Button.selected { background-color: rgb(225,183,119); color: rgb(34,43,41); }
+.bench Button:disabled { opacity: .42; }
+.bench .unity-base-field__label { color: rgb(224,225,210); min-width: 77px; font-size: 12px; }
+.bench Slider { margin-top: 5px; }
+.bench Slider TextField { min-width: 34px; }
+.bench .unity-base-text-field__input { color: rgb(246,239,217); background-color: rgb(53,67,65); border-width: 0; border-radius: 3px; }
+.bench .unity-base-slider__tracker { background-color: rgb(78,91,85); }
+.bench .unity-base-slider__dragger { background-color: rgb(225,183,119); border-width: 0; border-radius: 3px; }
+.bench Toggle .unity-base-field__label { min-width: 103px; }
+.bench .unity-scroller--vertical { width: 10px; margin-left: 4px; }
+.bench .unity-scroller--vertical .unity-repeat-button { display: none; }
+.bench .unity-scroller--vertical .unity-base-slider__tracker { background-color: rgb(29,38,38); }
+.bench .unity-scroller--vertical .unity-base-slider__dragger { background-color: rgb(86,98,90); }
+.handle-value { color: rgb(245,202,144); padding-left: 10px; }
+.profile-pad { height: 85px; margin-top: 5px; background-color: rgb(19,27,28); border-radius: 5px; }
+.work { flex-grow: 1; }
+.toolbar, .foot { background-color: rgb(33,43,43); padding: 6px 10px; }
+.viewport { flex-grow: 1; }
+.foot { -unity-text-align: middle-center; }
+.notice { color: rgb(249,206,149); }

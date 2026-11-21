@@ -1,0 +1,1 @@
+{"name":"jlinkdev.ProceduralFrames.EditorTests","references":["jlinkdev.ProceduralFrames","jlinkdev.ProceduralFrames.Editor"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"],"autoReferenced":false}

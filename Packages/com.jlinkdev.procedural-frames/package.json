@@ -1,0 +1,22 @@
+{
+  "name": "com.jlinkdev.procedural-frames",
+  "displayName": "jlinkdev Procedural Picture Frames",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Shape picture frame mouldings, fit artwork and export tiled or paintable meshes at runtime and in the editor.",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Frame Workshop",
+      "description": "Shape a frame on a virtual framing bench.",
+      "path": "Samples~/Frame Workshop"
+    }
+  ]
+}

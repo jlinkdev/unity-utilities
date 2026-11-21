@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544a1e712d2c53fcb9a57225d06d93b0, type: 3}
+  m_Name: Dramatic scalloped oval
+  m_EditorClassIdentifier: 
+  recipe:
+    outline: 2
+    mount: 0
+    artworkSize: {x: 0.235, y: 0.335}
+    railWidth: 0.044
+    railDepth: 0.019
+    relief: 0.014
+    cornerFraction: 0.17
+    matWidth: 0.008
+    floatGap: 0.008
+    includeArtwork: 1
+    profile:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.45
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.07
+        value: 0.5
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.23
+        value: 0.42
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.3
+        value: 0.24
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.68
+        value: 0.18
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.84
+        value: 0.22
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.96
+        value: 0.56
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0.54
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    bands:
+    - shape: 0
+      anchor: 0
+      position: 0.16
+      width: 0.006
+      height: 0.001
+      edgeFollow: 0
+      ornament: 1
+      detailSize: 0.0055
+      detailGap: 0.0008
+      mirrorOppositeRails: 0
+    - shape: 0
+      anchor: 0
+      position: 0.51
+      width: 0.004
+      height: 0.0015
+      edgeFollow: 0.45
+      ornament: 0
+      detailSize: 0.012
+      detailGap: 0.003
+      mirrorOppositeRails: 0
+    - shape: 0
+      anchor: 0
+      position: 0.84
+      width: 0.006
+      height: 0.003
+      edgeFollow: 1
+      ornament: 0
+      detailSize: 0.012
+      detailGap: 0.003
+      mirrorOppositeRails: 0
+    edges:
+      corner: 0
+      waist: 0
+      centre: 0
+      cornerSpan: 0.15
+      waistSpan: 0.25
+      centreSpan: 0.16
+      independentTop: 0
+      topWaist: 0
+      topCentre: 0
+      ovalTop: 0.028
+      ovalBottom: 0.021
+      ovalSides: 0.024
+      ovalTopReach: 42
+      ovalBottomReach: 42
+      ovalSideReach: 42
+    corners:
+      style: 0
+      position: 0.55
+      size: 0.038
+      relief: 0.005
+    curveSegments: 20
+    uvLayout: 0
+    tileSize: 0.1
