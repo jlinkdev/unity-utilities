@@ -185,7 +185,7 @@ namespace jlinkdev.UnityUtilities.Beams
             float deltaTime = Mathf.Max(0f, time - previousTime);
             previousTime = time;
 
-            if (!beamEnabled || pathProvider == null || pathRenderer == null ||
+            if (!isActiveAndEnabled || !beamEnabled || pathProvider == null || pathRenderer == null ||
                 !TryResolveSource(out BeamEndpoint sourceEndpoint) ||
                 target == null || !target.TryGetEndpoint(out BeamEndpoint targetEndpoint))
             {
@@ -211,12 +211,13 @@ namespace jlinkdev.UnityUtilities.Beams
 
             BeamRenderContext renderContext = new BeamRenderContext(time, deltaTime, time - enabledAt, seed);
             pathRenderer.Render(paths, renderContext);
-            PathUpdated?.Invoke(this);
             if (!wasRendering)
             {
                 wasRendering = true;
                 RenderingStarted?.Invoke(this);
             }
+            if (wasRendering)
+                PathUpdated?.Invoke(this);
         }
 
         private bool TryResolveSource(out BeamEndpoint endpoint)

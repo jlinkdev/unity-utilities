@@ -25,6 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _PulseIntensity: 4
     - _CoreWidth: 0.34
     - _CoreIntensity: 1.4
     - _HaloIntensity: 1.25

@@ -4,6 +4,21 @@ namespace jlinkdev.UnityUtilities.Beams
 {
     public static class BeamPathUtility
     {
+        // Process parents before children. Translation preserves the child's measured frame.
+        internal static void FollowParent(BeamPathBuffer paths, int index)
+        {
+            var strand = paths[index];
+            int parent = strand.ParentStrandIndex;
+            if (parent < 0 || parent >= index || paths[parent].Count == 0 || strand.Count == 0) return;
+            var shift = Evaluate(paths[parent], strand.ParentPosition).Position - strand[0].Position;
+            for (int i = 0; i < strand.Count; i++)
+            {
+                var p = strand[i];
+                p.Position += shift;
+                strand[i] = p;
+            }
+        }
+
         /// <summary>Evaluates a measured strand at normalized distance.</summary>
         public static BeamPoint Evaluate(BeamStrand strand, float normalizedDistance)
         {

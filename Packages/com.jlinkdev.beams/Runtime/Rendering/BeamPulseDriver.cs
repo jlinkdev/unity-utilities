@@ -55,7 +55,7 @@ namespace jlinkdev.UnityUtilities.Beams
             Apply(normalized);
             if (normalized < 1f)
                 return;
-            IsPulsing = false;
+            Stop();
             PulseCompleted?.Invoke(this);
         }
 

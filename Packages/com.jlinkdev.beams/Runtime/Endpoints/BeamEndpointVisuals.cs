@@ -21,6 +21,7 @@ namespace jlinkdev.UnityUtilities.Beams
         [SerializeField] private BeamEndpointOrientation sourceOrientation = BeamEndpointOrientation.AlongBeam;
         [SerializeField] private BeamEndpointOrientation targetOrientation = BeamEndpointOrientation.SurfaceNormal;
         [SerializeField] private bool synchronizeActiveState = true;
+        [SerializeField] private bool requireSurfaceForTarget;
 
         private void OnEnable()
         {
@@ -41,7 +42,7 @@ namespace jlinkdev.UnityUtilities.Beams
             if (synchronizeActiveState)
             {
                 SetActive(sourceVisual, active);
-                SetActive(targetVisual, active);
+                SetActive(targetVisual, active && (!requireSurfaceForTarget || beam.CurrentTarget.HasSurface));
             }
 
             if (!active)

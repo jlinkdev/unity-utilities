@@ -16,9 +16,9 @@ namespace jlinkdev.UnityUtilities.Beams
     public sealed class BeamElectricalModifier : BeamPathModifier
     {
         [SerializeField, Range(1, 8)] private int subdivisions = 5;
-        [SerializeField, Min(0f)] private float amplitude = 0.35f;
+        [SerializeField, Min(0f)] private float amplitude = 1.05f;
         [SerializeField, Range(1, 7)] private int detailLayers = 5;
-        [SerializeField, Range(0.1f, 1f)] private float roughness = 0.55f;
+        [SerializeField, Range(0.1f, 1f)] private float roughness = 0.78f;
         [SerializeField] private BeamElectricalAnimationMode animationMode = BeamElectricalAnimationMode.HoldAndMorph;
         [SerializeField, Min(0f)] private float restrikeRate = 12f;
         [SerializeField, Range(0.01f, 1f)] private float transitionFraction = 0.18f;
@@ -43,6 +43,11 @@ namespace jlinkdev.UnityUtilities.Beams
                 float parentPosition = strand.ParentPosition;
                 int strandSeed = strand.Seed;
                 int branchDepth = strand.BranchDepth;
+                float deviation = Mathf.Min(amplitude, strand.Length * 0.35f) * Mathf.Pow(0.8f, branchDepth);
+                // Parents are rebuilt first. Follow the measured junction through every restrike.
+                Vector3 shift = parent >= 0 && parent < strandIndex
+                    ? BeamPathUtility.Evaluate(paths[parent], parentPosition).Position - basePoints[0].Position
+                    : Vector3.zero;
                 strand.Clear();
                 strand.ParentStrandIndex = parent;
                 strand.ParentPosition = parentPosition;
@@ -50,10 +55,11 @@ namespace jlinkdev.UnityUtilities.Beams
                 strand.BranchDepth = branchDepth;
 
                 ResolveAnimation(context.Time, out int currentStrike, out int nextStrike, out float strikeBlend);
-                float seed = context.Seed + seedOffset + strandSeed * 37.17f;
+                int seed = unchecked(context.Seed + seedOffset + strandSeed * 37);
                 for (int i = 0; i < pointCount; i++)
                 {
                     BeamPoint basis = basePoints[i];
+                    basis.Position += shift;
                     float u = i / (pointCount - 1f);
 
                     if (i == 0 || i == pointCount - 1)
@@ -63,14 +69,14 @@ namespace jlinkdev.UnityUtilities.Beams
                     }
 
                     float endpointEnvelope = Mathf.Sin(Mathf.PI * u);
-                    float currentA = AngularNoise(u, seed + 11.3f, currentStrike);
-                    float currentB = AngularNoise(u, seed + 83.7f, currentStrike);
-                    float nextA = AngularNoise(u, seed + 11.3f, nextStrike);
-                    float nextB = AngularNoise(u, seed + 83.7f, nextStrike);
+                    float currentA = AngularNoise(u, seed + 11, currentStrike);
+                    float currentB = AngularNoise(u, seed + 83, currentStrike);
+                    float nextA = strikeBlend > 0f ? AngularNoise(u, seed + 11, nextStrike) : currentA;
+                    float nextB = strikeBlend > 0f ? AngularNoise(u, seed + 83, nextStrike) : currentB;
                     float a = Mathf.LerpUnclamped(currentA, nextA, strikeBlend);
                     float b = Mathf.LerpUnclamped(currentB, nextB, strikeBlend);
                     Vector3 binormal = Vector3.Cross(basis.Tangent, basis.Normal).normalized;
-                    Vector3 offset = (basis.Normal * a + binormal * b) * (amplitude * endpointEnvelope);
+                    Vector3 offset = (basis.Normal * a + binormal * b) * (deviation * endpointEnvelope);
                     strand.Add(basis.Position + offset);
                 }
 
@@ -108,14 +114,14 @@ namespace jlinkdev.UnityUtilities.Beams
             }
         }
 
-        private float AngularNoise(float u, float seed, int strike)
+        private float AngularNoise(float u, int seed, int strike)
         {
             float value = 0f;
             float weight = 1f;
             float weightSum = 0f;
             for (int layer = 0; layer < detailLayers; layer++)
             {
-                int cells = 1 << (layer + 1);
+                int cells = 3 << layer;
                 float coordinate = u * cells;
                 int cell = Mathf.FloorToInt(coordinate);
                 float t = coordinate - cell;
@@ -128,10 +134,18 @@ namespace jlinkdev.UnityUtilities.Beams
             return weightSum > 0f ? value / weightSum : 0f;
         }
 
-        private static float HashSigned(int cell, float seed, int strike, int layer)
+        private static float HashSigned(int cell, int seed, int strike, int layer)
         {
-            float value = Mathf.Sin(cell * 12.9898f + seed * 78.233f + strike * 37.719f + layer * 19.913f) * 43758.5453f;
-            return (value - Mathf.Floor(value)) * 2f - 1f;
+            unchecked
+            {
+                uint hash = (uint)seed ^ (uint)cell * 0x9e3779b9u ^ (uint)strike * 0x85ebca6bu ^ (uint)layer * 0xc2b2ae35u;
+                hash ^= hash >> 16;
+                hash *= 0x7feb352du;
+                hash ^= hash >> 15;
+                hash *= 0x846ca68bu;
+                hash ^= hash >> 16;
+                return (hash & 0xffffff) / 8388607.5f - 1f;
+            }
         }
 
         private void OnValidate()

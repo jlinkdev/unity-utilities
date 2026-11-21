@@ -19,6 +19,8 @@ Compatible renderers publish `_BeamColor`, `_BeamIntensity`, `_BeamLength`,
 `_BeamTime`, `_BeamAge`, `_BeamSeed`, `_BeamPulsePosition`, and
 `_BeamActivation` through a `MaterialPropertyBlock`.
 
+In tube mode the renderer sets `_BeamTube` to one. UV3.xy holds unit circle coordinates, UV3.z is the strand length, and UV3.w is the local cross-section radius measured in world units. UV0.y is zero on the main tube and ±1 on the two optional filaments. The supplied energy shader estimates the length of a view ray through a finite cylinder at each fragment. Curves use the local tangent frame. The cross-section is geometric and supports oblique and end-on views. It does not scatter light through scene fog.
+
 `Runtime/Shaders/BeamGraphFunctions.hlsl` is usable by Shader Graph Custom
 Function nodes. It provides beam coordinates, endpoint masks, seeded noise,
 vertex-noise offsets, directional flow, pulses, and core/halo masks.

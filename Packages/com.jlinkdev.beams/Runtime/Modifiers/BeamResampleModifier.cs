@@ -20,7 +20,10 @@ namespace jlinkdev.UnityUtilities.Beams
         public override void Modify(in BeamPathContext context, BeamPathBuffer paths)
         {
             for (int strandIndex = 0; strandIndex < paths.Count; strandIndex++)
+            {
+                BeamPathUtility.FollowParent(paths, strandIndex);
                 Resample(paths[strandIndex], context.Source.Forward);
+            }
         }
 
         private void Resample(BeamStrand strand, Vector3 referenceNormal)

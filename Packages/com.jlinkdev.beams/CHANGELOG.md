@@ -4,6 +4,11 @@ All notable changes to this package are documented here.
 
 ## [Unreleased]
 
+- Added capped volume tubes, orbiting filaments, source and impact accents, thermal particles, and two importable studies.
+- Added trip laser, mining plasma, golden tether, tractor, and orbital presets or prefabs.
+- Connected the Shader Graph subgraphs and added the Ribbon Flow consumer graph and material.
+- Fixed restrike junctions, branch taper, contact callback state, demo pulse visibility, and authoring/sample identifier collisions.
+
 - Standardize installation, quick start, sample, requirements, and limitations documentation; preserve detailed guidance in linked manuals.
 - Add the Beam Kit Demo guide and update architecture notes to describe the implemented contact APIs.
 

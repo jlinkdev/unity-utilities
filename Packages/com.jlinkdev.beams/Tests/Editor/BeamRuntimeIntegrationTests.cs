@@ -70,6 +70,39 @@ namespace jlinkdev.UnityUtilities.Beams.Tests
         }
 
         [Test]
+        public void ContactListenerCanPollAndDisableDuringEnter()
+        {
+            var root = new GameObject("Listener");
+            var obstacle = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                obstacle.layer = 30;
+                obstacle.transform.position = Vector3.forward * 2;
+                Physics.SyncTransforms();
+                var beam = CreateBeam(root, 4);
+                var probe = root.AddComponent<BeamPhysicsContacts>();
+                probe.Beam = beam;
+                probe.LayerMask = 1 << 30;
+                probe.ClearContacts(false);
+                int exits = 0;
+                probe.ContactExited += (_, __) => exits++;
+                probe.ContactEntered += (_, __) =>
+                {
+                    Assert.That(probe.ContactCount, Is.EqualTo(1));
+                    probe.enabled = false;
+                };
+                probe.QueryNow();
+                Assert.That(probe.ContactCount, Is.Zero);
+                Assert.That(exits, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(obstacle);
+            }
+        }
+
+        [Test]
         public void RibbonRenderer_EmitsDocumentedVertexStreams()
         {
             GameObject root = new GameObject("Ribbon Test");
@@ -91,6 +124,11 @@ namespace jlinkdev.UnityUtilities.Beams.Tests
                 Assert.That(mesh.uv.Length, Is.EqualTo(4));
                 Assert.That(mesh.uv2.Length, Is.EqualTo(4));
                 Assert.That(mesh.uv3.Length, Is.EqualTo(4));
+                renderer.VolumeTube = true;
+                renderer.Render(buffer, new BeamRenderContext(1f, 0.016f, 0.5f, 5));
+                Assert.That(mesh.vertexCount, Is.EqualTo(24));
+                Assert.That(mesh.triangles.Length, Is.EqualTo((24 + 20) * 3));
+                Assert.That(mesh.uv4.Length, Is.EqualTo(mesh.vertexCount));
             }
             finally
             {

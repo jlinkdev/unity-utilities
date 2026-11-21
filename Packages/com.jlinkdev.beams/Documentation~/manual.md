@@ -87,10 +87,10 @@ animates the standard single-pulse shader property and reports pulse completion.
 - Ordered resampling, sag, structural noise, branching, and electrical modifiers
 - Strand-based path data for primary, reflected-style custom, chained, and branching extensions
 - Neutral ray/sphere contact enter, stay, exit, tick, and polling APIs
-- Procedural camera-facing ribbon meshes and a Line Renderer compatibility adapter
+- Camera-facing ribbons, capped 3D tubes with optional orbiting filaments, and a Line Renderer adapter
 - Layered renderer groups, reusable render profiles, endpoint visuals, and shader pulse driving
 - A documented shader vertex-data and material-property contract
 - URP energy-beam shader with vertex displacement, flow, pulses, flicker, core, and halo controls
 - Shader Graph-compatible HLSL functions and native endpoint-mask, flow, pulse, and core/halo subgraphs
-- Four ready-to-assign URP beam materials
-- Editor creation menus, diagnostics, tests, and an importable demo
+- URP materials for lasers, plasma, tethers, electricity, tractor flow, and endpoint effects
+- Three importable samples: Beam Kit Demo, Energy Studies, and Orbital Descent

@@ -15,6 +15,7 @@ namespace jlinkdev.UnityUtilities.Beams
             for (int strandIndex = 0; strandIndex < paths.Count; strandIndex++)
             {
                 BeamStrand strand = paths[strandIndex];
+                BeamPathUtility.FollowParent(paths, strandIndex);
                 for (int i = 1; i < strand.Count - 1; i++)
                 {
                     BeamPoint point = strand[i];

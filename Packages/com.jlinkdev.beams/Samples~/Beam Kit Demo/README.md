@@ -9,6 +9,7 @@ The sample uses your current pipeline and does not replace project settings.
 ## What to try
 
 - Compare the continuous, curved, electrical, and branching stations.
+- Open the curved station's Ribbon Flow material to inspect a working graph that composes the beam subgraphs.
 - Targets move and shader pulses trigger automatically; no input setup is needed.
 - The overlay displays the current neutral physics contact count.
 - Select a beam to change modifier order, strand detail, or its render profile.

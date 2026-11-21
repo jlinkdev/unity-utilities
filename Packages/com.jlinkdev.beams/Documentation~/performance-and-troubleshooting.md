@@ -15,6 +15,15 @@
   it does not remove physics queries.
 - Increase ribbon bounds padding to cover shader displacement or the GPU-deformed
   beam may be culled near camera edges.
+- A ribbon uses two vertices per path point; a tube uses one ring of 6–32.
+  Enabling orbiting filaments triples that tube geometry. Use a ribbon for a
+  distant tripwire or when a beam is never seen end-on.
+- The orbital sample layers transparent tubes, particles, and camera bloom.
+  Profile overdraw close to the column. Disable the outer sheath or lower plume
+  emission independently before reducing the primary strand's resolution.
+- The optional surface footprint probes a 7×7 grid against the one hit collider
+  when the projector or collider moves. Keep it for close impacts; use a
+  billboard glow alone for distant or numerous beams.
 
 Runtime buffers, dictionaries, meshes, and renderer lists are reused. UnityEvent
 listeners and user callbacks can still allocate depending on project code.

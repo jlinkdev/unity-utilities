@@ -140,8 +140,11 @@ namespace jlinkdev.UnityUtilities.Beams.Tests
                 modifier.Modify(context, buffer);
 
                 Assert.That(buffer.Count, Is.EqualTo(4));
+                gameObject.AddComponent<BeamElectricalModifier>().Modify(context, buffer);
                 for (int i = 1; i < buffer.Count; i++)
                 {
+                    BeamPoint junction = BeamPathUtility.Evaluate(buffer[0], buffer[i].ParentPosition);
+                    Assert.That(Vector3.Distance(junction.Position, buffer[i][0].Position), Is.LessThan(0.00001f));
                     Assert.That(buffer[i].ParentStrandIndex, Is.EqualTo(0));
                     Assert.That(buffer[i].BranchDepth, Is.EqualTo(1));
                     Assert.That(buffer[i].Count, Is.GreaterThanOrEqualTo(2));
@@ -151,6 +154,29 @@ namespace jlinkdev.UnityUtilities.Beams.Tests
             {
                 Object.DestroyImmediate(gameObject);
             }
+        }
+
+        [Test]
+        public void DeformingOrResamplingForkedPaths_PreservesEveryJunction()
+        {
+            var root = new GameObject("Composed forks");
+            try
+            {
+                var paths = StraightBuffer(5f, 17);
+                var context = DefaultContext(5f, 17, 1.2f);
+                root.AddComponent<BeamBranchModifier>().Modify(context, paths);
+                foreach (var modifier in new BeamPathModifier[] { root.AddComponent<BeamElectricalModifier>(),
+                    root.AddComponent<BeamSagModifier>(), root.AddComponent<BeamNoiseModifier>(), root.AddComponent<BeamResampleModifier>() })
+                {
+                    modifier.Modify(context, paths);
+                    for (int i = 1; i < paths.Count; i++)
+                    {
+                        var junction = BeamPathUtility.Evaluate(paths[paths[i].ParentStrandIndex], paths[i].ParentPosition);
+                        Assert.That(Vector3.Distance(junction.Position, paths[i][0].Position), Is.LessThan(0.00001f), modifier.name);
+                    }
+                }
+            }
+            finally { Object.DestroyImmediate(root); }
         }
 
         [Test]

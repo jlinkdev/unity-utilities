@@ -19,6 +19,11 @@ namespace jlinkdev.UnityUtilities.Beams
         [SerializeField, ColorUsage(true, true)] private Color color = new Color(0.1f, 0.8f, 1.5f, 1f);
         [SerializeField, Min(0f)] private float intensity = 1f;
         [SerializeField] private Camera facingCamera;
+        [SerializeField] private bool volumeTube;
+        [SerializeField, Range(6, 32)] private int tubeSides = 12;
+        public bool VolumeTube { get => volumeTube; set => volumeTube = value; }
+        [SerializeField] private bool orbitingFilaments;
+        public bool OrbitingFilaments { get => orbitingFilaments; set => orbitingFilaments = value; }
         [SerializeField, Range(-1f, 2f)] private float pulsePosition = -1f;
 
         [NonSerialized] private Mesh mesh;
@@ -32,6 +37,7 @@ namespace jlinkdev.UnityUtilities.Beams
         private readonly List<Vector2> uv0 = new List<Vector2>(64);
         private readonly List<Vector2> uv1 = new List<Vector2>(64);
         private readonly List<Vector2> uv2 = new List<Vector2>(64);
+        private readonly List<Vector4> volumeData = new List<Vector4>(64);
         private readonly List<Color> colors = new List<Color>(64);
         private readonly List<int> triangles = new List<int>(192);
 
@@ -76,7 +82,7 @@ namespace jlinkdev.UnityUtilities.Beams
             EnsureState();
             ClearLists();
 
-            Camera camera = facingCamera != null ? facingCamera : Camera.main;
+            Camera camera = volumeTube ? null : facingCamera != null ? facingCamera : Camera.main;
             float maximumLength = 0f;
             for (int strandIndex = 0; strandIndex < paths.Count; strandIndex++)
             {
@@ -86,6 +92,11 @@ namespace jlinkdev.UnityUtilities.Beams
 
                 maximumLength = Mathf.Max(maximumLength, strand.Length);
                 AppendStrand(strand, strandIndex, camera);
+                if (volumeTube && orbitingFilaments)
+                {
+                    AppendStrand(strand, strandIndex, camera, 1);
+                    AppendStrand(strand, strandIndex, camera, -1);
+                }
             }
 
             mesh.Clear(false);
@@ -96,11 +107,13 @@ namespace jlinkdev.UnityUtilities.Beams
             mesh.SetUVs(0, uv0);
             mesh.SetUVs(1, uv1);
             mesh.SetUVs(2, uv2);
+            if (volumeTube)
+                mesh.SetUVs(3, volumeData);
             mesh.SetColors(colors);
             mesh.SetTriangles(triangles, 0, true);
 
             Bounds bounds = mesh.bounds;
-            bounds.Expand(EffectiveBoundsPadding * 2f);
+            bounds.Expand((EffectiveBoundsPadding + (volumeTube && orbitingFilaments ? EffectiveWidth : 0f)) * 2f);
             mesh.bounds = bounds;
 
             meshRenderer.GetPropertyBlock(propertyBlock);
@@ -112,6 +125,7 @@ namespace jlinkdev.UnityUtilities.Beams
             propertyBlock.SetFloat(BeamShaderProperties.Seed, context.Seed);
             propertyBlock.SetFloat(BeamShaderProperties.PulsePosition, pulsePosition);
             propertyBlock.SetFloat(BeamShaderProperties.Activation, 1f);
+            propertyBlock.SetFloat(TubeProperty, volumeTube ? 1f : 0f);
             meshRenderer.SetPropertyBlock(propertyBlock);
 
             if (profile != null && profile.Material != null && meshRenderer.sharedMaterial != profile.Material)
@@ -131,17 +145,18 @@ namespace jlinkdev.UnityUtilities.Beams
             }
         }
 
-        private void AppendStrand(BeamStrand strand, int strandIndex, Camera camera)
+        private void AppendStrand(BeamStrand strand, int strandIndex, Camera camera, int filament = 0)
         {
             int baseVertex = vertices.Count;
             Vector3 previousWidthAxis = Vector3.zero;
             float strandSeed = Mathf.Repeat(strand.Seed * 0.61803398875f, 1024f);
+            int sides = volumeTube ? Mathf.Clamp(tubeSides, 6, 32) : 2;
 
             for (int pointIndex = 0; pointIndex < strand.Count; pointIndex++)
             {
                 BeamPoint point = strand[pointIndex];
                 Vector3 viewDirection = camera != null
-                    ? camera.transform.position - point.Position
+                    ? (camera.orthographic ? -camera.transform.forward : camera.transform.position - point.Position)
                     : transform.forward;
                 Vector3 widthAxis = Vector3.Cross(point.Tangent, viewDirection);
                 if (widthAxis.sqrMagnitude < 0.000001f)
@@ -153,37 +168,46 @@ namespace jlinkdev.UnityUtilities.Beams
 
                 float pointWidth = EffectiveWidth * EffectiveWidthCurve.Evaluate(point.NormalizedDistance);
                 pointWidth *= Mathf.Pow(EffectiveBranchWidthMultiplier, strand.BranchDepth);
-                Vector3 left = point.Position - widthAxis * (pointWidth * 0.5f);
-                Vector3 right = point.Position + widthAxis * (pointWidth * 0.5f);
+                if (strand.BranchDepth > 0)
+                    pointWidth *= Mathf.Lerp(1f, 0.08f, point.NormalizedDistance);
                 Vector3 normalOS = transform.InverseTransformDirection(point.Normal).normalized;
                 Vector3 tangentOS = transform.InverseTransformDirection(point.Tangent).normalized;
 
-                vertices.Add(transform.InverseTransformPoint(left));
-                vertices.Add(transform.InverseTransformPoint(right));
-                normals.Add(normalOS);
-                normals.Add(normalOS);
-                tangents.Add(new Vector4(tangentOS.x, tangentOS.y, tangentOS.z, 1f));
-                tangents.Add(new Vector4(tangentOS.x, tangentOS.y, tangentOS.z, 1f));
-                uv0.Add(new Vector2(point.NormalizedDistance, -1f));
-                uv0.Add(new Vector2(point.NormalizedDistance, 1f));
-                uv1.Add(new Vector2(point.Distance, pointWidth));
-                uv1.Add(new Vector2(point.Distance, pointWidth));
-                uv2.Add(new Vector2(strandSeed, strandIndex));
-                uv2.Add(new Vector2(strandSeed, strandIndex));
                 Color vertexColor = EffectiveGradient.Evaluate(point.NormalizedDistance);
-                colors.Add(vertexColor);
-                colors.Add(vertexColor);
+                Vector3 binormal = Vector3.Cross(point.Tangent, point.Normal);
+                int ring = baseVertex + pointIndex * sides;
+                float radius = pointWidth * (filament == 0 ? 0.5f : 0.075f);
+                for (int side = 0; side < sides; side++)
+                {
+                    float signedSide = side == 0 ? -1f : 1f;
+                    Vector3 radial = signedSide * widthAxis;
+                    if (volumeTube)
+                    {
+                        float angle = side * (2f * Mathf.PI / sides);
+                        radial = point.Normal * Mathf.Cos(angle) + binormal * Mathf.Sin(angle);
+                        volumeData.Add(new Vector4(Mathf.Cos(angle), Mathf.Sin(angle), strand.Length, radius));
+                    }
+                    vertices.Add(transform.InverseTransformPoint(point.Position + radial * radius));
+                    normals.Add(normalOS);
+                    tangents.Add(new Vector4(tangentOS.x, tangentOS.y, tangentOS.z, 1f));
+                    uv0.Add(new Vector2(point.NormalizedDistance, volumeTube ? filament : signedSide));
+                    uv1.Add(new Vector2(point.Distance, pointWidth));
+                    uv2.Add(new Vector2(strandSeed, strandIndex));
+                    colors.Add(vertexColor);
 
-                if (pointIndex >= strand.Count - 1)
-                    continue;
-
-                int vertex = baseVertex + pointIndex * 2;
-                triangles.Add(vertex);
-                triangles.Add(vertex + 2);
-                triangles.Add(vertex + 1);
-                triangles.Add(vertex + 1);
-                triangles.Add(vertex + 2);
-                triangles.Add(vertex + 3);
+                    if (pointIndex + 1 < strand.Count && (volumeTube || side == 0))
+                    {
+                        int a = ring + side, b = ring + (side + 1) % sides;
+                        triangles.Add(a); triangles.Add(volumeTube ? b : a + sides); triangles.Add(volumeTube ? a + sides : b);
+                        triangles.Add(b); triangles.Add(volumeTube ? b + sides : a + sides); triangles.Add(volumeTube ? a + sides : b + sides);
+                    }
+                    if (volumeTube && side > 0 && side + 1 < sides && (pointIndex == 0 || pointIndex == strand.Count - 1))
+                    {
+                        triangles.Add(ring);
+                        triangles.Add(ring + side + (pointIndex == 0 ? 1 : 0));
+                        triangles.Add(ring + side + (pointIndex == 0 ? 0 : 1));
+                    }
+                }
             }
         }
 
@@ -211,6 +235,7 @@ namespace jlinkdev.UnityUtilities.Beams
             uv0.Clear();
             uv1.Clear();
             uv2.Clear();
+            volumeData.Clear();
             colors.Clear();
             triangles.Clear();
         }
@@ -251,6 +276,7 @@ namespace jlinkdev.UnityUtilities.Beams
             : DefaultGradient;
 
         private static readonly Gradient DefaultGradient = CreateDefaultGradient();
+        private static readonly int TubeProperty = Shader.PropertyToID("_BeamTube");
         private static readonly AnimationCurve DefaultWidthCurve = AnimationCurve.Linear(0f, 1f, 1f, 1f);
 
         private static Gradient CreateDefaultGradient()

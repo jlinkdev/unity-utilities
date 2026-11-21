@@ -30,7 +30,7 @@ Material:
     - _HaloIntensity: 1.1
     - _Opacity: 0.9
     - _EdgePower: 2.1
-    - _VertexAmplitude: 0.045
+    - _VertexAmplitude: 0
     - _VertexFrequency: 5.5
     - _VertexSpeed: 9
     - _FlowSpeed: 11

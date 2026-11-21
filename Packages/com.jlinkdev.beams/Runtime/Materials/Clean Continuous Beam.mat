@@ -26,6 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _CoreWidth: 0.16
+    - _PulseIntensity: 4
     - _CoreIntensity: 4
     - _HaloIntensity: 0.7
     - _Opacity: 0.92

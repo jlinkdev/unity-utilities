@@ -25,6 +25,16 @@
       "displayName": "Beam Kit Demo",
       "description": "A focused gallery of continuous, curved, electrical, branching, pulsing, and contact-aware beams.",
       "path": "Samples~/Beam Kit Demo"
+    },
+    {
+      "displayName": "Energy Studies",
+      "description": "Four reusable prefabs and a comparison scene for trip lasers, mining plasma, golden healing tethers, and tractor streams.",
+      "path": "Samples~/Energy Studies"
+    },
+    {
+      "displayName": "Orbital Descent",
+      "description": "A sweeping volumetric orbital column over a basalt basin with a surface-tracked impact, ejecta, and local bloom.",
+      "path": "Samples~/Orbital Descent"
     }
   ]
 }

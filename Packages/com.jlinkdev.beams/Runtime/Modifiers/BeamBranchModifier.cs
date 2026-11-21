@@ -36,7 +36,7 @@ namespace jlinkdev.UnityUtilities.Beams
             int branchIndex)
         {
             int hashSeed = context.Seed + seedOffset + parent.Seed * 31 + branchIndex * 1013;
-            float attachment = Mathf.Lerp(attachmentRange.x, attachmentRange.y, Hash01(hashSeed));
+            float attachment = Mathf.Lerp(attachmentRange.x, attachmentRange.y, (branchIndex + Hash01(hashSeed)) / branchesPerStrand);
             float length = Mathf.Lerp(lengthRange.x, lengthRange.y, Hash01(hashSeed + 1));
             float angle = Mathf.Lerp(angleRange.x, angleRange.y, Hash01(hashSeed + 2)) * Mathf.Deg2Rad;
             float radialAngle = Hash01(hashSeed + 3) * Mathf.PI * 2f;

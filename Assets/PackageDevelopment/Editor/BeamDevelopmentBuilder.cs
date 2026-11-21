@@ -1,6 +1,11 @@
 using System.IO;
 using jlinkdev.UnityUtilities.Beams;
-using jlinkdev.UnityUtilities.Beams.Samples;
+using jlinkdev.UnityUtilities.Beams.DevelopmentSample;
+using jlinkdev.UnityUtilities.Beams.Editor;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -8,7 +13,7 @@ using UnityEngine.SceneManagement;
 
 namespace jlinkdev.UnityUtilities.Beams.Development
 {
-    public static class BeamDevelopmentBuilder
+    public static partial class BeamDevelopmentBuilder
     {
         private const string AuthoringRoot = "Assets/PackageDevelopment/Beams/SampleAuthoring/Beam Kit Demo";
         private const string PackageSampleRoot = "Packages/com.jlinkdev.beams/Samples~/Beam Kit Demo";
@@ -17,11 +22,37 @@ namespace jlinkdev.UnityUtilities.Beams.Development
         public static void BuildAll()
         {
             EnsureFolder(AuthoringRoot);
-            BuildDemoScene();
+            RebuildScene($"{AuthoringRoot}/Scenes/Beam Kit Demo.unity", BuildDemoScene);
             PublishSample();
+            RebuildScene("Assets/PackageDevelopment/Beams/SampleAuthoring/Energy Studies/Energy Studies.unity", BuildEnergyStudies);
+            RebuildScene(OrbitalRoot + "/Orbital Descent.unity", BuildOrbital);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[jlinkdev Beams] Beam Kit Demo rebuilt and published to Samples~.");
+        }
+
+        private static void RebuildScene(string path, System.Action build)
+        {
+            var open = SceneManager.GetSceneByPath(path);
+            if (!open.isLoaded) { build(); return; }
+            if (open.isDirty) throw new IOException($"Save the open sample before rebuilding: {path}");
+            bool active = SceneManager.GetActiveScene() == open;
+            var scratch = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            string scratchPath = AssetDatabase.GenerateUniqueAssetPath("Assets/PackageDevelopment/Beams/Builder Staging.unity");
+            if (!EditorSceneManager.SaveScene(scratch, scratchPath))
+            {
+                EditorSceneManager.CloseScene(scratch, true);
+                throw new IOException(scratchPath);
+            }
+            EditorSceneManager.CloseScene(open, true);
+            try { build(); }
+            finally
+            {
+                var restored = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+                if (active) SceneManager.SetActiveScene(restored);
+                EditorSceneManager.CloseScene(scratch, true);
+                AssetDatabase.DeleteAsset(scratchPath);
+            }
         }
 
         private static void BuildDemoScene()
@@ -29,10 +60,9 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             EnsureFolder($"{AuthoringRoot}/Scenes");
             EnsureFolder($"{AuthoringRoot}/Materials");
 
-            Material environment = Material("Demo Environment", new Color(0.09f, 0.12f, 0.17f), 0.45f);
             Material targets = Material("Demo Targets", new Color(0.16f, 0.22f, 0.3f), 0.75f);
             Material clean = LoadPackageMaterial("5ae079f5b395424ba626c300a2a069d4");
-            Material soft = LoadPackageMaterial("84c6f66ca9c14a038c6b7a0dfffa1f95");
+            Material flow = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.jlinkdev.beams/Runtime/Materials/Ribbon Flow.mat");
             Material electrical = LoadPackageMaterial("c39dcf68c97a46aba0a76635300e2fea");
 
             Scene previous = SceneManager.GetActiveScene();
@@ -41,17 +71,17 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             scene.name = "Beam Kit Demo";
 
             CreateCamera();
+            DemoBloom(CameraIn(scene), AuthoringRoot, 0.55f);
             CreateLight();
-            CreatePrimitive("Floor", PrimitiveType.Cube, new Vector3(0f, -0.45f, 3f), new Vector3(18f, 0.5f, 12f), environment);
-            CreatePrimitive("Backdrop", PrimitiveType.Cube, new Vector3(0f, 2.5f, 8.5f), new Vector3(18f, 6f, 0.5f), environment);
+            RenderSettings.fog = false;
 
             Transform[] targetsToAnimate = new Transform[4];
             BeamPulseDriver[] pulses = new BeamPulseDriver[2];
             BeamPhysicsContacts[] contacts = new BeamPhysicsContacts[1];
-            CreateContinuousStation(new Vector3(-6f, 1.2f, 0f), clean, targets, out targetsToAnimate[0], out pulses[0], out contacts[0]);
-            CreateCurvedStation(new Vector3(-2f, 1.2f, 0f), soft, targets, out targetsToAnimate[1], out pulses[1]);
-            CreateElectricalStation(new Vector3(2f, 1.2f, 0f), electrical, targets, false, out targetsToAnimate[2]);
-            CreateElectricalStation(new Vector3(6f, 1.2f, 0f), electrical, targets, true, out targetsToAnimate[3]);
+            CreateContinuousStation(new Vector3(-2.5f, 2.2f, 0), clean, targets, out targetsToAnimate[0], out pulses[0], out contacts[0]);
+            CreateCurvedStation(new Vector3(-2.5f, 1.0f, 0), flow, targets, out targetsToAnimate[1], out pulses[1]);
+            CreateElectricalStation(new Vector3(-2.5f, -0.45f, 0), electrical, targets, false, out targetsToAnimate[2]);
+            CreateElectricalStation(new Vector3(-2.5f, -2.05f, 0), electrical, targets, true, out targetsToAnimate[3]);
 
             GameObject controllerObject = new GameObject("Beam Kit Demo Controller");
             BeamKitDemoController controller = controllerObject.AddComponent<BeamKitDemoController>();
@@ -62,7 +92,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             string scenePath = $"{AuthoringRoot}/Scenes/Beam Kit Demo.unity";
-            EditorSceneManager.SaveScene(scene, scenePath);
+            if (!EditorSceneManager.SaveScene(scene, scenePath)) throw new IOException(scenePath);
             if (previous.IsValid())
                 SceneManager.SetActiveScene(previous);
             EditorSceneManager.CloseScene(scene, true);
@@ -83,6 +113,9 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             pulse = root.AddComponent<BeamPulseDriver>();
             contacts = root.AddComponent<BeamPhysicsContacts>();
             contacts.Beam = beam;
+            var indicator = CreatePrimitive("Contact Indicator", PrimitiveType.Cube, position + new Vector3(2.5f, 0.22f, 0), Vector3.one * 0.32f, targetMaterial);
+            indicator.layer = 2;
+            contacts.LayerMask = 1 << indicator.layer;
             targetTransform = target.transform;
         }
 
@@ -134,13 +167,16 @@ namespace jlinkdev.UnityUtilities.Beams.Development
         {
             GameObject root = new GameObject(name);
             root.transform.position = position;
+            root.transform.rotation = Quaternion.Euler(0,90,0);
             BeamRibbonRenderer renderer = root.AddComponent<BeamRibbonRenderer>();
+            renderer.Color = name == "Curved Flow" ? new Color(.35f,.65f,1f) : Color.white;
+            renderer.Width = name.Contains("Lightning") || name.Contains("Arc") ? 0.14f : 0.19f;
+            renderer.Intensity = 2;
             root.GetComponent<MeshRenderer>().sharedMaterial = beamMaterial;
 
-            GameObject sourceMarker = CreatePrimitive("Source", PrimitiveType.Sphere, position, Vector3.one * 0.28f, targetMaterial);
-            sourceMarker.transform.SetParent(root.transform, true);
-            GameObject targetObject = CreatePrimitive("Target", PrimitiveType.Sphere, position + Vector3.forward * 5f, Vector3.one * 0.36f, targetMaterial);
-            targetObject.transform.SetParent(root.transform, true);
+            GameObject targetObject = new GameObject("Target");
+            targetObject.transform.SetParent(root.transform, false);
+            targetObject.transform.localPosition = Vector3.forward * 5f;
             target = targetObject.AddComponent<TransformBeamEndpoint>();
             return root;
         }
@@ -148,10 +184,13 @@ namespace jlinkdev.UnityUtilities.Beams.Development
         private static Beam Configure(GameObject root, BeamEndpointProvider target, BeamPathProvider path, BeamPathModifier[] modifiers)
         {
             Beam beam = root.AddComponent<Beam>();
+            if (root.name == "Branching Lightning") beam.Seed = 37;
             beam.Target = target;
             beam.PathProvider = path;
             beam.PathRenderer = root.GetComponent<BeamRibbonRenderer>();
             beam.Modifiers = modifiers;
+            BeamAccentAuthoring.Attach(beam, root.name.Contains("Lightning") || root.name.Contains("Arc") ?
+                new Color(0.38f,0.58f,1f) : new Color(0.18f,0.9f,1f), 0.72f, false);
             beam.Refresh();
             return beam;
         }
@@ -160,12 +199,13 @@ namespace jlinkdev.UnityUtilities.Beams.Development
         {
             GameObject cameraObject = new GameObject("Main Camera");
             cameraObject.tag = "MainCamera";
-            cameraObject.transform.position = new Vector3(0f, 5.2f, -10f);
-            cameraObject.transform.LookAt(new Vector3(0f, 1.2f, 3.2f));
+            cameraObject.transform.position = new Vector3(0f,0f,-8f);
             Camera camera = cameraObject.AddComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.008f, 0.012f, 0.022f);
             camera.fieldOfView = 54f;
+            camera.orthographic = true;
+            camera.orthographicSize = 3.35f;
             cameraObject.AddComponent<AudioListener>();
         }
 
@@ -217,6 +257,106 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             if (Directory.Exists(PackageSampleRoot))
                 FileUtil.DeleteFileOrDirectory(PackageSampleRoot);
             FileUtil.CopyFileOrDirectory(AuthoringRoot, PackageSampleRoot);
+            RemapSampleAssets(PackageSampleRoot);
+            string controller = Path.Combine(PackageSampleRoot, "BeamKitDemoController.cs");
+            File.WriteAllText(controller, File.ReadAllText(controller).Replace("Beams.DevelopmentSample", "Beams.Samples"));
+            string scene = Path.Combine(PackageSampleRoot, "Scenes/Beam Kit Demo.unity");
+            File.WriteAllText(scene, File.ReadAllText(scene).Replace("Beams.DevelopmentSample", "Beams.Samples"));
+        }
+
+        // Imported assets can coexist with the authoring scene. Keep external package references intact.
+        private static void RemapSampleAssets(string folder)
+        {
+            var ids = new Dictionary<string, string>();
+            using var hash = MD5.Create();
+            foreach (string meta in Directory.GetFiles(folder, "*.meta", SearchOption.AllDirectories))
+            {
+                string guid = Regex.Match(File.ReadAllText(meta), @"(?m)^guid: ([a-f0-9]{32})").Groups[1].Value;
+                if (guid.Length == 0) continue;
+                ids[guid] = new System.Guid(hash.ComputeHash(Encoding.UTF8.GetBytes("BeamSample/" + guid))).ToString("N");
+            }
+            foreach (string file in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+            {
+                string source = File.ReadAllText(file);
+                string mapped = Regex.Replace(source, @"\b[a-f0-9]{32}\b", m =>
+                    ids.TryGetValue(m.Value, out string replacement) ? replacement : m.Value);
+                if (mapped != source) File.WriteAllText(file, mapped);
+            }
+        }
+
+        private static void BuildEnergyStudies()
+        {
+            const string root = "Assets/PackageDevelopment/Beams/SampleAuthoring/Energy Studies";
+            const string destination = "Packages/com.jlinkdev.beams/Samples~/Energy Studies";
+            EnsureFolder(root + "/Prefabs");
+            Scene previous = SceneManager.GetActiveScene();
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            try
+            {
+                SceneManager.SetActiveScene(scene);
+                var camera = new GameObject("Study Camera", typeof(Camera)).GetComponent<Camera>();
+                camera.tag = "MainCamera";
+                camera.transform.position = new Vector3(0, 0, -8);
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color(0.018f, 0.022f, 0.037f);
+                camera.orthographic = true;
+                camera.orthographicSize = 3.25f;
+                DemoBloom(camera, root, 0.65f);
+                foreach (BeamCreationMenu.EnergyStyle style in System.Enum.GetValues(typeof(BeamCreationMenu.EnergyStyle)))
+                {
+                    GameObject beam = BeamCreationMenu.CreateEnergyBeam(style);
+                    PrefabUtility.SaveAsPrefabAssetAndConnect(beam, $"{root}/Prefabs/{beam.name}.prefab", InteractionMode.AutomatedAction);
+                    float y = 2f - (int)style * 1.32f;
+                    beam.transform.SetPositionAndRotation(new Vector3(-2.5f, y, 0), Quaternion.Euler(0, 90, 0));
+                    if (style == BeamCreationMenu.EnergyStyle.GoldenTether)
+                    {
+                        const string clipPath = root + "/Tether Motion.anim";
+                        var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
+                        if (clip == null)
+                        {
+                            clip = new AnimationClip { legacy = true };
+                            AssetDatabase.CreateAsset(clip, clipPath);
+                        }
+                        clip.wrapMode = WrapMode.PingPong;
+                        var rest = beam.transform.Find("Beam Target").localPosition;
+                        clip.SetCurve("Beam Target", typeof(Transform), "localPosition.x", AnimationCurve.Constant(0,1.6f,rest.x));
+                        clip.SetCurve("Beam Target", typeof(Transform), "localPosition.y", AnimationCurve.EaseInOut(0, -0.3f, 1.6f, 0.4f));
+                        clip.SetCurve("Beam Target", typeof(Transform), "localPosition.z", AnimationCurve.Constant(0,1.6f,rest.z));
+                        EditorUtility.SetDirty(clip);
+                        var motion = beam.AddComponent<Animation>();
+                        motion.AddClip(clip, "Follow");
+                        motion.clip = clip;
+                    }
+                    var label = new GameObject(beam.name + " Label").AddComponent<TextMesh>();
+                    label.transform.position = new Vector3(-2.5f, y + 0.52f, 0);
+                    label.text = beam.name;
+                    label.characterSize = 0.60f;
+                    label.fontSize = 40;
+                    label.transform.localScale = Vector3.one * 0.12f;
+                    beam.GetComponent<Beam>().Refresh();
+                }
+                if (!EditorSceneManager.SaveScene(scene, root + "/Energy Studies.unity")) throw new IOException(root);
+            }
+            finally
+            {
+                SceneManager.SetActiveScene(previous);
+                EditorSceneManager.CloseScene(scene, true);
+            }
+            ExportStudy(root, destination);
+        }
+
+        private static void ExportStudy(string root, string destination)
+        {
+            // Copy individual assets so package-only documentation is preserved on rebuild.
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            foreach (var file in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
+            {
+                string to = destination + file.Substring(root.Length);
+                Directory.CreateDirectory(Path.GetDirectoryName(to));
+                File.Copy(file, to, true);
+            }
+            RemapSampleAssets(destination);
         }
 
         private static void EnsureFolder(string path)

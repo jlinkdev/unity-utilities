@@ -27,6 +27,7 @@ namespace jlinkdev.UnityUtilities.Beams
             for (int strandIndex = 0; strandIndex < paths.Count; strandIndex++)
             {
                 BeamStrand strand = paths[strandIndex];
+                BeamPathUtility.FollowParent(paths, strandIndex);
                 int seed = context.Seed + seedOffset + strand.Seed * 31;
                 for (int i = 1; i < strand.Count - 1; i++)
                 {

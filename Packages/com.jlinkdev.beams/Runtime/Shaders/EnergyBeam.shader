@@ -18,6 +18,8 @@ Shader "jlinkdev/Beams/Energy Beam"
         _FlickerRate("Flicker Rate", Range(0, 60)) = 0
         _FlickerStrength("Flicker Strength", Range(0, 1)) = 0
         _PulseWidth("Pulse Width", Range(0.001, 1)) = 0.08
+        _Filament("Spiral Filament", Range(0, 3)) = 0
+        [HideInInspector] _BeamTube("Tube Geometry", Float) = 0
         _PulseIntensity("Pulse Intensity", Range(0, 10)) = 0
         _EndpointOpacityFalloff("Endpoint Opacity Falloff", Range(0.001, 0.5)) = 0.01
         [HideInInspector] _BeamColor("Beam Color", Color) = (1, 1, 1, 1)
@@ -77,6 +79,8 @@ Shader "jlinkdev/Beams/Energy Beam"
                 half _FlickerRate;
                 half _FlickerStrength;
                 half _PulseWidth;
+                half _Filament;
+                float _BeamTube;
                 half _PulseIntensity;
                 half _EndpointOpacityFalloff;
                 half _BeamIntensity;
@@ -96,6 +100,7 @@ Shader "jlinkdev/Beams/Energy Beam"
                 float2 uv0 : TEXCOORD0;
                 float2 uv1 : TEXCOORD1;
                 float2 uv2 : TEXCOORD2;
+                float4 volume : TEXCOORD3;
                 half4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -106,6 +111,8 @@ Shader "jlinkdev/Beams/Energy Beam"
                 float2 beamUV : TEXCOORD0;
                 float distance : TEXCOORD1;
                 float seed : TEXCOORD2;
+                float4 volume : TEXCOORD3;
+                float3 viewFrame : TEXCOORD4;
                 half4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
@@ -135,7 +142,19 @@ Shader "jlinkdev/Beams/Energy Beam"
                 float3 normalOS = normalize(input.normalOS);
                 float3 binormalOS = normalize(cross(tangentOS, normalOS));
                 float3 positionOS = input.positionOS.xyz + normalOS * noise.x + binormalOS * noise.y;
+                if (_BeamTube > 0.5 && abs(input.uv0.y) > 0.5)
+                {
+                    float phase = input.uv1.x * _FlowFrequency * 3.14159 - _BeamTime * _FlowSpeed;
+                    float envelope = sin(3.14159 * saturate(input.uv0.x));
+                    float3 orbitWS = TransformObjectToWorldDir(normalOS * cos(phase) + binormalOS * sin(phase));
+                    positionOS += mul((float3x3)GetWorldToObjectMatrix(), orbitWS * input.uv1.y * envelope * input.uv0.y);
+                }
                 output.positionCS = TransformObjectToHClip(positionOS);
+                float3 viewWS = GetWorldSpaceViewDir(TransformObjectToWorld(positionOS));
+                float3 t = TransformObjectToWorldDir(tangentOS);
+                float3 n = TransformObjectToWorldDir(normalOS);
+                output.viewFrame = float3(dot(viewWS,n), dot(viewWS,normalize(cross(t,n))), dot(viewWS,t));
+                output.volume = input.volume;
                 output.beamUV = input.uv0;
                 output.distance = input.uv1.x;
                 output.seed = input.uv2.x;
@@ -149,10 +168,31 @@ Shader "jlinkdev/Beams/Energy Beam"
                 float core;
                 float halo;
                 BeamCoreHalo_float(input.beamUV.y, _CoreWidth, _EdgePower, core, halo);
+                float u = input.beamUV.x;
+                float filament = 0.0;
+                if (_BeamTube > 0.5)
+                {
+                    // Integrate one view chord through a finite cylinder in the local strand frame.
+                    float3 ray = normalize(input.viewFrame);
+                    float radius = max(input.volume.w, 0.0001);
+                    float2 r = input.volume.xy;
+                    float a = dot(ray.xy,ray.xy);
+                    float b = dot(r,ray.xy);
+                    float radialExit = a < 1e-6 ? 1e8 :
+                        radius * (sqrt(max(0.0,b*b + a*(1.0-dot(r,r)))) - b) / a;
+                    float axialExit = ray.z > 0 ? input.volume.z-input.distance : input.distance;
+                    float chord = min(radialExit, axialExit / max(abs(ray.z),1e-6));
+                    float density = saturate(chord / (2.0 * radius));
+                    halo = pow(density, max(0.1,_EdgePower));
+                    core = pow(density, 1.0 / max(0.01,_CoreWidth));
+                    u = saturate((input.distance + 0.5 * chord * ray.z) / max(input.volume.z,0.0001));
+                    float phase = input.distance * _FlowFrequency * 6.283185 - _BeamTime * _FlowSpeed;
+                    filament = pow(saturate(0.5 + 0.5 * dot(r,float2(cos(phase),sin(phase)))),8) * _Filament;
+                }
 
                 float flow;
                 BeamFlow_float(input.distance, _BeamTime, _FlowSpeed, _FlowFrequency, _BeamSeed + input.seed, flow);
-                float energy = core * _CoreIntensity + halo * _HaloIntensity;
+                float energy = core * _CoreIntensity + halo * _HaloIntensity + filament;
                 energy *= 1.0 + (flow * 2.0 - 1.0) * _FlowStrength;
 
                 float pulse;
@@ -161,13 +201,16 @@ Shader "jlinkdev/Beams/Energy Beam"
                 float flickerSample = BeamValueNoise1D(floor(_BeamTime * _FlickerRate), _BeamSeed + input.seed) * 0.5 + 0.5;
                 energy *= lerp(1.0, flickerSample, _FlickerStrength);
                 float endpointOpacity = BeamEndpointMaskValue(
-                    input.beamUV.x,
+                    u,
                     _EndpointOpacityFalloff,
                     _EndpointOpacityFalloff);
 
                 half4 tint = _BaseColor * _BeamColor * input.color;
                 half alpha = saturate(halo * _Opacity * tint.a * endpointOpacity * _BeamActivation);
-                return half4(tint.rgb * energy * _BeamIntensity * _BeamActivation, alpha);
+                half3 emission = tint.rgb * energy;
+                if (_BeamTube > 0.5)
+                    emission += core * core * _CoreIntensity * lerp(0.15, 0.8, abs(input.beamUV.y));
+                return half4(emission * _BeamIntensity * _BeamActivation, alpha);
             }
             ENDHLSL
         }

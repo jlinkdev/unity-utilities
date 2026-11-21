@@ -24,7 +24,9 @@ namespace jlinkdev.UnityUtilities.Beams
 
         private Dictionary<ContactKey, BeamContact> activeContacts = new Dictionary<ContactKey, BeamContact>();
         private Dictionary<ContactKey, BeamContact> frameContacts = new Dictionary<ContactKey, BeamContact>();
-        private readonly List<ContactKey> exitKeys = new List<ContactKey>();
+        private bool querying;
+        private int contactRevision;
+        private readonly List<BeamContact> clearingContacts = new List<BeamContact>();
         private RaycastHit[] hitBuffer;
         private float nextQueryTime;
         private float nextTickTime;
@@ -83,6 +85,15 @@ namespace jlinkdev.UnityUtilities.Beams
 
         public void QueryNow()
         {
+            if (querying || !isActiveAndEnabled)
+                return;
+            querying = true;
+            try { QueryContacts(); }
+            finally { querying = false; }
+        }
+
+        private void QueryContacts()
+        {
             if (beam == null || !beam.HasResolvedPath)
             {
                 ClearContacts(true);
@@ -99,26 +110,43 @@ namespace jlinkdev.UnityUtilities.Beams
                     QuerySegment(strand, strandIndex, segmentIndex);
             }
 
-            PublishLifecycle();
+            int revision = contactRevision;
+            PublishLifecycle(revision);
+            if (revision != contactRevision)
+                return;
             float time = CurrentTime();
             if (tickInterval <= 0f || time >= nextTickTime)
             {
                 foreach (KeyValuePair<ContactKey, BeamContact> pair in activeContacts)
+                {
                     PublishTick(pair.Value);
+                    if (DispatchInterrupted(revision))
+                        return;
+                }
                 nextTickTime = tickInterval <= 0f ? time : time + tickInterval;
             }
         }
 
         public void ClearContacts(bool publishExitEvents)
         {
-            if (publishExitEvents)
-            {
-                foreach (KeyValuePair<ContactKey, BeamContact> pair in activeContacts)
-                    PublishExit(pair.Value);
-            }
+            contactRevision++;
+            if (activeContacts.Count == 0)
+                return;
+            clearingContacts.AddRange(activeContacts.Values);
             activeContacts.Clear();
-            frameContacts.Clear();
-            exitKeys.Clear();
+            bool wasQuerying = querying;
+            querying = true;
+            try
+            {
+                if (publishExitEvents)
+                    foreach (BeamContact contact in clearingContacts)
+                        PublishExit(contact);
+            }
+            finally
+            {
+                clearingContacts.Clear();
+                querying = wasQuerying;
+            }
         }
 
         private void OnEnable()
@@ -139,7 +167,7 @@ namespace jlinkdev.UnityUtilities.Beams
 
         private void Subscribe()
         {
-            if (beam == null)
+            if (beam == null || !isActiveAndEnabled)
                 return;
             beam.PathUpdated -= OnPathUpdated;
             beam.RenderingStopped -= OnRenderingStopped;
@@ -205,30 +233,34 @@ namespace jlinkdev.UnityUtilities.Beams
             }
         }
 
-        private void PublishLifecycle()
+        private void PublishLifecycle(int revision)
         {
-            exitKeys.Clear();
-            foreach (KeyValuePair<ContactKey, BeamContact> pair in activeContacts)
+            var previous = activeContacts;
+            activeContacts = frameContacts;
+            frameContacts = previous;
+            foreach (var pair in previous)
             {
-                if (!frameContacts.ContainsKey(pair.Key))
-                    exitKeys.Add(pair.Key);
+                if (!activeContacts.ContainsKey(pair.Key))
+                    PublishExit(pair.Value);
+                if (DispatchInterrupted(revision))
+                    return;
             }
-
-            foreach (KeyValuePair<ContactKey, BeamContact> pair in frameContacts)
+            foreach (var pair in activeContacts)
             {
-                if (activeContacts.ContainsKey(pair.Key))
+                if (previous.ContainsKey(pair.Key))
                     PublishStay(pair.Value);
                 else
                     PublishEnter(pair.Value);
+                if (DispatchInterrupted(revision))
+                    return;
             }
+        }
 
-            for (int i = 0; i < exitKeys.Count; i++)
-                PublishExit(activeContacts[exitKeys[i]]);
-
-            Dictionary<ContactKey, BeamContact> swap = activeContacts;
-            activeContacts = frameContacts;
-            frameContacts = swap;
-            frameContacts.Clear();
+        private bool DispatchInterrupted(int revision)
+        {
+            if (revision == contactRevision && !isActiveAndEnabled)
+                ClearContacts(true);
+            return revision != contactRevision;
         }
 
         private void PublishEnter(in BeamContact contact)

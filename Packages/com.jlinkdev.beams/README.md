@@ -8,6 +8,7 @@ materials, and physics contact events. Gameplay behavior stays in your project.
 - Unity 6 (`6000.0` or newer).
 - URP `17.0.3` or a compatible newer version; the included materials use URP.
 - Unity Physics module (installed as a package dependency).
+- The animated samples also use Unity's built-in Animation module; the orbital sample uses Particle System.
 
 These are declared requirements, not a test matrix for every editor and platform.
 
@@ -31,12 +32,20 @@ from disk** and select this package's `package.json`.
 
 Subscribe to `BeamPhysicsContacts` events when your game needs contact responses.
 
-## Sample
+## Samples
 
 Import **Beam Kit Demo** from the package's **Samples** tab. Open
 `Scenes/Beam Kit Demo.unity` in the imported folder and press Play. Targets animate,
 pulses trigger automatically, and the overlay displays contact counts.
 See the [sample guide](<Samples~/Beam Kit Demo/README.md>).
+
+Import **Energy Studies** for a side-by-side scene and four standalone prefabs. The trip laser has a pencil-thin red bore. Mining Plasma has a broad amber sheath, Golden Tether follows a moving target with two orbiting filaments, and Tractor Stream sends cyan bands back to the source.
+
+Import **Orbital Descent** for a sweeping column over a basalt basin. The prefab combines three tube layers, a raycast endpoint, surface glow, a cooling trail, sparks, and a drifting thermal plume. Its scene camera has a local URP bloom volume.
+
+Camera captures: [orbital sweep](Documentation~/orbital-descent.webp) · [energy presets](Documentation~/energy-studies.png) · [ribbon and lightning studies](Documentation~/ribbon-studies.png).
+
+On a Beam Ribbon Renderer, enable **Volume Tube** for a capped cross-section with view-dependent optical thickness. Leave it off for a camera-facing ribbon. **Ribbon Flow** is an editable ribbon material and Shader Graph using all four beam subgraphs.
 
 ## Limitations
 

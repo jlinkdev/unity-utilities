@@ -1,7 +1,7 @@
 using jlinkdev.UnityUtilities.Beams;
 using UnityEngine;
 
-namespace jlinkdev.UnityUtilities.Beams.Samples
+namespace jlinkdev.UnityUtilities.Beams.DevelopmentSample
 {
     public sealed class BeamKitDemoController : MonoBehaviour
     {
@@ -14,6 +14,46 @@ namespace jlinkdev.UnityUtilities.Beams.Samples
 
         private Vector3[] startingPositions;
         private float nextPulseAt;
+        private MaterialPropertyBlock highlight;
+
+        private void OnEnable()
+        {
+            highlight = new MaterialPropertyBlock();
+            foreach (var probe in contactProbes)
+            {
+                if (probe == null) continue;
+                probe.ContactEntered += OnEnter;
+                probe.ContactTicked += OnTick;
+                probe.ContactExited += OnExit;
+            }
+        }
+
+        private void OnDisable()
+        {
+            foreach (var probe in contactProbes)
+            {
+                if (probe == null) continue;
+                probe.ContactEntered -= OnEnter;
+                probe.ContactTicked -= OnTick;
+                probe.ContactExited -= OnExit;
+            }
+        }
+
+        private void OnEnter(BeamPhysicsContacts probe, BeamContact hit) => Tint(hit, Color.cyan);
+        private void OnTick(BeamPhysicsContacts probe, BeamContact hit) =>
+            Tint(hit, Color.Lerp(Color.cyan, Color.white, Mathf.PingPong(Time.time * 4f, 1f)));
+        private void OnExit(BeamPhysicsContacts probe, BeamContact hit)
+        {
+            if (hit.Collider != null && hit.Collider.TryGetComponent<Renderer>(out var surface))
+                surface.SetPropertyBlock(null);
+        }
+
+        private void Tint(BeamContact hit, Color color)
+        {
+            if (hit.Collider == null || !hit.Collider.TryGetComponent<Renderer>(out var surface)) return;
+            highlight.SetColor("_BaseColor", color);
+            surface.SetPropertyBlock(highlight);
+        }
 
         private void Start()
         {
