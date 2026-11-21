@@ -1,0 +1,7 @@
+{
+  "name": "jlinkdev.WaterSystem.Editor",
+  "rootNamespace": "jlinkdev.UnityUtilities.WaterSystem.Editor",
+  "references": ["jlinkdev.WaterSystem", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Universal.Editor"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

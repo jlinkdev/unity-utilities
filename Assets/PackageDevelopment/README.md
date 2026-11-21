@@ -55,6 +55,43 @@ package's `Documentation~/performance.md` for measurements and reproduction.
 inclusion/exclusion boxes. The package's **Create Fog Laboratory** menu generates a
 separate scene and assets, leaving existing rain laboratories intact.
 
+## Water System sample workflow
+
+The editable Water Laboratory source lives at
+`Assets/PackageDevelopment/WaterSystem/SampleAuthoring/Water Laboratory`.
+Use **Tools > jlinkdev > Water System > Rebuild Water Laboratory (Development)**
+to regenerate the pool scene, submerged geometry, floating props, profiles, and
+scoped URP pipeline. The builder is
+`Assets/PackageDevelopment/Editor/WaterSystemDevelopmentBuilder.cs`; its batch
+entry point is
+`jlinkdev.UnityUtilities.WaterSystem.Development.WaterSystemDevelopmentBuilder.BuildAll`.
+
+The builder opens a new scene and replaces generated assets in the authoring
+folder. Run it in an isolated validation project if another workflow owns the
+open editor. It does not change project Graphics, Quality, color space, or Render
+Graph settings. It finds the installed Water System package and publishes a
+complete sample to `Samples~/Water Laboratory` inside that package. The imported
+sample has no dependency on this host development folder.
+
+The sample controller temporarily selects its included pipeline while enabled
+in Play Mode and restores the prior Graphics and active Quality pipeline on
+exit. Read the [package guide](../../Packages/com.jlinkdev.water-system/README.md)
+for scope and [validation record](../../Packages/com.jlinkdev.water-system/Documentation~/validation.md)
+for observed results. The local 0.1.0 implementation passed automated tests,
+editor render checks, a Windows player smoke run, and candidate archive sample
+import. It is not yet published; performance and broader compatibility remain
+unmeasured.
+
+For a clean consumer check, copy only `Editor/WaterPackageImportValidation.cs`
+into the consumer project's `Assets/Editor` after installing the package archive.
+Run `WaterPackageImportValidation.ImportSample` and then, in a separate editor
+invocation after the imported scripts compile, `VerifyImportedSample`. Both
+methods use the `jlinkdev.UnityUtilities.WaterSystem.Development` namespace.
+The helper imports through Package Manager's sample API and writes
+`WaterImportedSamplePath.txt` and `WaterPackageImportValidation.txt` at the
+consumer project root. It checks references and sample independence without
+depending on authoring content or the sample controller's type at compile time.
+
 ## Interactive Fog sample workflow
 
 `InteractiveFog/SampleAuthoring/Mist Sanctuary` contains the editable fog sample.

@@ -1,0 +1,23 @@
+{
+  "name": "com.jlinkdev.water-system",
+  "displayName": "jlinkdev Water System",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Coherent animated water surfaces, per-pixel waterline transitions, underwater atmosphere, caustics, and point buoyancy for Unity 6 URP Render Graph.",
+  "license": "MIT",
+  "author": { "name": "Justin Link" },
+  "keywords": ["water", "underwater", "waterline", "buoyancy", "urp"],
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.3",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Water Laboratory",
+      "description": "A self-contained pool scene with three water presets, a controllable waterline camera, submerged geometry, floating props, and scoped URP setup.",
+      "path": "Samples~/Water Laboratory"
+    }
+  ]
+}

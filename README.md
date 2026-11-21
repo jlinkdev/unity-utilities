@@ -17,6 +17,7 @@ and an importable demo.
 | [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
 | [Interactive Fog](Packages/com.jlinkdev.interactive-fog/README.md) | Unity 6; URP 17.0.3; Render Graph; compute-capable desktop GPU | Interactive 3D ground-fog prototype; [validation record](Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md). |
 | [Procedural Nebulae](Packages/com.jlinkdev.procedural-nebulae/README.md) | Unity 6, URP 17, Render Graph, compute-capable desktop GPU | Seeded star-lit cloud volumes and the Starlit Passage fly-through. |
+| [Water System](Packages/com.jlinkdev.water-system/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Local 0.1.0 implementation; [tests, Windows player, and sample import checked](Packages/com.jlinkdev.water-system/Documentation~/validation.md). Not yet published. |
 | [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
 | [Procedural Picture Frames](Packages/com.jlinkdev.procedural-frames/README.md) | Unity 6.0 | Sculptable frame mouldings, a playable workshop and mesh export for tiled materials or Substance Painter. |
 
@@ -45,7 +46,9 @@ demo. Open the scene described in its sample README under
 pipeline; sample guides explain any additional renderer setup or temporary changes.
 
 Rain includes **Rain Laboratory**, **Volume Laboratory**, and **Fog Laboratory**.
-Procedural Plants includes **Windowsill** and **Plant Studio**. The remaining packages include a focused demo.
+Water includes **Water Laboratory**, with animated waves, waterline transitions,
+underwater atmosphere, and floating props. Procedural Plants includes **Windowsill**
+and **Plant Studio**. The remaining packages include a focused demo.
 
 ## Develop and validate
 

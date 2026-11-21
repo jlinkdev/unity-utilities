@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90e88b5bf22d5db48a4c55059c614521, type: 3}
+  m_Name: Coastal Water
+  m_EditorClassIdentifier:
+  Waves:
+  - Direction: 15
+    Amplitude: 0.36
+    Wavelength: 8
+    Speed: 1.4
+    Phase: 0
+  - Direction: 80
+    Amplitude: 0.14
+    Wavelength: 4.4
+    Speed: 0.9
+    Phase: 1.5
+  - Direction: 155
+    Amplitude: 0.065
+    Wavelength: 2.3
+    Speed: 0.55
+    Phase: 2.4
+  ShallowColor: {r: 0.08, g: 0.48, b: 0.51, a: 0.68}
+  DeepColor: {r: 0.015, g: 0.12, b: 0.2, a: 0.95}
+  Absorption: {x: 0.24, y: 0.07, z: 0.045}
+  Refraction: 0.016
+  Smoothness: 0.9
+  DetailNormalStrength: 0.08
+  FoamColor: {r: 0.85, g: 0.98, b: 1, a: 1}
+  FoamWidth: 0.4
+  FoamStrength: 0.9
+  FogColor: {r: 0.035, g: 0.25, b: 0.31, a: 1}
+  Density: 0.1
+  UnderwaterSaturation: 0.82
+  Distortion: 0.0015
+  WaterlineColor: {r: 0.1, g: 0.66, b: 0.69, a: 1}
+  WaterlineWidth: 3
+  WaterlineStrength: 0.6
+  CausticsStrength: 0.5
+  CausticsScale: 0.75
+  CausticsSpeed: 0.25
