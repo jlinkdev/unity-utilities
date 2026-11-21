@@ -15,6 +15,7 @@ and an importable demo.
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
 | [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |
+| [Blueprint Rendering](Packages/com.jlinkdev.blueprint-rendering/README.md) | Unity 6, URP 17, Render Graph, desktop | Bake-free technical drawings and a ten-piece exploded gearbox demo. |
 | [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
 | [Interactive Fog](Packages/com.jlinkdev.interactive-fog/README.md) | Unity 6; URP 17.0.3; Render Graph; compute-capable desktop GPU | Interactive 3D ground-fog prototype; [validation record](Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md). |
 | [Procedural Nebulae](Packages/com.jlinkdev.procedural-nebulae/README.md) | Unity 6, URP 17, Render Graph, compute-capable desktop GPU | Seeded star-lit cloud volumes and the Starlit Passage fly-through. |

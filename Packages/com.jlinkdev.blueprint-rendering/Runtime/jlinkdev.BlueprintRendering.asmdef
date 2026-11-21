@@ -1,0 +1,5 @@
+{
+  "name": "jlinkdev.BlueprintRendering",
+  "rootNamespace": "jlinkdev.BlueprintRendering",
+  "references": ["Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"]
+}

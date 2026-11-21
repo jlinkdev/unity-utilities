@@ -1,0 +1,8 @@
+{
+  "name": "jlinkdev.BlueprintRendering.EditorTests",
+  "references": ["jlinkdev.BlueprintRendering", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

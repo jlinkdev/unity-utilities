@@ -1,0 +1,22 @@
+{
+  "name": "com.jlinkdev.blueprint-rendering",
+  "version": "0.1.0",
+  "displayName": "jlinkdev Blueprint Rendering",
+  "description": "Bake-free technical line drawings with layered hidden edges for the Universal Render Pipeline.",
+  "unity": "6000.0",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.3",
+    "com.unity.modules.imgui": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Planetary Gearbox",
+      "description": "Orbit and explode a ten-piece planetary gearbox in blueprint view.",
+      "path": "Samples~/Planetary Gearbox"
+    }
+  ]
+}
