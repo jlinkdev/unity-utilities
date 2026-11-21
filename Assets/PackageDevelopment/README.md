@@ -16,6 +16,10 @@ The distributable copy lives in `Packages/com.jlinkdev.procedural-nebulae/Sample
 
 Open the [Plant Studio scene](<ProceduralPlants/SampleAuthoring/Plant Studio/Plant Studio.unity>) and press **Play**. Select **Specimen** to generate and bake in edit mode. When publishing sample edits, copy the scene and guide to `Packages/com.jlinkdev.procedural-plants/Samples~/Plant Studio` and retain each copy's metadata.
 
+## Procedural Picture Frames sample workflow
+
+Open the [Frame Workshop scene](<ProceduralFrames/SampleAuthoring/Frame Workshop/Frame Workshop.unity>) and press **Play**. Copy scene and guide edits to the package’s `Samples~/Frame Workshop` folder when updating the distributable sample. Each copy has its own Unity metadata.
+
 ## Portal sample workflow
 
 The editable Portal Playground source lives at

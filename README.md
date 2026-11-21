@@ -18,6 +18,7 @@ and an importable demo.
 | [Interactive Fog](Packages/com.jlinkdev.interactive-fog/README.md) | Unity 6; URP 17.0.3; Render Graph; compute-capable desktop GPU | Interactive 3D ground-fog prototype; [validation record](Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md). |
 | [Procedural Nebulae](Packages/com.jlinkdev.procedural-nebulae/README.md) | Unity 6, URP 17, Render Graph, compute-capable desktop GPU | Seeded star-lit cloud volumes and the Starlit Passage fly-through. |
 | [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
+| [Procedural Picture Frames](Packages/com.jlinkdev.procedural-frames/README.md) | Unity 6.0 | Sculptable frame mouldings, a playable workshop and mesh export for tiled materials or Substance Painter. |
 
 Requirements are declared minimums, not a claim that every newer editor, graphics
 API, or platform has been tested. Each guide describes scope and known limitations.

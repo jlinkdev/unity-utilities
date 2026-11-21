@@ -55,6 +55,15 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.procedural-frames": {
+      "version": "file:com.jlinkdev.procedural-frames",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
     "com.jlinkdev.procedural-nebulae": {
       "version": "file:com.jlinkdev.procedural-nebulae",
       "depth": 0,
