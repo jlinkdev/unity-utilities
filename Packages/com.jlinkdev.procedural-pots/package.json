@@ -1,0 +1,23 @@
+{
+  "name": "com.jlinkdev.procedural-pots",
+  "displayName": "jlinkdev Procedural Pots",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Sculpt hollow procedural vessels in a runtime pottery workshop and save reusable recipes and meshes.",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Pottery Workshop",
+      "description": "Shape and collect pots on an interactive turntable.",
+      "path": "Samples~/Pottery Workshop"
+    }
+  ]
+}

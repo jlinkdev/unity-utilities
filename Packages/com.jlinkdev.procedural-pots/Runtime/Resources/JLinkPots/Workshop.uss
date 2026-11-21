@@ -1,0 +1,39 @@
+.workshop { flex-grow: 1; flex-direction: row; color: rgb(237,235,220); font-size: 13px; }
+.sidebar { width: 252px; background-color: rgb(30,36,34); padding: 18px 14px 10px 14px; }
+.heading { font-size: 24px; -unity-font-style: bold; color: rgb(246,237,214); }
+.design-name { color: rgb(218,170,128); font-size: 15px; margin-top: 2px; margin-bottom: 14px; }
+.tabs, .row, .value-row, .view-tools, .tray { flex-direction: row; }
+.workshop Button { background-color: rgb(57,66,62); color: rgb(237,235,220); border-width: 0; border-radius: 4px; padding: 4px 6px; margin: 2px; min-height: 27px; -unity-text-align: middle-center; }
+.workshop Button:hover { background-color: rgb(79,84,73); }
+.workshop Button:active { background-color: rgb(108,89,69); }
+.workshop Button.chosen { background-color: rgb(102,78,57); color: rgb(255,228,192); border-bottom-width: 2px; border-bottom-color: rgb(239,177,117); }
+.workshop Button.primary { background-color: rgb(205,158,113); color: rgb(42,37,29); -unity-font-style: bold; }
+.tabs Button, .row Button { flex-grow: 1; flex-basis: 0; padding-left: 1px; padding-right: 1px; font-size: 12px; }
+.tabs Button { flex-basis: auto; }
+.workshop .unity-toggle__label { color: rgb(225,230,216); }
+.inspector { flex-grow: 1; flex-basis: 0; margin-top: 8px; }
+.section { color: rgb(244,230,205); margin: 9px 0 5px 1px; font-size: 14px; -unity-font-style: bold; }
+.value-row { justify-content: space-between; align-items: center; }
+.parameter { color: rgb(209,216,204); font-size: 12px; }
+.value-row FloatField { width: 62px; min-width: 0; }
+.workshop TextField, .workshop FloatField { color: rgb(240,238,224); }
+.workshop .unity-base-text-field__input { background-color: rgb(46,54,50); color: rgb(240,238,224); border-width: 0; border-radius: 3px; }
+.workshop Slider { margin: 3px 5px 8px 2px; min-height: 14px; }
+.workshop .unity-base-slider__tracker { background-color: rgb(82,93,84); }
+.workshop .unity-base-slider__dragger { background-color: rgb(226,173,123); }
+.hint, .notice { white-space: normal; font-size: 12px; color: rgb(183,195,181); margin: 7px 2px; }
+.notice { margin: 1px 2px; }
+.footer { padding-top: 5px; }
+.work-area { flex-grow: 1; flex-basis: 0; }
+.viewport { flex-grow: 1; flex-basis: 0; overflow: hidden; }
+.sculpt-canvas { flex-grow: 1; }
+.view-tools { position: absolute; top: 10px; left: 10px; }
+.view-tools Button { min-height: 24px; font-size: 12px; padding: 2px 9px; }
+.tray { height: 94px; background-color: rgb(30,36,34); padding: 6px; }
+.tray Button.preset { flex-basis: 0; flex-grow: 1; min-width: 0; padding: 3px; }
+.preset Image { flex-grow: 1; flex-basis: 0; width: 100%; }
+.preset-title { -unity-text-align: middle-center; font-size: 12px; }
+.compact .sidebar { padding-top: 5px; }
+.compact .heading { font-size: 18px; }
+.compact .design-name { margin-bottom: 3px; }
+.compact .tray { height: 64px; }

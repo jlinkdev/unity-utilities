@@ -1,0 +1,1 @@
+{"name":"jlinkdev.ProceduralPots.EditorTests","references":["jlinkdev.ProceduralPots","jlinkdev.ProceduralPots.Editor"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"],"autoReferenced":false}

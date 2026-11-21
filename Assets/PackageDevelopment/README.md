@@ -20,6 +20,10 @@ Open the [Plant Studio scene](<ProceduralPlants/SampleAuthoring/Plant Studio/Pla
 
 Open the [Frame Workshop scene](<ProceduralFrames/SampleAuthoring/Frame Workshop/Frame Workshop.unity>) and press **Play**. Copy scene and guide edits to the package’s `Samples~/Frame Workshop` folder when updating the distributable sample. Each copy has its own Unity metadata.
 
+## Procedural Pots sample workflow
+
+Open the [Pottery Workshop scene](<ProceduralPots/SampleAuthoring/Pottery Workshop/Pottery Workshop.unity>) and press **Play**. Edit this copy when developing the sample. To publish scene or guide edits, copy `Pottery Workshop.unity` and `README.md` into `Packages/com.jlinkdev.procedural-pots/Samples~/Pottery Workshop`. Each copy keeps its own Unity metadata so both scenes can coexist when the UPM sample is imported into this project.
+
 ## Portal sample workflow
 
 The editable Portal Playground source lives at

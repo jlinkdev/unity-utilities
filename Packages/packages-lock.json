@@ -81,6 +81,16 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       }
     },
+    "com.jlinkdev.procedural-pots": {
+      "version": "file:com.jlinkdev.procedural-pots",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.physics": "1.0.0"
+      }
+    },
     "com.jlinkdev.volumetric-fog-and-rain": {
       "version": "file:com.jlinkdev.volumetric-fog-and-rain",
       "depth": 0,
