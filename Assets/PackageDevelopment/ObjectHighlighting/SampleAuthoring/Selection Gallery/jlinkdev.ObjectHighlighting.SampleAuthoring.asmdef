@@ -1,0 +1,10 @@
+{
+  "name": "jlinkdev.ObjectHighlighting.SampleAuthoring",
+  "references": [
+    "jlinkdev.ObjectHighlighting",
+    "Unity.InputSystem",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "autoReferenced": false
+}

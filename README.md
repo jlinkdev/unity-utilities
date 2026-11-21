@@ -11,6 +11,7 @@ and an importable demo.
 | [Procedural Plants](Packages/com.jlinkdev.procedural-plants/README.md) | Unity 6.0 | 2.3.1. Seven seeded houseplants with textured foliage, optional care and propagation. Inspect a young plant up close or grow the same cutting in two pots on the Windowsill. |
 | [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3; any pipeline | Experimental; avatar validation remains necessary. |
 | [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3; any pipeline | Initial extraction; no package-specific automated tests yet. |
+| [Object Highlighting](Packages/com.jlinkdev.object-highlighting/README.md) | Unity 6.0, URP 17.0.4, Render Graph, desktop | Per-object hover contours and selection glows with an interactive Selection Gallery. |
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
 | [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |

@@ -1,0 +1,19 @@
+{
+  "name": "com.jlinkdev.object-highlighting",
+  "version": "0.1.0",
+  "displayName": "jlinkdev Object Highlighting",
+  "description": "Depth-tested selection outlines and outer glows for opaque 3D objects in URP.",
+  "unity": "6000.0",
+  "license": "MIT",
+  "author": { "name": "Justin Link" },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "17.0.4",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [{
+    "displayName": "Selection Gallery",
+    "description": "Hover and select three machined parts to compare a crisp contour with a soft amber halo.",
+    "path": "Samples~/Selection Gallery"
+  }]
+}

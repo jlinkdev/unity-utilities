@@ -1,0 +1,8 @@
+{
+  "name": "jlinkdev.ObjectHighlighting.EditorTests",
+  "references": ["jlinkdev.ObjectHighlighting", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

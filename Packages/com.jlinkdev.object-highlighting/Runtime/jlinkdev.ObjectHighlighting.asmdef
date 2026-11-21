@@ -1,0 +1,5 @@
+{
+  "name": "jlinkdev.ObjectHighlighting",
+  "rootNamespace": "jlinkdev.ObjectHighlighting",
+  "references": ["Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"]
+}

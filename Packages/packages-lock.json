@@ -40,6 +40,16 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       }
     },
+    "com.jlinkdev.object-highlighting": {
+      "version": "file:com.jlinkdev.object-highlighting",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.4",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.physics": "1.0.0"
+      }
+    },
     "com.jlinkdev.object-pooling": {
       "version": "file:com.jlinkdev.object-pooling",
       "depth": 0,

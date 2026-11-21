@@ -6,6 +6,17 @@ that exercise multiple packages but should not ship in any UPM package.
 Package-specific samples belong in that package's `Samples~` directory, and
 package-specific automated tests belong in that package's `Tests` directory.
 
+## Object Highlighting sample workflow
+
+Choose **Tools > jlinkdev > Object Highlighting > Open Selection Gallery** or open the
+[editable scene](<ObjectHighlighting/SampleAuthoring/Selection Gallery/Selection Gallery.unity>) and press **Play**.
+The gear shows the hover outline and the impeller shows the selection glow. Move the mouse and click to change their states.
+Tune the authoring copy's **Gallery Renderer** to compare glow resolutions.
+
+The Package Manager copy lives in `Packages/com.jlinkdev.object-highlighting/Samples~/Selection Gallery`.
+When transferring edits, preserve each copy's metadata and remap references to its own meshes, materials, pipeline, and controller.
+The authoring assembly definition belongs only in the host project.
+
 ## Procedural Nebulae sample workflow
 
 Open [Starlit Passage](<ProceduralNebulae/SampleAuthoring/Starlit Passage/Starlit Passage.unity>) in the host project and press **Play**. Its Flight Camera is assigned the **Starlit Passage Renderer** override.
