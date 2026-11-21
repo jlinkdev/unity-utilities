@@ -1,0 +1,1 @@
+{"name":"jlinkdev.ProceduralPlants.EditorTests","references":["jlinkdev.ProceduralPlants","jlinkdev.ProceduralPlants.Editor","jlinkdev.ProceduralPlants.Studio"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"],"autoReferenced":false}

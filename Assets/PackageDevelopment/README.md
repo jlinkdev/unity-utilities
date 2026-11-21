@@ -12,6 +12,10 @@ Open [Starlit Passage](<ProceduralNebulae/SampleAuthoring/Starlit Passage/Starli
 
 The distributable copy lives in `Packages/com.jlinkdev.procedural-nebulae/Samples~/Starlit Passage`. When transferring edits, retain each copy’s metadata and local asset references. Both scenes use the package’s Starlit Banks prefab.
 
+## Procedural Plants sample workflow
+
+Open the [Plant Studio scene](<ProceduralPlants/SampleAuthoring/Plant Studio/Plant Studio.unity>) and press **Play**. Select **Specimen** to generate and bake in edit mode. When publishing sample edits, copy the scene and guide to `Packages/com.jlinkdev.procedural-plants/Samples~/Plant Studio` and retain each copy's metadata.
+
 ## Portal sample workflow
 
 The editable Portal Playground source lives at

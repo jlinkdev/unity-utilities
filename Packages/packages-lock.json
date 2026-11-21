@@ -63,6 +63,15 @@
         "com.unity.render-pipelines.universal": "17.0.3"
       }
     },
+    "com.jlinkdev.procedural-plants": {
+      "version": "file:com.jlinkdev.procedural-plants",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
     "com.jlinkdev.volumetric-fog-and-rain": {
       "version": "file:com.jlinkdev.volumetric-fog-and-rain",
       "depth": 0,

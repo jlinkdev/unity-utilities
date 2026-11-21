@@ -1,0 +1,27 @@
+{
+  "name": "com.jlinkdev.procedural-plants",
+  "displayName": "jlinkdev Procedural Plants",
+  "version": "2.3.1",
+  "unity": "6000.0",
+  "description": "Grow, save and bake seeded houseplants in the editor and at runtime.",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "dependencies": {
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Windowsill",
+      "description": "Grow seven houseplants, watch a jade shoot branch, propagate spider plantlets and train vine cuttings on a two-pot windowsill with optional care.",
+      "path": "Samples~/Windowsill"
+    },
+    {
+      "displayName": "Plant Studio",
+      "description": "Grow and inspect a potted specimen on a studio shelf.",
+      "path": "Samples~/Plant Studio"
+    }
+  ]
+}

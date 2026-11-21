@@ -8,6 +8,7 @@ and an importable demo.
 
 | Package and quick start | Declared requirements | Maturity |
 | --- | --- | --- |
+| [Procedural Plants](Packages/com.jlinkdev.procedural-plants/README.md) | Unity 6.0 | 2.3.1. Seven seeded houseplants with textured foliage, optional care and propagation. Inspect a young plant up close or grow the same cutting in two pots on the Windowsill. |
 | [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3; any pipeline | Experimental; avatar validation remains necessary. |
 | [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3; any pipeline | Initial extraction; no package-specific automated tests yet. |
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
@@ -43,7 +44,7 @@ demo. Open the scene described in its sample README under
 pipeline; sample guides explain any additional renderer setup or temporary changes.
 
 Rain includes **Rain Laboratory**, **Volume Laboratory**, and **Fog Laboratory**.
-Every other package includes one focused demo.
+Procedural Plants includes **Windowsill** and **Plant Studio**. The remaining packages include a focused demo.
 
 ## Develop and validate
 
