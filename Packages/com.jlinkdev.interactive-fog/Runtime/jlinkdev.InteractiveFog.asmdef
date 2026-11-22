@@ -1,6 +1,0 @@
-{
-  "name": "jlinkdev.InteractiveFog",
-  "rootNamespace": "jlinkdev.UnityUtilities.InteractiveFog",
-  "references": ["Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
-  "autoReferenced": true
-}

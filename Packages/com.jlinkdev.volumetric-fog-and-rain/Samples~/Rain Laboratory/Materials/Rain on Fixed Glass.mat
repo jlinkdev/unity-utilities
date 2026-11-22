@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Rain on Fixed Glass
+  m_Shader: {fileID: 4800000, guid: 59e32cbef2bf8974f8d80f3a00bccc31, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _USEMESHUV_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _GlassGrimeMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BackgroundBlur: 1.15
+    - _BeadBirthSeconds: 0.18
+    - _BeadLifetime: 73
+    - _BeadLifetimeVariation: 0.35
+    - _BeadTime: 0
+    - _DaylightHighlightBoost: 0.46
+    - _DropDensity: 0.61
+    - _DropSize: 0.33
+    - _EdgeContrast: 0.65
+    - _GlassGrimeStrength: 0
+    - _ObjectSpaceRain: 0
+    - _PaneAspect: 1.1704102
+    - _PathWander: 1
+    - _RainScale: 1.04
+    - _RainTime: 0
+    - _RefractionPixels: 5.5
+    - _RimStrength: 0.22
+    - _RunoffLanes: 10
+    - _RunoffSpeed: 0.83
+    - _Seed: 7.15
+    - _StreakFadeLength: 0.41
+    - _StreakHighlightStrength: 0.036
+    - _StreakHighlightWidth: 0.76
+    - _StreakLength: 0.56
+    - _StreakStrength: 1
+    - _StreakWidth: 0.47
+    - _UseMeshUV: 1
+    - _Wetness: 0.91
+    m_Colors:
+    - _GlassGrimeColor: {r: 0.10999996, g: 0.09499996, b: 0.06699998, a: 1}
+    - _GlassGrimeGrid: {r: 3, g: 3, b: 0, a: 0}
+    - _ObjectRainBounds: {r: 0, g: 0, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

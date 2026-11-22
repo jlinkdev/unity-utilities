@@ -27,25 +27,25 @@ MonoBehaviour:
   farDistance: 30
   maxDistance: 100
   maxCellSteps: 96
-  hazeSteps: 12
-  noiseScale: 0.025
-  noiseStrength: 0.35
+  hazeSteps: 24
+  noiseScale: 0.045
+  noiseStrength: 0.17
   rainColor: {r: 0.65, g: 0.75, b: 0.85, a: 1}
   brightness: 1.5
   streakOpacity: 0.7
-  hazeExtinction: 0.07
+  hazeExtinction: 0.099
   scattering: 0.65
-  independentFogSettings: 0
+  independentFogSettings: 1
   fogDensity: 1
-  fogColor: {r: 0.55, g: 0.68, b: 0.8, a: 1}
+  fogColor: {r: 0.192, g: 0.23, b: 0.328, a: 1}
   fogBrightness: 1
-  fogScattering: 0.8
+  fogScattering: 1
   fogDistanceMode: 0
-  fogStartDistance: 0
-  fogDistanceFade: 0
+  fogStartDistance: 8.8
+  fogDistanceFade: 16.0
   fogMaxDistance: 100
   fogBaseHeight: 0
-  fogHeightFalloff: 0.15
-  fogNoiseVelocity: {x: 0.2, y: 0, z: 0.1}
-  directionalScattering: 0.15
-  scatteringAnisotropy: 0.4
+  fogHeightFalloff: 0.085
+  fogNoiseVelocity: {x: 0.085, y: 0, z: 0.03}
+  directionalScattering: 0.012
+  scatteringAnisotropy: 0.28

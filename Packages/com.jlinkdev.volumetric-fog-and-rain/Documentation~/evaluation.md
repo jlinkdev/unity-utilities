@@ -53,7 +53,7 @@ quality in motion.
 
 ## Volume checks
 
-Open Volume Laboratory and compare the dry canopy with its exclusion disabled.
+Generate a scene with **Create Volume Laboratory** and compare the dry canopy with its exclusion disabled.
 Move across the opening and view rain from outside the inclusion box. Rotate and
 scale the boxes, overlap wet and dry boxes, and test thin distant regions in Haze
 view. Check both depth clipping and the absence of foreground rain inside shelter.

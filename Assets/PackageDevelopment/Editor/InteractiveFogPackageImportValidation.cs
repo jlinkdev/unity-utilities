@@ -15,7 +15,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
     {
         public static void ImportSample()
         {
-            var sample=Sample.FindByPackage("com.jlinkdev.interactive-fog","0.4.0").Single(s=>s.displayName=="Mist Sanctuary");
+            const string packageId = "com.jlinkdev.volumetric-fog-and-rain";
+            var package = UnityEditor.PackageManager.PackageInfo.FindForAssetPath("Packages/" + packageId + "/package.json");
+            var sample=Sample.FindByPackage(packageId,package.version).Single(s=>s.displayName=="Mist Sanctuary");
             if(!sample.Import(Sample.ImportOptions.OverridePreviousImports|Sample.ImportOptions.HideImportWindow)) throw new Exception("Sample import failed");
             string path=sample.importPath.Replace('\\','/');
             string root=Path.GetDirectoryName(Application.dataPath).Replace('\\','/')+"/";

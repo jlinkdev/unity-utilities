@@ -51,10 +51,9 @@ The package's Tools menu can generate a fresh laboratory without replacing exist
 The development-only `RainBuildValidation.Build` method produces a Windows smoke
 player under `Logs/VolumetricRain/Player` using the host project pipeline.
 
-The new `Volume Laboratory` folder alongside Rain Laboratory demonstrates a bounded
-rain box and a dry canopy. Both samples are distributed independently through UPM.
-Use **Tools > jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory** to generate
-another copy without changing the original laboratory.
+Rain Laboratory's shelter station shows how a rain exclusion keeps the viewer dry
+while rain remains visible through a fixed pane and an open bay. For a minimal
+scene with just the volume mechanics, use **Tools > jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory**.
 
 `VolumetricFogAndRain/Benchmark` contains the development-only GPU benchmark and original
 reference shader. Run it in an isolated project: it opens an empty scene. See the
@@ -98,11 +97,11 @@ The helper imports through Package Manager's sample API and writes
 consumer project root. It checks references and sample independence without
 depending on authoring content or the sample controller's type at compile time.
 
-## Interactive Fog sample workflow
+## Mist Sanctuary sample workflow
 
-`../PackageSamples/com.jlinkdev.interactive-fog/Mist Sanctuary` contains the editable fog sample.
+`../PackageSamples/com.jlinkdev.volumetric-fog-and-rain/Mist Sanctuary` contains the editable interactive mist sample.
 `Editor/InteractiveFogDevelopmentBuilder.cs` builds its stone hall, dedicated URP
-pipeline, and demonstration. Use **Tools > jlinkdev > Interactive Fog > Rebuild
+pipeline, and demonstration. Use **Tools > jlinkdev > Volumetric Fog and Rain > Interactive Fog > Rebuild
 Mist Sanctuary (Development)**, or the `BuildAll` batch entry point in
 `jlinkdev.UnityUtilities.InteractiveFog.Development.InteractiveFogDevelopmentBuilder`.
 The builder replaces its generated scene; run it in an isolated project.
@@ -110,7 +109,7 @@ The builder replaces its generated scene; run it in an isolated project.
 `BuildPlayer` is intended only for a disposable validation project: it regenerates the scene and builds a Windows sample with the host build settings. `Publish` copies the authoring sample into the installed local
 package's `Samples~` folder. `InteractiveFogValidation.Capture` provides editor
 diagnostic images; final quality checks use the running player's offscreen capture
-sequence. See the [package validation record](../../Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md).
+sequence. See the [package validation record](../../Packages/com.jlinkdev.volumetric-fog-and-rain/Documentation~/InteractiveFog/Validation.md).
 
 The sample follows a closed animation spline and has no input controller. Use
 `--fog-full-rate` for its 60 fps capture and `--fog-coarse` for the matched

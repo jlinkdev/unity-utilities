@@ -12,9 +12,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
 {
     public static class InteractiveFogDevelopmentBuilder
     {
-        public const string Root = "Assets/PackageSamples/com.jlinkdev.interactive-fog/Mist Sanctuary";
+        public const string Root = "Assets/PackageSamples/com.jlinkdev.volumetric-fog-and-rain/Mist Sanctuary";
         public const string ScenePath = Root + "/Scenes/Mist Sanctuary.unity";
-        [MenuItem("Tools/jlinkdev/Interactive Fog/Rebuild Mist Sanctuary (Development)")]
+        [MenuItem("Tools/jlinkdev/Volumetric Fog and Rain/Interactive Fog/Rebuild Mist Sanctuary (Development)")]
         public static void BuildAll()
         {
             Directory.CreateDirectory(Root + "/Settings"); Directory.CreateDirectory(Root + "/Materials"); Directory.CreateDirectory(Root + "/Scenes"); AssetDatabase.Refresh();
@@ -39,8 +39,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             var stone = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.jlinkdev.sample-framework/Runtime/Presentation/Environment/Architectural Grid.mat");
             var dark = Material("Dark joints",new Color(.115f,.13f,.15f),.15f);
             var bronze = Material("Brushed bronze",new Color(.4f,.22f,.075f),.5f,.6f);
-            var glow = Material("Lantern glass",new Color(.9f,.52f,.18f),.4f);
-            glow.EnableKeyword("_EMISSION"); glow.SetColor("_EmissionColor",new Color(5.1f,3.95f,2.25f)); EditorUtility.SetDirty(glow);
+            const string sconcePath = "Packages/com.jlinkdev.sample-framework/Runtime/Presentation/Environment/Amber Sconce.prefab";
+            var sconcePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(sconcePath);
+            if (!sconcePrefab) throw new FileNotFoundException("Install Sample Framework to rebuild the sanctuary lighting.", sconcePath);
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             scene.name="Mist Sanctuary";
             RenderSettings.ambientMode=AmbientMode.Trilight; RenderSettings.ambientSkyColor=new Color(.31f,.33f,.36f);
@@ -60,8 +61,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
                     pillar.AddComponent<FogObstacle>();
                     Cube("Capital",architecture,new Vector3(side*5.75f,4.5f,z),new Vector3(1.3f,.35f,1.3f),stone);
                     Cube("Lantern bracket",architecture,new Vector3(side*5f,1.3f,z),new Vector3(.7f,.12f,.35f),bronze);
-                    Primitive("Amber lantern",PrimitiveType.Capsule,architecture,new Vector3(side*4.85f,1.65f,z),new Vector3(.22f,.26f,.22f),glow);
-                    var lamp=new GameObject("Warm pool of light").AddComponent<Light>(); lamp.transform.position=new Vector3(side*4.65f,1.7f,z); lamp.type=LightType.Point; lamp.color=new Color(1,.58f,.22f); lamp.intensity=3.5f; lamp.range=3.4f;
+                    var sconce = (GameObject)PrefabUtility.InstantiatePrefab(sconcePrefab, architecture);
+                    sconce.transform.SetLocalPositionAndRotation(new Vector3(side * 4.99f, 1.65f, z), Quaternion.Euler(0, -side * 90f, 0));
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(sconce.transform);
                 }
             }
             Cube("Apse wall",architecture,new Vector3(0,3.5f,8.2f),new Vector3(19,7,.4f),stone);
@@ -81,7 +83,7 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             altarLight.spotAngle=52; altarLight.innerSpotAngle=34;
             altarLight.transform.position=new Vector3(-2,5.2f,0); altarLight.transform.LookAt(new Vector3(0,.8f,5.1f));
             var fogGO=new GameObject("Interactive ground fog"); var fog=fogGO.AddComponent<FogVolume>();
-            fog.simulation=AssetDatabase.LoadAssetAtPath<ComputeShader>(FogSetup.PackageRoot+"/Runtime/Shaders/FogFluid.compute"); fog.sun=light;
+            fog.simulation=AssetDatabase.LoadAssetAtPath<ComputeShader>(FogSetup.RuntimeRoot+"/Shaders/FogFluid.compute"); fog.sun=light;
             fog.style=AssetDatabase.LoadAssetAtPath<FogStyleProfile>(Root+"/Profiles/Sanctuary Mist.asset");
             fog.localLights=Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
             fog.resolution=new Vector3Int(160,32,160); fog.raySteps=112;
@@ -104,7 +106,7 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             camera.allowMSAA = false;
             cameraData.requiresDepthTexture = true;
             var controller=new GameObject("Mist Sanctuary controls").AddComponent<MistSanctuary>(); controller.fog=fog; controller.actor=actor; controller.view=camera; controller.bladeTip = actor.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand).Find("Sword/Blade tip");
-            controller.referenceStyle=AssetDatabase.LoadAssetAtPath<FogStyleProfile>(FogSetup.PackageRoot+"/Runtime/Styles/Sanctuary Ground Mist.asset");
+            controller.referenceStyle=AssetDatabase.LoadAssetAtPath<FogStyleProfile>(FogSetup.RuntimeRoot+"/Styles/Sanctuary Ground Mist.asset");
             SampleScenePresentation.Apply(scene, Root);
             EditorSceneManager.SaveScene(scene,ScenePath); AssetDatabase.SaveAssets();
             Debug.Log("FOG_SAMPLE_BUILT "+ScenePath);

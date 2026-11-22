@@ -17,8 +17,7 @@ and an importable demo.
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
 | [World Scanning](Packages/com.jlinkdev.world-scanning/README.md) | Unity 6; URP 17.0.3; Render Graph | Initial 0.1.0 release. |
 | [Blueprint Rendering](Packages/com.jlinkdev.blueprint-rendering/README.md) | Unity 6, URP 17, Render Graph, desktop | Bake-free technical drawings and a ten-piece exploded gearbox demo. |
-| [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Prototype with recorded render tests and performance measurements. |
-| [Interactive Fog](Packages/com.jlinkdev.interactive-fog/README.md) | Unity 6; URP 17.0.3; Render Graph; compute-capable desktop GPU | Interactive 3D ground-fog prototype; [validation record](Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md). |
+| [Volumetric Fog and Rain](Packages/com.jlinkdev.volumetric-fog-and-rain/README.md) | Unity 6, URP 17.0.3, Render Graph, desktop. Interactive ground mist requires compute shaders. | Volumetric weather, wet materials, splashes and interactive GPU ground mist. |
 | [Procedural Nebulae](Packages/com.jlinkdev.procedural-nebulae/README.md) | Unity 6, URP 17, Render Graph, compute-capable desktop GPU | Seeded star-lit cloud volumes and the Starlit Passage fly-through. |
 | [Water System](Packages/com.jlinkdev.water-system/README.md) | Unity 6; URP 17.0.3; Render Graph; desktop | Local 0.1.0 implementation; [tests, Windows player, and sample import checked](Packages/com.jlinkdev.water-system/Documentation~/validation.md). Not yet published. |
 | [Beams](Packages/com.jlinkdev.beams/README.md) | Unity 6; URP 17.0.3 | 1.0.0-pre.1 release candidate. |
@@ -48,7 +47,7 @@ demo. Open the scene described in its sample README under
 `Assets/Samples/<display-name>/<version>/`. Rendering samples require their stated
 pipeline; sample guides explain any additional renderer setup or temporary changes.
 
-Rain includes **Rain Laboratory**, **Volume Laboratory**, and **Fog Laboratory**.
+Volumetric Fog and Rain includes **Rain Laboratory** (courtyard and shelter stations), **Fog Laboratory**, and **Mist Sanctuary**.
 Water includes **Water Laboratory**, with animated waves, waterline transitions,
 underwater atmosphere, and floating props. Procedural Plants includes **Windowsill**
 and **Plant Studio**. Beams includes **Beam Kit Demo**, **Energy Studies**, and **Orbital Descent**.

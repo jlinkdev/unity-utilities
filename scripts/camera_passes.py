@@ -6,20 +6,21 @@ from string import Template
 
 SCRIPTS = Path(__file__).resolve().parent
 PACKAGES = SCRIPTS.parent / "Packages"
-CAMERA_PASSES = {
-    "blueprint-rendering": ("BlueprintRendererFeature", "BlueprintCameraPass"),
-    "interactive-fog": ("FogRendererFeature", "FogCameraPass"),
-    "object-highlighting": ("ObjectHighlightRendererFeature", "HighlightCameraPass"),
-    "procedural-nebulae": ("NebulaRendererFeature", "NebulaCameraPass"),
-    "volumetric-fog-and-rain": ("RainRendererFeature", "RainCameraPass"),
-    "water-system": ("WaterRendererFeature", "WaterCameraPass"),
-    "world-scanning": ("ScanRendererFeature", "ScanCameraPass"),
-}
+CAMERA_PASSES = (
+    ("blueprint-rendering", "BlueprintRendererFeature", "BlueprintCameraPass"),
+    ("object-highlighting", "ObjectHighlightRendererFeature", "HighlightCameraPass"),
+    ("procedural-nebulae", "NebulaRendererFeature", "NebulaCameraPass"),
+    ("volumetric-fog-and-rain", "FogRendererFeature", "FogCameraPass"),
+    ("volumetric-fog-and-rain", "RainRendererFeature", "RainCameraPass"),
+    ("volumetric-fog-and-rain", "WetGlassRefractionFeature", "WetGlassCameraPass"),
+    ("water-system", "WaterRendererFeature", "WaterCameraPass"),
+    ("world-scanning", "ScanRendererFeature", "ScanCameraPass"),
+)
 
 
 def camera_pass_sources():
     template = Template((SCRIPTS / "camera_pass.cs.template").read_text(encoding="utf-8"))
-    for package, (feature, component) in CAMERA_PASSES.items():
+    for package, feature, component in CAMERA_PASSES:
         runtime = PACKAGES / f"com.jlinkdev.{package}" / "Runtime"
         source, = runtime.rglob(feature + ".cs")
         namespace = re.search(r"^namespace ([\w.]+)", source.read_text(encoding="utf-8"), re.M)[1]

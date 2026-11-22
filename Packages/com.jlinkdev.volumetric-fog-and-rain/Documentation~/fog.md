@@ -44,9 +44,9 @@ profiles without automatic migration or changes to their serialized values.
 
 ## Lighting and performance
 
-Fog uses Beer–Lambert extinction and simple constant-color scattering, with optional
+Fog uses Beerâ€“Lambert extinction and simple constant-color scattering, with optional
 world-space density noise. Optional main-directional-light scattering adds an unshadowed glow. It does not
-sample shadows or other fog systems, and does not produce shadowed light shafts. Ordinary transparent surfaces
+sample shadows or produce shadowed light shafts. A camera can share atmospheric transmission and in-scattered light with Interactive Fog using the [renderer feature setting](rendering.md#interactive-ground-fog). Ordinary transparent surfaces
 have the same depth limitation as the rain renderer.
 
 Fog Only has a dedicated shader variant: no capsule generation, DDA cell traversal,
@@ -58,10 +58,9 @@ the fog-only pass entirely.
 
 ## Demo
 
-Import **Fog Laboratory** from the package's Samples tab, or run **Tools > jlinkdev >
-Volumetric Fog and Rain > Create Fog Laboratory**. Open it alone and press Play. Rain Camera Pass renders fog through the sample camera. The camera starts in
-a clear canopy looking into a fog volume. Move the camera through the opening,
-resize the fog box, and toggle the orange exclusion to inspect the boundaries.
+Import **Fog Laboratory** from the package's Samples tab to open the authored dawn courtyard. Look across the sill at the series of stone slabs to compare atmospheric extinction near and far. Rain Camera Pass applies the weather profile to this camera. Move the fog bounds or disable the shelter exclusion to inspect the boundary. The [sample guide](<../Samples~/Fog Laboratory/README.md>) describes the simulated ground layer and how to switch it off.
+
+**Tools > jlinkdev > Volumetric Fog and Rain > Create Fog Laboratory** generates a small greybox test for the underlying fog and exclusion volumes.
 
 ## Height, distance, movement, and light
 

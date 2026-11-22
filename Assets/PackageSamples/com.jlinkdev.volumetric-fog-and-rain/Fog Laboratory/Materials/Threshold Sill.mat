@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Threshold Sill
+  m_Shader: {fileID: 4800000, guid: 7850e96e993457d1a0e42e136d056596, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _StoneMap:
+        m_Texture: {fileID: 2800000, guid: 5f8eea51383a5f97a083ca68ff305e57, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 2800000, guid: be5c58a24ff25f3faa0a366fc32a061f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: fbc555f6842d575fb07e9ca2e08f511f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _TileSize: 1.0
+    - _JointWidth: 0.0035
+    - _RoughnessOffset: -0.2
+    - _Occlusion: 0.76
+    - _NormalStrength: 1.0
+    - _ScanSize: 1.68
+    m_Colors:
+    - _StoneTint: {r: 0.36, g: 0.35, b: 0.355, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

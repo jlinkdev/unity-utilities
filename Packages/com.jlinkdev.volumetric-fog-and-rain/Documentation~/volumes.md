@@ -71,12 +71,14 @@ with the entire interval-processing path compiled out.
 
 ## Demo
 
-Import **Volume Laboratory** from Package Manager's Samples tab, or run **Tools >
-jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory**. Open the scene alone and
-press Play. Its camera starts in a dry canopy facing outdoor rain. Select the
-orange dry volume and disable it to see the difference. Move the camera through
-the open front, or resize the cyan rain volume to inspect its outer boundary.
-The original Rain Laboratory remains available unchanged.
+Import **Rain Laboratory** from Package Manager's Samples tab and press Play.
+Select the shelter station to compare the same courtyard through the wet pane on
+the left and the open bay on the right. Select the shelter's rain exclusion in the
+Hierarchy to inspect where the dry interior meets the storm.
+
+To inspect the same volume mechanics in a minimal scene, choose **Tools > jlinkdev >
+Volumetric Fog and Rain > Create Volume Laboratory**. Disable the orange exclusion
+or resize the cyan inclusion to see how each boundary affects rain.
 
 ## Soft boundaries
 

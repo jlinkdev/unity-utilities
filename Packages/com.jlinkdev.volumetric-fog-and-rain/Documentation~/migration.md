@@ -1,4 +1,12 @@
-# Migration to Volumetric Fog and Rain 0.4
+# Package migration
+
+## Interactive Fog consolidation
+
+Install `com.jlinkdev.volumetric-fog-and-rain` for both atmospheric weather and interactive ground fog. If a project previously installed `com.jlinkdev.interactive-fog`, replace that package entry with the merged package in the same dependency change. Both versions contain the same ground-fog assemblies and asset GUIDs.
+
+Existing ground-fog components, profiles and shader references retain their serialized identities. Code referencing the `jlinkdev.InteractiveFog` assembly can keep that reference. For asset lookups built from path strings, the ground-fog shaders and styles now live under `Packages/com.jlinkdev.volumetric-fog-and-rain/Runtime/InteractiveFog/`. Import **Mist Sanctuary** from the merged package's Samples tab and use **Tools > jlinkdev > Volumetric Fog and Rain > Interactive Fog Setup**.
+
+## Volumetric Rain to Volumetric Fog and Rain 0.4
 
 The package is now named **jlinkdev Volumetric Fog and Rain** throughout Package
 Manager, its Git path, namespace, assemblies, and editor menus.

@@ -15,6 +15,7 @@ MonoBehaviour:
   m_Active: 1
   shader: {fileID: 4800000, guid: f89f32dd6038d134188b8650556a4b2e, type: 3}
   sceneViewProfile: {fileID: 11400000, guid: 64a9756b0ecd54d02a8dbfdb0caf4d5c, type: 2}
+  injectionPoint: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

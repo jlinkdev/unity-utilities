@@ -135,7 +135,7 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
             EditorSceneManager.SaveScene(scene, folder + "/Scenes/" + title + ".unity");
             AssetDatabase.SaveAssets();
             Selection.activeObject = pipeline;
-            Debug.Log(title + " created at " + folder + ". Press Play to activate its pipeline automatically. Previous pipeline settings are restored when the demo stops.");
+            Debug.Log(title + " created at " + folder + ". Open the Game view to see the effect through Rain Camera.");
         }
 
         private static void MakeBox(string name, Vector3 position, Vector3 scale, Material material)

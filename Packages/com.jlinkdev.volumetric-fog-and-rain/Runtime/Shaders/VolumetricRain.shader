@@ -3,18 +3,7 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
     SubShader
     {
         Tags { "RenderPipeline" = "UniversalPipeline" }
-        Pass
-        {
-            Name "Volumetric Rain"
-            ZWrite Off ZTest Always Cull Off
-            HLSLPROGRAM
-            #pragma target 4.5
-            #pragma vertex Vert
-            #pragma fragment Frag
-            #pragma multi_compile_local _ _RAIN_VOLUMES
-            #pragma multi_compile_local _ _RAIN_FEATHER
-            #pragma multi_compile_local _ _FOG_ADVANCED
-            #pragma multi_compile_local _ _RAIN_ONLY _FOG_ONLY
+        HLSLINCLUDE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -23,6 +12,7 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
 
             float4 _FogColor, _FogAppearance, _FogDistance, _FogLightColor, _FogLightDirection;
             int _FogPremultiplied;
+            float4 _JlinkWeatherAtmosphereLayout;
             float FogDistanceWeight(float t, float mid, float streakEnd)
             {
                 #if defined(_FOG_ADVANCED)
@@ -34,23 +24,43 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
                 return smoothstep(mid,max(mid+0.001,streakEnd),t);
             }
 
-            half4 Frag(Varyings input) : SV_Target
+            float WeatherSurfaceDistance(float2 uv, float3 origin, float3 ray)
+            {
+                float depth = SampleSceneDepth(uv);
+                #if !UNITY_REVERSED_Z
+                    depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+                #endif
+                float3 scene = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+                return min(_RainDistances.w, max(0, dot(scene - origin, ray)));
+            }
+
+            half4 WeatherTransfer(Varyings input, bool opticalPrefix)
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 float2 uv = input.texcoord;
-                half4 source = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
-                float depth = SampleSceneDepth(uv);
+                half4 source = half4(0, 0, 0, 1);
+                float end = _RainDistances.w;
+                if (opticalPrefix)
+                {
+                    // Each atlas tile covers the whole camera; spacing favors nearby layers.
+                    float2 grid = uv * float2(8, 4);
+                    float2 tile = floor(grid);
+                    float fraction = (tile.x + 8 * tile.y) / (_JlinkWeatherAtmosphereLayout.w - 1);
+                    end = _JlinkWeatherAtmosphereLayout.z * fraction * fraction;
+                    uv = frac(grid);
+                }
+                else
+                    source = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
                 #if UNITY_REVERSED_Z
                     float nearDepth = 1, farDepth = 0;
                 #else
                     float nearDepth = UNITY_NEAR_CLIP_VALUE, farDepth = 1;
-                    depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
                 #endif
                 float3 origin = ComputeWorldSpacePosition(uv, nearDepth, UNITY_MATRIX_I_VP);
                 float3 farPoint = ComputeWorldSpacePosition(uv, farDepth, UNITY_MATRIX_I_VP);
-                float3 scene = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
                 float3 ray = normalize(farPoint - origin);
-                float end = min(_RainDistances.w, max(0, dot(scene - origin, ray)));
+                if (!opticalPrefix)
+                    end = WeatherSurfaceDistance(uv, origin, ray);
                 #if !defined(_FOG_ONLY)
                 // Derivatives are evaluated before divergent traversal, including orthographic origins.
                 float footprintOrigin = max(length(ddx(origin)), length(ddy(origin))) * 0.5;
@@ -60,7 +70,17 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
                     float2 wetIntervals[RAIN_MAX_INTERVALS];
                     int wetCount = RainWetIntervals(origin, ray, end, wetIntervals);
                     if (wetCount == 0) return _RainDebug == 0 ? source : half4(0,0,0,1);
-                    float reservedVisits = 6.0 + 2.0 * max(0, wetCount - 1);
+                    int budgetIntervals = wetCount;
+                    #if !defined(_FOG_ONLY)
+                    if (opticalPrefix && _FogDistance.z == 0)
+                    {
+                        // Rain-linked haze inherits the streak budget for the full visible ray.
+                        // Moving the requested prefix through another box must not move that transition.
+                        float2 visibleIntervals[RAIN_MAX_INTERVALS];
+                        budgetIntervals = RainWetIntervals(origin, ray, WeatherSurfaceDistance(uv, origin, ray), visibleIntervals);
+                    }
+                    #endif
+                    float reservedVisits = 6.0 + 2.0 * max(0, budgetIntervals - 1);
                 #else
                     float reservedVisits = 6.0;
                 #endif
@@ -78,6 +98,7 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
                 float mid = _RainDistances.y * (streakEnd / _RainDistances.z);
 
 
+                if (!opticalPrefix)
                 [unroll] for (int layer = 0; layer < 2; layer++)
                 {
                     int remaining = _RainSteps;
@@ -160,7 +181,9 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
                 // Premultiplied inputs may have undefined RGB in empty pixels. Do not propagate it.
                 if (_FogPremultiplied != 0 && source.a <= 0) source.rgb = 0;
                 #endif
-                float3 result = source.rgb * hazeTransmission + fogLight * _FogAppearance.z * (1 - hazeTransmission);
+                float3 inScatter = fogLight * _FogAppearance.z * (1 - hazeTransmission);
+                if (opticalPrefix) return half4(inScatter, hazeTransmission);
+                float3 result = source.rgb * hazeTransmission + inScatter;
                 result = result * (1 - streakAlpha) + rainLight * streakAlpha;
                 float alpha = source.a;
                 #if defined(_FOG_ADVANCED)
@@ -168,6 +191,37 @@ Shader "Hidden/jlinkdev/Volumetric Fog and Rain"
                 #endif
                 return half4(result, alpha);
             }
+        ENDHLSL
+
+        Pass
+        {
+            Name "Volumetric Rain"
+            ZWrite Off ZTest Always Cull Off
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma vertex Vert
+            #pragma fragment Frag
+            #pragma multi_compile_local _ _RAIN_VOLUMES
+            #pragma multi_compile_local _ _RAIN_FEATHER
+            #pragma multi_compile_local _ _FOG_ADVANCED
+            #pragma multi_compile_local _ _RAIN_ONLY _FOG_ONLY
+            half4 Frag(Varyings input) : SV_Target { return WeatherTransfer(input, false); }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Atmosphere by Depth"
+            ZWrite Off ZTest Always Cull Off
+            HLSLPROGRAM
+            #pragma target 4.5
+            #pragma vertex Vert
+            #pragma fragment Frag
+            #pragma multi_compile_local _ _RAIN_VOLUMES
+            #pragma multi_compile_local _ _RAIN_FEATHER
+            #pragma multi_compile_local _ _FOG_ADVANCED
+            #pragma multi_compile_local _ _FOG_ONLY
+            half4 Frag(Varyings input) : SV_Target { return WeatherTransfer(input, true); }
             ENDHLSL
         }
     }

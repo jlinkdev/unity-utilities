@@ -11,6 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1c7ee3e446838c48b17b99c0557cd48, type: 3}
   m_Name: Volumetric Rain
+  injectionPoint: 1
+  shareAtmosphereWithGroundFog: 1
   m_EditorClassIdentifier:
   m_Active: 1
   shader: {fileID: 4800000, guid: f89f32dd6038d134188b8650556a4b2e, type: 3}

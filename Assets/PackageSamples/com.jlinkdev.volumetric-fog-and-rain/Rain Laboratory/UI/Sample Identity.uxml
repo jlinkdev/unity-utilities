@@ -1,12 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Packages/com.jlinkdev.sample-framework/Runtime/Presentation/UI/Sample%20Controls.uss" />
     <ui:VisualElement class="sample-identity" picking-mode="Ignore">
         <ui:VisualElement class="sample-identity-content" picking-mode="Ignore">
             <ui:VisualElement class="sample-identity-gradient" picking-mode="Ignore" />
-            <ui:Label class="sample-symbol" text="&#xe798;" picking-mode="Ignore" />
+            <ui:VisualElement class="studio-mark studio-mark--rain" picking-mode="Ignore" />
             <ui:VisualElement picking-mode="Ignore">
                 <ui:Label name="package-name" class="sample-package" text="Volumetric Fog and Rain" picking-mode="Ignore" />
                 <ui:Label name="sample-name" class="sample-name" text="Rain Laboratory" picking-mode="Ignore" />
             </ui:VisualElement>
         </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="sample-studio" picking-mode="Ignore" style="position: absolute; left: 17px; bottom: 14px; flex-direction: row; align-items: center;">
+        <ui:Button name="courtyard-station" text="1  Courtyard" class="selected" tooltip="View the storm courtyard (1)" />
+        <ui:Button name="shelter-station" text="2  Shelter" tooltip="View the rain through glass and the open bay (2)" />
     </ui:VisualElement>
 </ui:UXML>

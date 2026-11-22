@@ -18,8 +18,9 @@ Overlay, reflection, preview, and XR cameras are skipped.
 
 ## Try the laboratory
 
-Import **Rain Laboratory** from the package Samples tab and open its scene. Alternatively,
-run **Tools > jlinkdev > Volumetric Fog and Rain > Create Rain Laboratory**. It creates a unique
+Import **Rain Laboratory** from the package Samples tab and press Play. Use the station selector to move between the courtyard and its observation shelter. The courtyard shows wind-driven rain, retained wetness and localized splash impacts. The shelter shows how a fixed wet pane refracts the same storm.
+
+For a minimal rendering example, run **Tools > jlinkdev > Volumetric Fog and Rain > Create Rain Laboratory**. It creates a unique
 folder under `Assets/VolumetricFogAndRain` containing a scene, profile, material, renderer,
 and URP pipeline. The normal save prompt protects unsaved scene work before opening the new scene.
 Open the scene and press **Play**. Its Rain Camera Pass references the supplied rain feature. Preview the laboratory through Rain Camera in Game view.
@@ -60,7 +61,7 @@ Boxes support rotation, scale, runtime movement, and Scene view resize handles.
 Overlaps share one field. The current limit is 4 visible rain boxes and 8 visible
 exclusions per camera. See [volume authoring and limits](volumes.md).
 
-Import the **Volume Laboratory** sample, or run **Tools > jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory**, then press Play for a dry-canopy demonstration.
+Select the shelter station in **Rain Laboratory** to inspect the dry interior, wet glass and exposed yard. For a minimal volume example, choose **Tools > jlinkdev > Volumetric Fog and Rain > Create Volume Laboratory** and press Play.
 
 ## Controls
 

@@ -11,26 +11,41 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de7f95700da99cc40a833e18b37008ad, type: 3}
   m_Name: Rain Profile
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
+  renderMode: 0
   extent: 0
-  density: 0.8
-  cellSize: 0.65
-  streakLength: 0.35
-  streakWidth: 0.002
-  fallSpeed: 12
+  density: 0.78
+  cellSize: 0.53
+  streakLength: 0.36
+  streakWidth: 0.00125
+  fallSpeed: 14
   direction: {x: 0, y: -1, z: 0}
-  wind: {x: 1, y: 0, z: 0}
+  wind: {x: -4.25, y: 0, z: 1.15}
   seed: 1234
-  nearFade: 0.3
-  midDistance: 12
-  farDistance: 30
-  maxDistance: 100
-  maxCellSteps: 96
-  hazeSteps: 12
-  noiseScale: 0.025
-  noiseStrength: 0.35
-  rainColor: {r: 0.65, g: 0.75, b: 0.85, a: 1}
-  brightness: 1.5
-  streakOpacity: 0.7
-  hazeExtinction: 0.015
+  nearFade: 4.8
+  midDistance: 14
+  farDistance: 38
+  maxDistance: 110
+  maxCellSteps: 126
+  hazeSteps: 16
+  noiseScale: 0.074
+  noiseStrength: 0.28
+  rainColor: {r: 0.46, g: 0.54, b: 0.64, a: 1}
+  brightness: 0.65
+  streakOpacity: 0.36
+  hazeExtinction: 0.076
   scattering: 0.65
+  independentFogSettings: 1
+  fogDensity: 0.88
+  fogColor: {r: 0.165, g: 0.211, b: 0.29, a: 1}
+  fogBrightness: 0.77
+  fogScattering: 0.75
+  fogDistanceMode: 1
+  fogStartDistance: 4
+  fogDistanceFade: 11
+  fogMaxDistance: 110
+  fogBaseHeight: 0.16
+  fogHeightFalloff: 0.66
+  fogNoiseVelocity: {x: -0.43, y: 0, z: 0.12}
+  directionalScattering: 0.028
+  scatteringAnisotropy: 0.4

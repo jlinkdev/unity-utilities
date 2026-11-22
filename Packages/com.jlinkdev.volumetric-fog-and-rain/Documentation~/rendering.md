@@ -28,6 +28,16 @@ layers or refraction through spatially varying fog. Such materials need their ow
 fog evaluation or an additional depth/layer integration strategy. Avoid applying
 the same fog twice in those materials and the fullscreen pass.
 
+## Interactive ground fog
+
+On the **Volumetric Rain** renderer feature used by the camera, enable **Share Atmosphere With Ground Fog**. Enable Interactive Fog's renderer feature or camera pass on the same camera. Fog Laboratory ships with this setup. Existing renderer assets leave the option off.
+
+While sharing active fog, the weather renderer runs after the skybox and before the transparent pass. It supplies the accumulated light and transmission between the camera and a set of distances along each view ray. Interactive Fog samples that information at each contributing point in its volume. A bank of weather fog in front of a wisp lowers its contrast and adds haze color. A bank behind the wisp affects the view beyond it. This also works when the sky is visible through the ground mist.
+
+The atmospheric field uses the active weather settings, including the camera intensity, maximum range, inclusion and exclusion boxes, feathered edges, noise, height falloff and main-light scattering. The renderer stores 32 depth slices with closer spacing near the camera. At 1920 × 1080 the field occupies about 2 MiB of temporary GPU memory. Narrow weather boundaries can soften between samples. Render Graph skips this work when no pass reads the field. Rain streaks retain their existing rendering. Ground-mist simulation, wind and obstacles are owned by Interactive Fog.
+
+With **Preserve Scene Alpha**, the combined fog keeps the camera's input alpha. With **Premultiplied**, both the atmospheric fog and the ground mist contribute to the output opacity.
+
 ## Output mode
 
 **Preserve Scene Alpha** is the compatibility default. It changes scene RGB and

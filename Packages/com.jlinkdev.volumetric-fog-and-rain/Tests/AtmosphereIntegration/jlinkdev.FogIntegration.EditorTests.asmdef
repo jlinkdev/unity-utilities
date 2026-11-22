@@ -1,0 +1,13 @@
+{
+  "name": "jlinkdev.FogIntegration.EditorTests",
+  "references": [
+    "jlinkdev.InteractiveFog",
+    "jlinkdev.VolumetricFogAndRain",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "autoReferenced": false
+}

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Consolidate Interactive Fog into this package. Ground Mist, Cumulus, Dry Ice, their setup tools and the Mist Sanctuary sample are included in one install. Existing interactive-fog assembly names, serialized types and asset GUIDs are preserved. [Ground fog guide](Documentation~/InteractiveFog/GroundFog.md) · [Previous standalone changelog](Documentation~/InteractiveFog/StandaloneChangelog.md)
+
+- Bring the observation shelter into Rain Laboratory. Two selectable stations share one courtyard and storm. The shelter shows wet fixed glass beside a full-height open bay. The Create Volume Laboratory command still generates the minimal volume example.
+
+- Add an opaque wet-surface shader with rain film, beads and runoff. Rain Laboratory uses it on an editable stone courtyard with a photographed overcast sky, shared amber fixtures and localized splash particles.
+
+- Add wet-glass refraction with retained beads and sliding runoff, plus reusable particle prefabs for impact rings and droplet spray.
+
+- Add optional atmospheric scattering and transmission for Interactive Fog. Fog Laboratory enables the integration on its camera renderer.
+
+- Rebuild Fog Laboratory as an editable dawn courtyard with gridded PBR stone, a sheltered viewpoint, atmospheric haze and a depth-integrated ground-mist volume.
+
 ## 0.4.1 - 2026-09-25
 
 - Preserve the active color attachment's MSAA sample count in the fog/rain composite. Early injection now remains compatible with the existing depth attachment when transparent geometry renders afterward.

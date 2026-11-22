@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Dawn Sky
+  m_Shader: {fileID: 4800000, guid: 30426a9a6bef521da840ee8932e3c430, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Azimuth: -52
+    - _Elevation: 5.2
+    - _Veil: 0.75
+    - _Exposure: 1
+    m_Colors:
+    - _Horizon: {r: 0.4, g: 0.45, b: 0.62, a: 1}
+    - _Zenith: {r: 0.029, g: 0.053, b: 0.119, a: 1}
+    - _Dawn: {r: 1.27, g: 0.67, b: 0.4, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

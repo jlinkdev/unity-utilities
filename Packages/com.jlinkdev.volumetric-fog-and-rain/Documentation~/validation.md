@@ -1,4 +1,18 @@
-# Validation record — 2026-09-19
+# Validation record
+
+## Interactive Fog package merge — 2026-11-22
+
+The merged package passed 89 Edit Mode and 9 Play Mode tests in Unity 6000.3.21f1 on D3D11 without the Sample Framework installed. The GPU tests include atmospheric attenuation of simulated ground fog.
+
+A separate URP project installed the weather and Sample Framework packages from local tarballs. Fog Laboratory and Mist Sanctuary each ran one ground-fog simulation. Rain Laboratory allocated no ground-fog simulation memory.
+
+After the shelter was brought into Rain Laboratory, a clean import of that sample resolved all 94 scene dependencies. The Play Mode check clicked Courtyard, Shelter and Courtyard again at 1920×1080 and verified that the same camera, URP renderer and weather profile served both viewpoints. The camera was dry inside the shelter, with exposed rain beyond the pane and an unobstructed right-hand opening. Comparing frames with the exterior frozen showed refraction and moving runoff on the glass while the open side stayed identical. The host renderer had no weather or glass features of its own.
+
+## Wet glass and surface impacts — 2026-11-22
+
+The independent weather-package fixture passed all 18 EditMode tests in Unity 6000.3.21f1 on D3D11. The glass GPU regression checked displacement of a visible background and preservation of the destination alpha. The particle regression observed both ring and spray emissions on contact with a floor collider and checked the same emitter with the floor disabled.
+
+Reveries passed 50 focused EditMode tests and its window-rain PlayMode test using the local package on Unity 6000.5.8f1, URP 17.5.0 and D3D11. Coverage included exterior transparency captured once at 1× and 8× MSAA, glass and door grime, depth rejection, droplet timing and retained wetness when closing the window.
 
 ## 0.1.0 baseline validation
 

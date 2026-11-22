@@ -14,8 +14,8 @@ namespace JLinkDev.SampleInstallation
         internal static readonly Dictionary<string, string> Samples = new Dictionary<string, string>
         {
             { "Rain Laboratory", "cfe5d610b22242c9b1cb4f7943808f80" },
-            { "Volume Laboratory", "37ba3301b71047b59687b41384893fe5" },
             { "Fog Laboratory", "f5731f8a89494c4a9dc1d1a3e37e324e" },
+            { "Mist Sanctuary", "22afd5199ea256a438ff22b7fd33a8ca" },
         };
     }
 }

@@ -242,6 +242,75 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
         [UnityTest]
         public IEnumerator EarlyFogThenTransparentsAt8xMsaa() => EarlyFogThenTransparents(8);
 
+        [UnityTest]
+        public IEnumerator WetGlassRefractsCheckerboardAndPreservesDestinationAlpha() =>
+            CheckWetGlassRefraction(false);
+
+        [UnityTest]
+        public IEnumerator CameraLocalWetGlassRefractsOnlyWithItsCameraPassEnabled() =>
+            CheckWetGlassRefraction(true);
+
+        private static IEnumerator CheckWetGlassRefraction(bool cameraLocal)
+        {
+            var feature = ScriptableObject.CreateInstance<WetGlassRefractionFeature>();
+            using var rig = new Rig(additionalFeature: cameraLocal ? null : feature);
+            WetGlassCameraPass local = null;
+            if (cameraLocal)
+            {
+                local = rig.camera.gameObject.AddComponent<WetGlassCameraPass>();
+                local.feature = rig.Own(feature);
+            }
+            yield return null;
+            yield return null;
+            rig.rain.intensity = 0;
+            var backing = rig.Own(GameObject.CreatePrimitive(PrimitiveType.Quad));
+            backing.layer = Rig.Layer;
+            backing.transform.position = Vector3.forward * 5;
+            backing.transform.localScale = Vector3.one * 5;
+            var checker = rig.Own(new Texture2D(32, 32, TextureFormat.RGBA32, false, true));
+            for (int y = 0; y < checker.height; y++)
+                for (int x = 0; x < checker.width; x++)
+                    checker.SetPixel(x, y, ((x / 2 + y / 2) % 2 == 0) ? Color.white : Color.black);
+            checker.filterMode = FilterMode.Point;
+            checker.Apply();
+            var background = rig.Own(new Material(Shader.Find("Universal Render Pipeline/Unlit")));
+            background.SetTexture("_BaseMap", checker);
+            backing.GetComponent<Renderer>().sharedMaterial = background;
+
+            var pane = rig.Own(GameObject.CreatePrimitive(PrimitiveType.Quad));
+            pane.layer = Rig.Layer;
+            pane.transform.position = Vector3.forward * 2;
+            pane.transform.localScale = Vector3.one * 7;
+            var glass = rig.Own(new Material(Shader.Find("jlinkdev/Volumetric Fog and Rain/Wet Glass")));
+            pane.GetComponent<Renderer>().sharedMaterial = glass;
+            glass.SetFloat("_Wetness", 1);
+            glass.SetFloat("_DropSize", 1);
+            glass.SetFloat("_BackgroundBlur", 0);
+            glass.SetFloat("_RefractionPixels", 0);
+            Color[] reference = rig.Capture();
+            glass.SetFloat("_RefractionPixels", 18);
+            Color[] refracted = rig.Capture();
+
+            int changed = 0;
+            for (int y = 32; y < 96; y++)
+                for (int x = 32; x < 96; x++)
+                    if (Mathf.Abs(reference[y * 128 + x].r - refracted[y * 128 + x].r) > .06f) changed++;
+            Assert.That(changed, Is.GreaterThan(10), "The wet pane should visibly displace the captured pattern.");
+            Assert.That(rig.Center(refracted).a, Is.GreaterThan(.99f));
+            Assert.That(rig.At(refracted, 3, 0).a, Is.LessThan(.01f), "Glass over the clear background must preserve alpha.");
+            if (local)
+            {
+                local.enabled = false;
+                Color[] uncaptured = rig.Capture();
+                pane.SetActive(false);
+                Color[] unobstructed = rig.Capture();
+                for (int y = 32; y < 96; y++)
+                    for (int x = 32; x < 96; x++)
+                        Assert.That(uncaptured[y * 128 + x].r, Is.EqualTo(unobstructed[y * 128 + x].r).Within(.01f),
+                            "A camera without a capture must see through the wet pane.");
+            }
+        }
+
         private static IEnumerator EarlyFogThenTransparents(int samples)
         {
             using (var r = new Rig(samples, true))
@@ -339,12 +408,17 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
             {
                 var obj=Own(new GameObject(name)); obj.layer=Layer; return obj.AddComponent<RainVolume>();
             }
-            public Rig(int samples = 1, bool inspectAttachments = false)
+            public Rig(int samples = 1, bool inspectAttachments = false, ScriptableRendererFeature additionalFeature = null)
             {
                 var renderer=Own(ScriptableObject.CreateInstance<UniversalRendererData>());
                 renderer.postProcessData=AssetDatabase.LoadAssetAtPath<PostProcessData>("Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset");
                 feature=Own(ScriptableObject.CreateInstance<RainRendererFeature>());
                 renderer.rendererFeatures.Add(feature); feature.Create();
+                if (additionalFeature)
+                {
+                    renderer.rendererFeatures.Add(Own(additionalFeature));
+                    additionalFeature.Create();
+                }
                 if (inspectAttachments)
                 {
                     probe = Own(ScriptableObject.CreateInstance<AttachmentProbe>());

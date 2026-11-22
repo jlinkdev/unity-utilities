@@ -3,7 +3,7 @@
   "displayName": "jlinkdev Volumetric Fog and Rain",
   "version": "0.4.1",
   "unity": "6000.0",
-  "description": "Particleless world-space rain and fog-only volumes with depth occlusion and exclusions for Unity 6 URP Render Graph.",
+  "description": "World-space rain, atmospheric fog, interactive GPU ground mist, wet surfaces, glass refraction and splash particles for Unity 6 URP Render Graph.",
   "license": "MIT",
   "author": {
     "name": "Justin Link"
@@ -16,23 +16,30 @@
     "fog"
   ],
   "dependencies": {
-    "com.unity.render-pipelines.universal": "17.0.3"
+    "com.unity.render-pipelines.universal": "17.0.3",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.screencapture": "1.0.0"
   },
   "samples": [
     {
       "displayName": "Rain Laboratory",
-      "description": "Self-contained greybox evaluation scene, rain profile, and URP renderer/pipeline assets.",
+      "description": "Explore a storm-lit courtyard and its dry observation shelter. Compare rain on stone, splash impacts and wet-glass refraction under the same storm.",
       "path": "Samples~/Rain Laboratory"
     },
     {
-      "displayName": "Volume Laboratory",
-      "description": "Bounded rain and a dry canopy interior, with rain visible through the open front.",
-      "path": "Samples~/Volume Laboratory"
+      "displayName": "Fog Laboratory",
+      "description": "A sheltered dawn courtyard where atmospheric haze and simulated ground mist meet around a row of stone slabs.",
+      "path": "Samples~/Fog Laboratory"
     },
     {
-      "displayName": "Fog Laboratory",
-      "description": "Fog-only volume with a clear canopy interior and camera-local rendering.",
-      "path": "Samples~/Fog Laboratory"
+      "displayName": "Mist Sanctuary",
+      "description": "A stone hall with an animated character, persistent ground-mist wakes, gusts and solid obstacles.",
+      "path": "Samples~/Mist Sanctuary"
     }
   ]
 }

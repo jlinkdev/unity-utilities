@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shelter Paving
+  m_Shader: {fileID: 4800000, guid: 10b26c82fd73499cb416ca6afcf4e09a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: fbc555f6842d575fb07e9ca2e08f511f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 2800000, guid: be5c58a24ff25f3faa0a366fc32a061f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StoneMap:
+        m_Texture: {fileID: 2800000, guid: 5f8eea51383a5f97a083ca68ff305e57, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BeadSpacing: 0.026
+    - _BeadStrength: 0
+    - _BeadTime: 0
+    - _FilmSmoothness: 0.89
+    - _FilmVariation: 0.8
+    - _GrainContrast: 0.8
+    - _GroutTone: 0.61
+    - _GroutWidth: 0.0065
+    - _NormalStrength: 0.85
+    - _RainTime: 0
+    - _RippleActivity: 1
+    - _RippleStrength: 0
+    - _RoughnessOffset: 0.025
+    - _RunoffStrength: 0
+    - _StoneRepeat: 1.25
+    - _TileSize: 0.72
+    - _WetDarkening: 0.27
+    - _Wetness: 0
+    - _WorldAlignedStone: 0
+    m_Colors:
+    - _BaseColor: {r: 0.47, g: 0.45, b: 0.43, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

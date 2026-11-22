@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
@@ -19,6 +20,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
         public RainInjectionPoint injectionPoint;
         [Tooltip("Premultiplied expects premultiplied source RGB and updates opacity for compositing onto another background. Default preserves scene alpha.")]
         public FogOutputMode outputMode;
+        [Tooltip("Expose camera-to-depth atmospheric scattering and transmission for ground fog. While fog is active, weather renders after the skybox so subsequent fog passes can use it.")]
+        public bool shareAtmosphereWithGroundFog;
         public static RenderPassEvent InjectionEvent(RainInjectionPoint point)
         {
             switch (point)
@@ -58,7 +61,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
             var settings = camera.cameraType == CameraType.SceneView ? pass.SceneSettings(sceneViewProfile) :
                 (rain != null && rain.isActiveAndEnabled ? rain.ResolveSettings() : null);
             if (settings == null || (!settings.HasRain && !settings.HasFog) || (camera.cameraType != CameraType.SceneView && rain.intensity <= 0)) return;
-            pass.renderPassEvent = InjectionEvent(injectionPoint);
+            pass.renderPassEvent = shareAtmosphereWithGroundFog && settings.HasFog
+                ? RenderPassEvent.AfterRenderingSkybox : InjectionEvent(injectionPoint);
             renderer.EnqueuePass(pass);
         }
 
@@ -172,6 +176,12 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
                 public bool premultiplied, advancedFog;
             }
 
+            private sealed class AtmospherePassData
+            {
+                public PassData weather;
+                public Vector4 layout;
+            }
+
             public RainPass(Material material, RainRendererFeature owner)
             {
                 this.material = material;
@@ -203,7 +213,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
                 // This becomes cameraColor. Later geometry pairs it with the existing depth
                 // attachment, so retain the active color's MSAA count (including 1x after resolve).
                 var destination = graph.CreateTexture(desc);
-                using (var builder = graph.AddRasterRenderPass<PassData>("Volumetric Fog and Rain", out var data))
+                PassData data;
+                using (var builder = graph.AddRasterRenderPass<PassData>("Volumetric Fog and Rain", out data))
                 {
                     data.fogOnly = p.renderMode == RainRenderMode.FogOnly;
                     data.rainOnly = p.renderMode == RainRenderMode.RainOnly;
@@ -283,42 +294,83 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
                     builder.SetRenderAttachment(destination, 0, AccessFlags.Write);
                     builder.SetRenderFunc((PassData d, RasterGraphContext context) =>
                     {
-                        // Set parameters at execution time: each camera gets its recorded snapshot.
-                        var m = d.material;
-                        CoreUtils.SetKeyword(m, "_RAIN_VOLUMES", d.useVolumes);
-                        CoreUtils.SetKeyword(m, "_RAIN_FEATHER", d.useVolumes && d.volumes.feather);
-                        CoreUtils.SetKeyword(m, "_FOG_ADVANCED", d.advancedFog);
-                        m.SetInt("_FogPremultiplied", d.premultiplied ? 1 : 0);
-                        m.SetVector("_FogDistance", d.fogDistance); m.SetVector("_FogHeight", d.fogHeight);
-                        m.SetVector("_FogOffset", d.fogOffset); m.SetVector("_FogLightColor", d.lightColor);
-                        m.SetVector("_FogLightDirection", d.lightDirection);
-                        CoreUtils.SetKeyword(m, "_FOG_ONLY", d.fogOnly);
-                        CoreUtils.SetKeyword(m, "_RAIN_ONLY", d.rainOnly);
-                        m.SetVector("_FogColor", d.fogColor); m.SetVector("_FogAppearance", d.fogAppearance);
-                        m.SetInt("_RainBounded", d.bounded ? 1 : 0);
-                        m.SetInt("_RainBoxCount", d.volumes.rainCount);
-                        m.SetInt("_RainDryBoxCount", d.volumes.dryCount);
-                        if (d.useVolumes)
-                        {
-                            m.SetMatrixArray("_RainBoxes", d.volumes.rainBoxes);
-                            m.SetMatrixArray("_RainDryBoxes", d.volumes.dryBoxes);
-                            if (d.volumes.feather)
-                            {
-                                m.SetVectorArray("_RainBoxFeathers", d.volumes.rainFeathers);
-                                m.SetVectorArray("_RainDryFeathers", d.volumes.dryFeathers);
-                            }
-                        }
-                        m.SetVector("_RainField", d.field); m.SetVector("_RainDistances", d.distances);
-                        m.SetVector("_RainAppearance", d.appearance); m.SetVector("_RainNoise", d.noise);
-                        m.SetVector("_RainOffset", d.offset); m.SetVector("_RainOffsetCells", d.offsetCells); m.SetVector("_RainRight", d.right);
-                        m.SetVector("_RainUp", d.up); m.SetVector("_RainForward", d.forward);
-                        m.SetVector("_RainColor", d.color);
-                        m.SetInt("_RainSteps", d.steps); m.SetInt("_RainHazeSteps", d.hazeSteps);
-                        m.SetInt("_RainDebug", d.debug); m.SetInt("_RainSeed", d.seed);
-                        Blitter.BlitTexture(context.cmd, d.source, new Vector4(1, 1, 0, 0), m, 0);
+                        BindWeather(d);
+                        Blitter.BlitTexture(context.cmd, d.source, new Vector4(1, 1, 0, 0), d.material, 0);
                     });
                 }
                 resources.cameraColor = destination;
+                if (owner.shareAtmosphereWithGroundFog && data.debug == 0 && p.HasFog &&
+                    SystemInfo.IsFormatSupported(GraphicsFormat.R16G16B16A16_SFloat, GraphicsFormatUsage.Render) &&
+                    SystemInfo.IsFormatSupported(GraphicsFormat.R16G16B16A16_SFloat, GraphicsFormatUsage.Linear))
+                    RecordAtmosphere(graph, frameData, camera, data);
+            }
+
+            private static void BindWeather(PassData d)
+            {
+                var m = d.material;
+                CoreUtils.SetKeyword(m, "_RAIN_VOLUMES", d.useVolumes);
+                CoreUtils.SetKeyword(m, "_RAIN_FEATHER", d.useVolumes && d.volumes.feather);
+                CoreUtils.SetKeyword(m, "_FOG_ADVANCED", d.advancedFog);
+                m.SetInt("_FogPremultiplied", d.premultiplied ? 1 : 0);
+                m.SetVector("_FogDistance", d.fogDistance); m.SetVector("_FogHeight", d.fogHeight);
+                m.SetVector("_FogOffset", d.fogOffset); m.SetVector("_FogLightColor", d.lightColor);
+                m.SetVector("_FogLightDirection", d.lightDirection);
+                CoreUtils.SetKeyword(m, "_FOG_ONLY", d.fogOnly);
+                CoreUtils.SetKeyword(m, "_RAIN_ONLY", d.rainOnly);
+                m.SetVector("_FogColor", d.fogColor); m.SetVector("_FogAppearance", d.fogAppearance);
+                m.SetInt("_RainBounded", d.bounded ? 1 : 0);
+                m.SetInt("_RainBoxCount", d.volumes.rainCount);
+                m.SetInt("_RainDryBoxCount", d.volumes.dryCount);
+                if (d.useVolumes)
+                {
+                    m.SetMatrixArray("_RainBoxes", d.volumes.rainBoxes);
+                    m.SetMatrixArray("_RainDryBoxes", d.volumes.dryBoxes);
+                    if (d.volumes.feather)
+                    {
+                        m.SetVectorArray("_RainBoxFeathers", d.volumes.rainFeathers);
+                        m.SetVectorArray("_RainDryFeathers", d.volumes.dryFeathers);
+                    }
+                }
+                m.SetVector("_RainField", d.field); m.SetVector("_RainDistances", d.distances);
+                m.SetVector("_RainAppearance", d.appearance); m.SetVector("_RainNoise", d.noise);
+                m.SetVector("_RainOffset", d.offset); m.SetVector("_RainOffsetCells", d.offsetCells); m.SetVector("_RainRight", d.right);
+                m.SetVector("_RainUp", d.up); m.SetVector("_RainForward", d.forward);
+                m.SetVector("_RainColor", d.color);
+                m.SetInt("_RainSteps", d.steps); m.SetInt("_RainHazeSteps", d.hazeSteps);
+                m.SetInt("_RainDebug", d.debug); m.SetInt("_RainSeed", d.seed);
+            }
+
+            private static void RecordAtmosphere(RenderGraph graph, ContextContainer frameData, UniversalCameraData camera, PassData weather)
+            {
+                // Eight columns of four rows, each containing one camera-aligned optical prefix.
+                const int columns = 8, rows = 4, downsample = 16;
+                int width = Mathf.Clamp((camera.cameraTargetDescriptor.width + downsample - 1) / downsample, 1, 192);
+                int height = Mathf.Clamp((camera.cameraTargetDescriptor.height + downsample - 1) / downsample, 1, 128);
+                float range = weather.fogDistance.z > 0 ? weather.fogDistance.w : weather.distances.w;
+                var layout = new Vector4(width, height, range, columns * rows);
+                var atlas = graph.CreateTexture(new TextureDesc(width * columns, height * rows)
+                {
+                    name = "Weather atmosphere by depth",
+                    colorFormat = GraphicsFormat.R16G16B16A16_SFloat,
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Clamp
+                });
+                using (var builder = graph.AddRasterRenderPass<AtmospherePassData>("Volumetric atmosphere by depth", out var data))
+                {
+                    // Both passes consume the same immutable per-camera Render Graph snapshot.
+                    data.weather = weather;
+                    data.layout = layout;
+                    if (weather.useVolumes && !weather.fogOnly && weather.fogDistance.z == 0)
+                        builder.UseTexture(frameData.Get<UniversalResourceData>().cameraDepthTexture, AccessFlags.Read);
+                    builder.SetRenderAttachment(atlas, 0, AccessFlags.Write);
+                    builder.SetRenderFunc((AtmospherePassData d, RasterGraphContext context) =>
+                    {
+                        BindWeather(d.weather);
+                        d.weather.material.SetVector("_JlinkWeatherAtmosphereLayout", d.layout);
+                        Blitter.BlitTexture(context.cmd, new Vector4(1, 1, 0, 0), d.weather.material, 1);
+                    });
+                }
+                WeatherAtmosphere.Publish(frameData, camera.camera, atlas, layout, weather.premultiplied);
             }
         }
     }
