@@ -13,15 +13,21 @@ namespace JLinkDev.ProceduralNebulae
 
         NebulaPass pass;
         public override void Create() => pass = new NebulaPass();
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData data)
+        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var camera = data.cameraData;
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<NebulaCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType == CameraRenderType.Overlay || data.xr.enabled) return;
+            if (data.cameraType != CameraType.Game && data.cameraType != CameraType.SceneView) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
             if (sceneViewOnly && camera.cameraType != CameraType.SceneView) return;
-            if (camera.renderType == CameraRenderType.Overlay || camera.xr.enabled) return;
-            if (camera.cameraType != CameraType.Game && camera.cameraType != CameraType.SceneView) return;
             foreach (var volume in NebulaVolume.Active)
             {
-                if (!volume || (camera.camera.cullingMask & (1 << volume.gameObject.layer)) == 0) continue;
+                if (!volume || (camera.cullingMask & (1 << volume.gameObject.layer)) == 0) continue;
                 if (!volume.PrepareForRendering()) continue;
                 pass.volume = volume;
                 renderer.EnqueuePass(pass);

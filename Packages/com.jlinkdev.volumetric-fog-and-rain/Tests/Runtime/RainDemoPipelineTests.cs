@@ -10,7 +10,7 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
     {
         [TestCase(false)]
         [TestCase(true)]
-        public void DisableRestoresPipelinesAndPreservesSelectedQuality(bool changeQuality)
+        public void LegacySamplePreservesPipelinesAndSelectedQuality(bool changeQuality)
         {
             var previousGraphics = GraphicsSettings.defaultRenderPipeline;
             var previousQuality = QualitySettings.renderPipeline;
@@ -24,8 +24,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Tests
             try
             {
                 go.SetActive(true);
-                Assert.That(GraphicsSettings.defaultRenderPipeline, Is.SameAs(demoPipeline));
-                Assert.That(QualitySettings.renderPipeline, Is.SameAs(demoPipeline));
+                Assert.That(GraphicsSettings.defaultRenderPipeline, Is.SameAs(previousGraphics));
+                Assert.That(QualitySettings.renderPipeline, Is.SameAs(previousQuality));
                 int selectedLevel = changeQuality ? (originalLevel + 1) % QualitySettings.names.Length : originalLevel;
                 QualitySettings.SetQualityLevel(selectedLevel, false);
                 demo.enabled = false;

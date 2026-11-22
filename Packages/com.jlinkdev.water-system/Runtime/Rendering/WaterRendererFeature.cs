@@ -33,11 +33,16 @@ namespace jlinkdev.UnityUtilities.WaterSystem
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var cameraData = renderingData.cameraData;
-            if (pass == null || cameraData.renderType == CameraRenderType.Overlay || cameraData.xr.enabled) return;
-            if (cameraData.cameraType != CameraType.Game && cameraData.cameraType != CameraType.SceneView) return;
-            if (cameraData.isSceneViewCamera && !RenderSceneView) return;
-            if (SelectBody(cameraData.camera) == null) return;
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<WaterCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType == CameraRenderType.Overlay || data.xr.enabled) return;
+            if (data.cameraType != CameraType.Game && !(data.isSceneViewCamera && RenderSceneView)) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
+            if (pass == null || SelectBody(camera) == null) return;
             renderer.EnqueuePass(surfaceInputPass);
             renderer.EnqueuePass(pass);
         }

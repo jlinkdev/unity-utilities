@@ -59,6 +59,8 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
             string title = fogOnly ? "Fog Laboratory" : withVolumes ? "Volume Laboratory" : "Rain Laboratory";
             string folder = AssetDatabase.GenerateUniqueAssetPath(root + "/" + title);
             AssetDatabase.CreateFolder(root, System.IO.Path.GetFileName(folder));
+            foreach (var category in new[] { "Scenes", "Settings", "Profiles", "Materials" })
+                AssetDatabase.CreateFolder(folder, category);
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             SceneManager.SetActiveScene(scene);
 
@@ -75,9 +77,9 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
                 profile.fogNoiseVelocity = new Vector3(.2f, 0, .1f);
                 profile.directionalScattering = .15f;
             }
-            AssetDatabase.CreateAsset(profile, folder + "/Rain Profile.asset");
+            AssetDatabase.CreateAsset(profile, folder + "/Profiles/Rain Profile.asset");
             var renderer = ScriptableObject.CreateInstance<UniversalRendererData>();
-            AssetDatabase.CreateAsset(renderer, folder + "/Rain Renderer.asset");
+            AssetDatabase.CreateAsset(renderer, folder + "/Settings/Rain Renderer.asset");
             var feature = AddFeature(renderer);
             feature.sceneViewProfile = profile;
             EditorUtility.SetDirty(feature);
@@ -85,7 +87,7 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
             pipeline.name = title + " Pipeline";
             pipeline.supportsCameraDepthTexture = true;
             pipeline.msaaSampleCount = 1;
-            AssetDatabase.CreateAsset(pipeline, folder + "/Rain Pipeline.asset");
+            AssetDatabase.CreateAsset(pipeline, folder + "/Settings/Rain Pipeline.asset");
 
             var camera = new GameObject("Rain Camera", typeof(Camera), typeof(VolumetricRainCamera)).GetComponent<Camera>();
             camera.transform.position = new Vector3(0, 2.5f, -9);
@@ -94,7 +96,9 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
             camera.backgroundColor = new Color(0.035f, 0.045f, 0.06f);
             camera.farClipPlane = 150;
             camera.tag = "MainCamera";
-            camera.gameObject.AddComponent<Demo.RainDemoPipeline>().Pipeline = pipeline;
+            camera.gameObject.AddComponent<RainCameraPass>().feature = feature;
+            camera.allowMSAA = false;
+            camera.GetUniversalAdditionalCameraData().requiresDepthTexture = true;
             camera.GetComponent<VolumetricRainCamera>().profile = profile;
             camera.GetUniversalAdditionalCameraData().renderPostProcessing = true;
             var light = new GameObject("Main Light", typeof(Light)).GetComponent<Light>();
@@ -103,7 +107,7 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
             light.transform.rotation = Quaternion.Euler(45, -30, 0);
             var material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             material.color = new Color(0.18f, 0.22f, 0.26f);
-            AssetDatabase.CreateAsset(material, folder + "/Greybox.mat");
+            AssetDatabase.CreateAsset(material, folder + "/Materials/Greybox.mat");
             MakeBox("Ground", new Vector3(0, -0.25f, 30), new Vector3(60, 0.5f, 100), material);
             MakeBox("Near occluder", new Vector3(-2, 2, 1), new Vector3(2, 4, 1), material);
             MakeBox("Mid occluder", new Vector3(3, 3, 14), new Vector3(3, 6, 2), material);
@@ -128,7 +132,7 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain.Editor
                 MakeBox("Canopy right wall", new Vector3(5.1f, 2.5f, -9), new Vector3(.2f, 5, 10), material);
                 MakeBox("Canopy back wall", new Vector3(0, 2.5f, -14.1f), new Vector3(10, 5, .2f), material);
             }
-            EditorSceneManager.SaveScene(scene, folder + "/" + title + ".unity");
+            EditorSceneManager.SaveScene(scene, folder + "/Scenes/" + title + ".unity");
             AssetDatabase.SaveAssets();
             Selection.activeObject = pipeline;
             Debug.Log(title + " created at " + folder + ". Press Play to activate its pipeline automatically. Previous pipeline settings are restored when the demo stops.");

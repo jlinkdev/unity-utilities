@@ -35,10 +35,15 @@ namespace jlinkdev.ObjectHighlighting
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             var data = renderingData.cameraData;
-            if (ObjectHighlight.Active.Count == 0 || data.renderType != CameraRenderType.Base ||
-                data.xrRendering || data.camera.stereoEnabled) return;
+            if (data.camera.TryGetComponent<HighlightCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType != CameraRenderType.Base || data.xrRendering || data.camera.stereoEnabled) return;
             if (data.cameraType != CameraType.Game && !(showInSceneView && data.isSceneViewCamera)) return;
-            renderer.EnqueuePass(pass);
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
+            if (ObjectHighlight.Active.Count > 0) renderer.EnqueuePass(pass);
         }
 
         protected override void Dispose(bool disposing)

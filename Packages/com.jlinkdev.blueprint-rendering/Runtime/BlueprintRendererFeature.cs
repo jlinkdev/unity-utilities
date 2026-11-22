@@ -24,9 +24,15 @@ namespace jlinkdev.BlueprintRendering
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var camera = renderingData.cameraData;
-            if (camera.renderType == CameraRenderType.Base && camera.camera.TryGetComponent<BlueprintCamera>(out var settings)
-                && settings.isActiveAndEnabled)
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<BlueprintCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType != CameraRenderType.Base) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
+            if (camera.TryGetComponent<BlueprintCamera>(out var settings) && settings.isActiveAndEnabled)
                 renderer.EnqueuePass(pass);
         }
 

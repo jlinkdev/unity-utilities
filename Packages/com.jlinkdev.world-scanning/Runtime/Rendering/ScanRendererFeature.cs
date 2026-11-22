@@ -82,10 +82,17 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Rendering
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<ScanCameraPass>(out var local) && local.HandlesCamera) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
             if (pass == null || material == null || ScanSystem.ActiveCount == 0)
                 return;
 
-            CameraType cameraType = renderingData.cameraData.cameraType;
+            CameraType cameraType = camera.cameraType;
             if (cameraType == CameraType.SceneView && !settings.sceneView)
                 return;
             if (cameraType == CameraType.Preview && !settings.previewCameras)

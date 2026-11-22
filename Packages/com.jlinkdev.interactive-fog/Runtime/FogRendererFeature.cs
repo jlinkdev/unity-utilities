@@ -26,9 +26,16 @@ namespace jlinkdev.UnityUtilities.InteractiveFog
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            if (!material || renderingData.cameraData.renderType == CameraRenderType.Overlay || renderingData.cameraData.xr.enabled) return;
-            if (renderingData.cameraData.cameraType != CameraType.Game && renderingData.cameraData.cameraType != CameraType.SceneView) return;
-            if (FogVolume.Active.Count > 0) renderer.EnqueuePass(pass);
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<FogCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType == CameraRenderType.Overlay || data.xr.enabled) return;
+            if (data.cameraType != CameraType.Game && data.cameraType != CameraType.SceneView) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
+            if (material && FogVolume.Active.Count > 0) renderer.EnqueuePass(pass);
         }
         protected override void Dispose(bool disposing) { CoreUtils.Destroy(material); }
         sealed class FogPass : ScriptableRenderPass

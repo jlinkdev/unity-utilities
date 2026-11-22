@@ -44,13 +44,20 @@ namespace jlinkdev.UnityUtilities.VolumetricFogAndRain
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var cameraData = renderingData.cameraData;
-            if (pass == null || cameraData.renderType == CameraRenderType.Overlay || cameraData.xr.enabled) return;
-            if (cameraData.cameraType != CameraType.Game && cameraData.cameraType != CameraType.SceneView) return;
-            var rain = cameraData.camera.GetComponent<VolumetricRainCamera>();
-            var settings = cameraData.isSceneViewCamera ? pass.SceneSettings(sceneViewProfile) :
+            var data = renderingData.cameraData;
+            if (data.camera.TryGetComponent<RainCameraPass>(out var local) && local.HandlesCamera) return;
+            if (data.renderType == CameraRenderType.Overlay || data.xr.enabled) return;
+            if (data.cameraType != CameraType.Game && data.cameraType != CameraType.SceneView) return;
+            Enqueue(renderer, data.camera);
+        }
+
+        internal void Enqueue(ScriptableRenderer renderer, Camera camera)
+        {
+            if (pass == null) return;
+            var rain = camera.GetComponent<VolumetricRainCamera>();
+            var settings = camera.cameraType == CameraType.SceneView ? pass.SceneSettings(sceneViewProfile) :
                 (rain != null && rain.isActiveAndEnabled ? rain.ResolveSettings() : null);
-            if (settings == null || (!settings.HasRain && !settings.HasFog) || (!cameraData.isSceneViewCamera && rain.intensity <= 0)) return;
+            if (settings == null || (!settings.HasRain && !settings.HasFog) || (camera.cameraType != CameraType.SceneView && rain.intensity <= 0)) return;
             pass.renderPassEvent = InjectionEvent(injectionPoint);
             renderer.EnqueuePass(pass);
         }
