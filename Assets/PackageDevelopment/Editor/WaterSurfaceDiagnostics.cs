@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
-using jlinkdev.UnityUtilities.WaterSystem.Samples;
+using jlinkdev.UnityUtilities.WaterSystem.EditableSamples;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -15,7 +15,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
     {
         const string Output = "WaterSurfaceDiagnostics";
         static WaterLaboratoryController laboratory;
-        static RenderPipelineAsset oldGraphics, oldQuality;
         static int frames;
 
         public static void Run()
@@ -23,10 +22,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             EditorSceneManager.OpenScene(WaterSystemDevelopmentBuilder.Root + "/Scenes/Water Laboratory.unity");
             laboratory = UnityEngine.Object.FindFirstObjectByType<WaterLaboratoryController>();
             if (laboratory == null) throw new InvalidOperationException("Water laboratory not found.");
-            oldGraphics = GraphicsSettings.defaultRenderPipeline;
-            oldQuality = QualitySettings.renderPipeline;
-            GraphicsSettings.defaultRenderPipeline = laboratory.Pipeline;
-            QualitySettings.renderPipeline = laboratory.Pipeline;
             frames = 0;
             EditorApplication.update += Tick;
         }
@@ -38,11 +33,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             int result = 0;
             try { Diagnose(); }
             catch (Exception exception) { Debug.LogException(exception); result = 1; }
-            finally
-            {
-                GraphicsSettings.defaultRenderPipeline = oldGraphics;
-                QualitySettings.renderPipeline = oldQuality;
-            }
             EditorApplication.Exit(result);
         }
 

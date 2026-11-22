@@ -34,3 +34,15 @@ These measurements include editor CPU work and GPU synchronization. Game scenes 
 ## Coverage
 
 These results cover the tested desktop GPU and D3D11 configurations. Compatibility with other graphics APIs, mobile GPUs, XR, renderer compatibility mode, alpha-clipped targets, and custom vertex deformation has not been established.
+
+## Optional framework installation
+
+An isolated Unity **6000.3.21f1** consumer with URP **17.3.0** compiled Object Highlighting and imported Selection Gallery before the framework was present. The test supplied the dialog decisions in batch mode. Sample import, Git fetching, package registration, script reloads, and serialized asset resolution used the real Unity APIs.
+
+- Declining the import prompt left the manifest unchanged. A subsequent refresh did not prompt again.
+- The Tools menu retried installation. A missing Git tag produced a UPM error and manual installation guidance.
+- After the tag was created in a local Git repository with the production subfolder layout, the approved request completed across an assembly reload. The imported controller's caption skin resolved to the framework asset, including its named title style.
+- Invoking the installer with the compatible package present produced no second prompt or manifest change. A different configured version produced a compatibility warning and retained the installed version.
+- Caption Preview imported from the installed framework. Its Sample Header resolved the shared caption skin.
+
+The hosted release requires the same subfolder and tag on the published repository. [Installer settings and manual fallback](sample-framework.md)

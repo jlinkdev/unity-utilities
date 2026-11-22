@@ -57,9 +57,7 @@ Import **Water Laboratory** from the package's **Samples** tab. Open
 The scene contains submerged steps, depth columns, seabed markings, and floating
 crates. Controls use IMGUI and do not require an input package.
 
-The sample temporarily selects its included URP pipeline in Play Mode and
-restores the previous Graphics and active Quality pipeline when its controller
-is disabled. Its Scene view uses the project's current pipeline until Play.
+Water Camera Pass runs on the laboratory camera. Use the Game view to preview its output.
 See the [sample guide](<Samples~/Water Laboratory/README.md>).
 
 ## Limitations

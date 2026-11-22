@@ -61,7 +61,7 @@ The handle owns its instances and destroys them when the handle is destroyed.
 Import **Object Pooling** from the package's **Samples** tab. Open
 `Scenes/Object Pooling Demo.unity` and press Play. The overlay switches between
 single-prefab and registry pools and exposes spawn, return, prewarm, and clear controls.
-See the [sample guide](Samples~/ObjectPooling/README.md).
+See the [sample guide](<Samples~/Object Pooling/README.md>).
 
 ## Limitations
 

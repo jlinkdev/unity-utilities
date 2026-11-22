@@ -1,12 +1,12 @@
 # Windowsill
 
-Open **Windowsill.unity**. Select **Windowsill · select for controls** in the Hierarchy and keep the Game view visible while you use its Inspector. Press **Play** to use the same controls on screen. The left pot starts with a mature pothos. The right pot is ready for a cutting.
+Open **Scenes/Windowsill.unity**. Select **Windowsill · select for controls** in the Hierarchy and keep the Game view visible while you use its Inspector. Press **Play** to use the same controls on screen. The left pot starts with a mature pothos. The right pot is ready for a cutting.
 
 ## Grow a jade shoot
 
-Use **Selected pot** in the Inspector or at the top right of the Game view to frame the active plant. The view follows the shoot as it grows and fits a detached spider plantlet in pot 2. Switch pots to inspect the other specimen. **Both pots** restores the full windowsill. Starting the side-by-side comparison also frames both pots.
+Use **Selected pot** in the Inspector or in the Game view toolbar to frame the active plant. The view follows the shoot as it grows and fits a detached spider plantlet in pot 2. Switch pots to inspect the other specimen. **Both pots** restores the full windowsill. Starting the side-by-side comparison also frames both pots.
 
-Choose **Grow → Jade shoot** in the active pot. Each node carries two leaves. With the default manual moisture, the preset starts with four nodes. Choose **Grow +6** to open more pairs, then **Grow +6** again to see a side branch below the tip. Use **Step +1** for a closer look at a new pair opening. Choose **Simulate plant care** to try the jade's slower drying rate.
+In Play mode, select **Grow** and choose the jade preset on the species shelf. In the Inspector, choose **Grow → Jade shoot**. Each node carries two leaves. With the default manual moisture, the preset starts with four nodes. Choose **Grow +6** to open more pairs, then **Grow +6** again to see a side branch below the tip. Use **Step +1** for a closer look at a new pair opening. Choose **Simulate plant care** to try the jade's slower drying rate.
 
 ## Grow a spider or rubber plant
 
@@ -43,3 +43,7 @@ To propagate Monstera, grow the **Climbing Monstera** preset, then select **Cutt
 Open **Tray**. Each position has its own seed and shares the source plant’s recipe settings, age and growing conditions. All six are shown at the same scale. Select by seed or by the numbered marker. **Pin** preserves that specimen across **Reroll unpinned seeds**. **Living copy** and **Static copy** place the selection in pot 2, replacing its occupant. In the editor, **Living prefab…** saves a resumable plant and **Static prefab…** saves a renderer and a UV mesh asset in your project.
 
 **Save windowsill** stores both pots, support settings, the pending cutting, and the tray with its pins in a local save slot. **Restore** returns to the saved setup and view. In Edit mode, saving the Unity scene also preserves the authored specimens.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > Procedural Plants > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

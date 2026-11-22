@@ -8,7 +8,11 @@ import json
 from pathlib import Path
 import re
 import sys
+import xml.etree.ElementTree as ET
 from urllib.parse import unquote, urlsplit
+from camera_passes import camera_pass_sources
+from sample_installers import sources as installer_sources
+from package_samples import META_GUID, sync_sample
 
 ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = ("Requirements", "Installation", "Quick start", "Sample", "Limitations",
@@ -55,6 +59,8 @@ def check_package(package):
             fail(manifest_path, f"missing {field}")
     if manifest.get("name") != package.name:
         fail(manifest_path, "name does not match package folder")
+    if "com.jlinkdev.sample-framework" in manifest.get("dependencies", {}):
+        fail(manifest_path, "the Sample Framework must remain an optional sample dependency")
     if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?", str(manifest.get("version", ""))):
         fail(manifest_path, "version must have major.minor.patch and optional prerelease/build suffix")
     if not re.fullmatch(r"\d+\.\d+", str(manifest.get("unity", ""))):
@@ -96,9 +102,73 @@ def check_package(package):
         for scene in scenes:
             if not scene.with_suffix(".unity.meta").is_file():
                 fail(scene, "scene metadata missing")
+            if re.search(rb"^  m_RendererIndex: [0-9]+", scene.read_bytes(), re.M):
+                fail(scene, "sample camera references a project-specific URP renderer slot")
+        identity = directory / "UI" / "Sample Identity.uxml"
+        try:
+            document = ET.parse(identity)
+            rows = [element for element in document.iter() if "sample-identity-content" in element.get("class", "").split()]
+            if len(rows) != 1 or len(rows[0]) == 0 or "sample-identity-gradient" not in rows[0][0].get("class", "").split():
+                fail(identity, "the shared header needs a gradient behind the icon and title")
+            elif rows[0][0].get("picking-mode") != "Ignore":
+                fail(identity, "the header gradient must let input through to the sample")
+            labels = {element.get("name"): element.get("text") for element in document.iter()}
+            if labels.get("package-name") != manifest["displayName"].removeprefix("jlinkdev ") or labels.get("sample-name") != sample["displayName"]:
+                fail(identity, "package and sample labels must match their manifest display names")
+            marker = META_GUID.search(Path(str(identity) + ".meta").read_bytes())[1]
+            for scene in scenes:
+                if marker not in scene.read_bytes():
+                    fail(scene, "scene does not reference its sample identity")
+        except (OSError, ET.ParseError, TypeError) as error:
+            fail(identity, str(error))
+        try:
+            for change in sync_sample(package, sample):
+                fail(directory, f"editable and published samples differ: {change}")
+        except (ValueError, OSError) as error:
+            fail(directory, str(error))
+        editable = ROOT / "Assets/PackageSamples" / package.name / directory.name
+        for markdown in editable.rglob("*.md"):
+            check_links(markdown, editable)
     for markdown in package.rglob("*.md"):
         check_links(markdown, package)
     return len(samples)
+
+
+def check_sample_references(packages):
+    # Include hidden package samples in the index as if they had all been imported.
+    owners = {}
+    sample_assets = []
+    for base in [ROOT / "Assets", *packages]:
+        for meta in base.rglob("*.meta"):
+            # Package Manager installs the published assets here with their original
+            # GUIDs. Index their sources in Samples~ once, independent of local imports.
+            if meta.is_relative_to(ROOT / "Assets/Samples"):
+                continue
+            match = META_GUID.search(meta.read_bytes())
+            if not match:
+                continue
+            path = meta.with_suffix("")
+            sample = None
+            if "Samples~" in path.parts:
+                index = path.parts.index("Samples~")
+                sample = Path(*path.parts[:index + 2])
+            elif path.is_relative_to(ROOT / "Assets/PackageSamples"):
+                parts = path.relative_to(ROOT / "Assets/PackageSamples").parts
+                if len(parts) >= 2:
+                    sample = ROOT / "Assets/PackageSamples" / parts[0] / parts[1]
+            previous = owners.get(match[1])
+            if previous and (sample or previous[1]):
+                fail(meta, f"sample GUID already used by {previous[0].relative_to(ROOT)}")
+            owners[match[1]] = (path, sample)
+            if sample and path.is_file():
+                sample_assets.append((path, sample))
+    for path, sample in sample_assets:
+        if path.suffix not in {".unity", ".prefab", ".asset", ".mat", ".anim", ".controller", ".asmdef"}:
+            continue
+        for guid in set(re.findall(rb"(?:guid:\s*|GUID:)([0-9a-f]{32})", path.read_bytes())):
+            target, owner = owners.get(guid, (None, None))
+            if target and owner != sample and (owner or target.is_relative_to(ROOT / "Assets")):
+                fail(path, f"sample depends on an asset outside its distributable scope: {target.relative_to(ROOT)}")
 
 
 def main():
@@ -107,14 +177,46 @@ def main():
     if not packages:
         fail(ROOT / "Packages", "no owned packages found")
     sample_count = sum(check_package(package) for package in packages)
-    for document in ("README.md", "CONTRIBUTING.md"):
+    for source, content in camera_pass_sources():
+        if not source.exists() or source.read_text(encoding="utf-8") != content:
+            fail(source, "camera pass differs from its template; run python scripts/camera_passes.py")
+    for source, content in installer_sources():
+        if not source.exists() or source.read_text(encoding="utf-8") != content:
+            fail(source, "sample installer differs from its source; run python scripts/sample_installers.py")
+    framework = ROOT / "Packages/com.jlinkdev.sample-framework"
+    framework_refs = set()
+    for asmdef in (framework / "Runtime").rglob("*.asmdef"):
+        framework_refs.add(read_json(asmdef).get("name"))
+        meta = Path(str(asmdef) + ".meta")
+        guid = META_GUID.search(meta.read_bytes()) if meta.is_file() else None
+        if guid:
+            framework_refs.add("GUID:" + guid[1].decode())
+        else:
+            fail(asmdef, "missing framework assembly GUID")
+    for package in packages:
+        if package != framework:
+            for asmdef in (package / "Runtime").rglob("*.asmdef"):
+                if framework_refs.intersection(read_json(asmdef).get("references", [])):
+                    fail(asmdef, "utility runtime assembly depends on the optional Sample Framework")
+    check_sample_references(packages)
+    registered = {Path(package.name) / Path(sample["path"]).name
+                  for package in packages for sample in read_json(package / "package.json").get("samples", [])
+                  if isinstance(sample, dict) and isinstance(sample.get("path"), str)}
+    for folder in (ROOT / "Assets/PackageSamples").glob("*/*"):
+        if folder.is_dir() and Path(folder.parent.name, folder.name) not in registered:
+            fail(folder, "editable sample has no package registration")
+    for package in packages:
+        for folder in (package / "Samples~").glob("*"):
+            if folder.is_dir() and Path(package.name, folder.name) not in registered:
+                fail(folder, "published sample has no package registration")
+    for document in ("README.md", "CONTRIBUTING.md", "Assets/PackageDevelopment/README.md", "Assets/PackageSamples/README.md"):
         check_links(ROOT / document, ROOT)
     if ERRORS:
         print("\n".join(ERRORS), file=sys.stderr)
         print(f"FAILED: {len(ERRORS)} packaging/documentation issue(s).", file=sys.stderr)
         return 1
     print(f"PASS: {len(packages)} packages, {sample_count} registered samples; manifests, "
-          "README sections, local link destinations, sample scenes, and assembly JSON.")
+          "README sections, local links, matching editable samples, scenes, and assembly JSON.")
     print("Unity compilation, rendering, tests, external links, and compatibility were not checked.")
     return 0
 

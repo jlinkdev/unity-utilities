@@ -38,7 +38,7 @@ For procedural dry-ice billows, assign `Runtime/Styles/Dry Ice.asset`. No emitte
 
 ## Sample
 
-Import **Mist Sanctuary** from the package's Samples tab and open its scene. Use **Tools > jlinkdev > Interactive Fog > Setup** to register the imported **Mist Renderer** in your active pipeline and assign it to **Sanctuary camera**; save the scene. Press Play: the Humanoid walks and jogs a closed path, then pauses for a sword swipe. The foot bones and sword tip drive the fog wakes. There is no input controller or input-backend requirement. The fixed camera and finer sample grid expose curls, wisps, and residual wakes. The sample uses a camera renderer override and leaves project pipeline references and the default renderer unchanged. See the [sample guide](<Samples~/Mist Sanctuary/README.md>).
+Import **Mist Sanctuary** from the package's Samples tab and open its scene. The Sanctuary camera already references the included fog feature. Press Play: the Humanoid walks and jogs a closed path, then pauses for a sword swipe. The foot bones and sword tip drive the fog wakes. There is no input controller or input-backend requirement. The fixed camera and finer sample grid expose curls, wisps, and residual wakes. The sample uses a camera renderer override and leaves project pipeline references and the default renderer unchanged. See the [sample guide](<Samples~/Mist Sanctuary/README.md>).
 
 ## Limitations
 

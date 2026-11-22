@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement class="sample-identity" picking-mode="Ignore">
+        <ui:VisualElement class="sample-identity-content" picking-mode="Ignore">
+            <ui:VisualElement class="sample-identity-gradient" picking-mode="Ignore" />
+            <ui:Label class="sample-symbol" text="&#xe3c4;" picking-mode="Ignore" />
+            <ui:VisualElement picking-mode="Ignore">
+                <ui:Label name="package-name" class="sample-package" text="Procedural Picture Frames" picking-mode="Ignore" />
+                <ui:Label name="sample-name" class="sample-name" text="Frame Workshop" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

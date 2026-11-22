@@ -12,4 +12,8 @@ Watch for five layers working together:
 4. Depth and normal accents around silhouettes and structural breaks.
 5. Material reveal nodes and receiver beacons reacting to the same runtime pulse.
 
-The sample contains its own profiles, materials, volume profile, scripts, and scene. Its camera expects a URP renderer configured with `ScanRendererFeature`; importing the sample does not replace the consuming project's render pipeline settings.
+The sample contains its own profiles, materials, volume profile, scripts, and scene. Its camera references the included Scan Feature and requests depth for the scan pass.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > World Scanning > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

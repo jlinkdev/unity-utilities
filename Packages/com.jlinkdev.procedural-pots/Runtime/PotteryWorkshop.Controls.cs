@@ -7,18 +7,30 @@ namespace JLink.Pots
 {
     public sealed partial class PotteryWorkshop
     {
+        [SerializeField] private StyleSheet sampleStyle;
+        [SerializeField] private VisualTreeAsset sliderTemplate;
+        [SerializeField] private VisualTreeAsset shelfTemplate;
+        [SerializeField] private UIDocument sampleIdentity;
         static readonly PotForm[] Forms = (PotForm[])Enum.GetValues(typeof(PotForm));
         static readonly string[] Tabs = { "Form", "Clay", "Handles", "UVs", "Shelf" };
         static readonly Color Accent = new Color(.99f,.72f,.43f);
         static readonly Color Pale = new Color(.94f,.94f,.86f);
         int tab;
         bool guides = true;
+        [SerializeField] private Texture2D[] presetPreviews;
         Texture2D[] thumbnails;
+        [SerializeField] private Renderer studioGrid;
+        [SerializeField] private Light studioKey;
+        bool dimStudio;
+        float studioKeyIntensity;
         PanelSettings panelSettings;
-        VisualElement rootUI, canvas, controls, tabRow;
+        VisualElement rootUI, canvas, controls, tabRow, viewTools, identityHeading, sidebar;
         Button undoButton, redoButton, guidesButton;
         Label title, message;
         readonly List<Action> refreshFields = new List<Action>();
+
+        // UI Toolkit reports points in panel space; the camera and raycasts use screen pixels.
+        float PixelsPerPoint => rootUI != null && rootUI.layout.width > 1 ? Screen.width / rootUI.layout.width : 1f;
 
         Rect CanvasArea
         {
@@ -32,16 +44,28 @@ namespace JLink.Pots
 
         void MakeInterface()
         {
-            panelSettings = Instantiate(Resources.Load<PanelSettings>("JLinkPots/WorkshopPanel"));
-            var host = Child("Workshop interface");
-            host.SetActive(false);
-            var document = host.AddComponent<UIDocument>();
-            document.panelSettings = panelSettings;
-            host.SetActive(true);
-            rootUI = document.rootVisualElement;
+            if (!controlsDocument)
+            {
+                panelSettings = Instantiate(Resources.Load<PanelSettings>("JLinkPots/WorkshopPanel"));
+                var host = Child("Workshop interface");
+                host.SetActive(false);
+                controlsDocument = host.AddComponent<UIDocument>();
+                controlsDocument.panelSettings = panelSettings;
+                host.SetActive(true);
+            }
+            if (!controlsDocument.panelSettings)
+                controlsDocument.panelSettings = Resources.Load<PanelSettings>("JLinkPots/WorkshopPanel");
+            rootUI = new VisualElement();
+            controlsDocument.rootVisualElement.Add(rootUI);
             rootUI.styleSheets.Add(Resources.Load<StyleSheet>("JLinkPots/Workshop"));
+            if (sampleStyle)
+            {
+                rootUI.styleSheets.Add(sampleStyle);
+                rootUI.AddToClassList("sample-studio");
+            }
             rootUI.AddToClassList("workshop");
             var side = Box(rootUI,"sidebar");
+            sidebar = side;
             Text(side,"Pottery Workshop","heading");
             title = Text(side,P.title,"design-name");
             tabRow = Box(side,"tabs");
@@ -51,15 +75,17 @@ namespace JLink.Pots
                 MakeButton(tabRow,Tabs[i],() => { tab = index; placingHandle = false; ShowPanel(); });
             }
             var scroll = new ScrollView(ScrollViewMode.Vertical);
+            scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             scroll.AddToClassList("inspector");
             side.Add(scroll);
             controls = scroll.contentContainer;
             var footer = Box(side,"footer");
             message = Text(footer,"","notice");
+            message.style.display = DisplayStyle.None;
             var history = Box(footer,"row");
             undoButton = MakeButton(history,"Undo",() => History(false));
             redoButton = MakeButton(history,"Redo",() => History(true));
-            MakeButton(footer,"Keep a copy",() => { KeepCopy(); message.text = "Kept on your shelf"; if (tab == 4) ShowPanel(); }).AddToClassList("primary");
+            MakeButton(footer,"Keep a copy",() => { KeepCopy(); SetNotice("Kept on your shelf"); if (tab == 4) ShowPanel(); }).AddToClassList("primary");
             if (ExportRequested != null)
             {
                 var exports = Box(footer,"row");
@@ -86,10 +112,12 @@ namespace JLink.Pots
             });
             canvas.RegisterCallback<PointerLeaveEvent>(_ => { hovered = -1; canvas.MarkDirtyRepaint(); });
             var tools = Box(viewport,"view-tools");
+            viewTools = tools;
             MakeButton(tools,"Fit",Fit);
             MakeButton(tools,"Side",() => SetView(0,0));
             MakeButton(tools,"Above",() => SetView(yaw,76));
             var section = new Button { text = "Slice" };
+            section.AddToClassList("action-slice");
             section.clicked += () => {
                 cutaway = !cutaway; section.EnableInClassList("chosen",cutaway); UpdateView(); canvas.MarkDirtyRepaint();
             };
@@ -98,7 +126,36 @@ namespace JLink.Pots
                 guides = !guides; guidesButton.EnableInClassList("chosen",guides); canvas.MarkDirtyRepaint();
             });
             guidesButton.AddToClassList("chosen");
-            var tray = Box(work,"tray");
+            if (studioGrid && studioKey)
+            {
+                var displayTools = Box(viewport,"display-tools");
+                studioKeyIntensity = studioKey.intensity;
+                var lightButton = MakeButton(displayTools,"Lighting",() => {
+                    dimStudio = !dimStudio;
+                    studioKey.intensity = dimStudio ? studioKeyIntensity * .35f : studioKeyIntensity;
+                    UpdateView();
+                });
+                lightButton.tooltip = "Switch between bright and dim studio lighting";
+                var gridProperties = new MaterialPropertyBlock();
+                studioGrid.GetPropertyBlock(gridProperties);
+                gridProperties.SetFloat("_GridVisibility", 1);
+                studioGrid.SetPropertyBlock(gridProperties);
+                bool gridVisible = true;
+                MakeButton(displayTools,"Grid",() => {
+                    gridVisible = !gridVisible;
+                    studioGrid.GetPropertyBlock(gridProperties);
+                    gridProperties.SetFloat("_GridVisibility", gridVisible ? 1 : 0);
+                    studioGrid.SetPropertyBlock(gridProperties);
+                }).tooltip = "Show or hide the floor grid";
+                MakeButton(displayTools,"Focus",() => rootUI.ToggleInClassList("focus-view")).tooltip = "Expand or restore the vessel viewport";
+            }
+            VisualElement tray;
+            if (shelfTemplate)
+            {
+                shelfTemplate.CloneTree(work);
+                tray = work.Q("preset-cards");
+            }
+            else tray = Box(work,"tray");
             foreach (PotForm form in Forms)
             {
                 var card = MakeButton(tray,"",() => { Replace(PotRecipe.Create(form)); tab = 0; ShowPanel(); });
@@ -109,8 +166,8 @@ namespace JLink.Pots
                 Text(card,form.ToString(),"preset-title").pickingMode = PickingMode.Ignore;
             }
             rootUI.RegisterCallback<GeometryChangedEvent>(_ => {
-                side.style.width = Mathf.Min(252,Screen.width*.36f);
-                rootUI.EnableInClassList("compact",Screen.height < 500);
+                side.style.width = sampleStyle ? rootUI.layout.width * .25f : Mathf.Min(252, rootUI.layout.width * .36f);
+                rootUI.EnableInClassList("compact",rootUI.layout.height < 500);
             });
             canvas.RegisterCallback<GeometryChangedEvent>(_ => { UpdateView(); canvas.MarkDirtyRepaint(); });
             rootUI.RegisterCallback<KeyDownEvent>(e => {
@@ -125,6 +182,24 @@ namespace JLink.Pots
             gestureStart = null;
             Restore(forward ? redo : undo,forward ? undo : redo);
             ShowPanel();
+        }
+
+        void SetNotice(string text)
+        {
+            message.text = text;
+            message.style.display = string.IsNullOrEmpty(text) ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
+        void PlaceViewTools()
+        {
+            if (!sampleStyle || !sampleIdentity || viewTools == null) return;
+            if (identityHeading?.panel == null)
+                identityHeading = sampleIdentity.rootVisualElement?.Q(className:"sample-identity");
+            if (identityHeading?.panel == null) return;
+            float minimumWidth = identityHeading.worldBound.xMax - rootUI.worldBound.xMin + 12f;
+            if (float.IsFinite(minimumWidth)) sidebar.style.minWidth = minimumWidth;
+            float left = Mathf.Max(0f, identityHeading.worldBound.xMax - viewTools.parent.worldBound.xMin) + 12f;
+            if (float.IsFinite(left)) viewTools.style.left = left;
         }
 
         void SetView(float azimuth,float elevation)
@@ -145,6 +220,7 @@ namespace JLink.Pots
         static Button MakeButton(VisualElement parent,string value,Action action)
         {
             var button = new Button(action) { text = value };
+            if (!string.IsNullOrEmpty(value)) button.AddToClassList("action-" + value.Replace(' ', '-').ToLowerInvariant());
             parent.Add(button); return button;
         }
 
@@ -152,6 +228,8 @@ namespace JLink.Pots
         {
             if (canvas == null) return;
             title.text = P.title;
+            foreach (PotForm form in Forms)
+                rootUI.Q<Button>("Preset" + form)?.EnableInClassList("active-preset", P.title == form.ToString());
             undoButton.SetEnabled(undo.Count > 0);
             redoButton.SetEnabled(redo.Count > 0);
             foreach (var update in refreshFields) update();
@@ -164,7 +242,7 @@ namespace JLink.Pots
             edit();
             Vessel.Rebuild();
             if (!continuous) EndGesture();
-            message.text = "";
+            SetNotice("");
             if (remakePanel) ShowPanel(); else Refresh();
         }
 
@@ -176,7 +254,7 @@ namespace JLink.Pots
             for (int i = 0; i < tabRow.childCount; i++) tabRow[i].EnableInClassList("chosen",i == tab);
             if (tab == 0)
             {
-                Section("Pottery wheel");
+                Section("Pottery Wheel");
                 Hint("Grab the wall. Pull right to widen the whole band or push left to pinch it.");
                 Number("Band height (%)",() => wheelBandPercent,v => wheelBandPercent = v,12,80,true);
                 Section("Dimensions");
@@ -276,11 +354,25 @@ namespace JLink.Pots
 
         void Number(string name,Func<float> read,Action<float> write,float min,float max,bool whole = false)
         {
-            var row = Box(controls,"value-row");
-            Text(row,name,"parameter");
-            var field = new FloatField { isDelayed = true, formatString = whole ? "0" : "0.##" };
-            row.Add(field);
-            var slider = new Slider(min,max) { name = name };
+            var slider = sliderTemplate ? sliderTemplate.Instantiate().Q<Slider>() : null;
+            FloatField field;
+            if (slider != null)
+            {
+                slider.label = name;
+                field = slider.Q<FloatField>();
+            }
+            else
+            {
+                var row = Box(controls,"value-row");
+                Text(row,name,"parameter");
+                field = new FloatField { isDelayed = true };
+                row.Add(field);
+                slider = new Slider();
+            }
+            slider.name = name;
+            slider.lowValue = min;
+            slider.highValue = max;
+            field.formatString = whole ? "0" : name == "Depth / width" ? "0.00" : "0.##";
             controls.Add(slider);
             bool draggingSlider = false;
             void FinishSlider()
@@ -294,11 +386,20 @@ namespace JLink.Pots
             slider.RegisterCallback<PointerCaptureOutEvent>(_ => FinishSlider(),TrickleDown.TrickleDown);
             void Apply(float value,bool continuous) => Change(() => write(Mathf.Clamp(whole ? Mathf.Round(value) : value,min,max)),continuous:continuous);
             slider.RegisterValueChangedCallback(e => Apply(e.newValue,draggingSlider));
-            field.RegisterValueChangedCallback(e => Apply(e.newValue,false));
-            refreshFields.Add(() => { slider.SetValueWithoutNotify(read()); field.SetValueWithoutNotify(read()); });
+            if (!sliderTemplate) field.RegisterValueChangedCallback(e => Apply(e.newValue,false));
+            refreshFields.Add(() => {
+                float value = read();
+                slider.SetValueWithoutNotify(value);
+                field.SetValueWithoutNotify(value);
+            });
         }
         void MakeThumbnails()
         {
+            if (presetPreviews != null && presetPreviews.Length == Forms.Length && Array.TrueForAll(presetPreviews, image => image))
+            {
+                thumbnails = presetPreviews;
+                return;
+            }
             const int width = 96, height = 68;
             thumbnails = new Texture2D[Forms.Length];
             for (int i = 0; i < Forms.Length; i++)

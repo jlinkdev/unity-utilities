@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6d0e5e23a84038adf291e5a78f0691, type: 3}
+  m_Name: Object Pooling Demo Definitions
+  m_EditorClassIdentifier: 
+  _definitions:
+  - _prefab: {fileID: 2813877928521109347, guid: 101f241de9d87e500be7f5577752afd8, type: 3}
+    _initialCapacity: 10
+    _maxCapacity: 25
+  - _prefab: {fileID: 2813877928521109347, guid: f087bc82acba4ba0d9bd5bdc56252527, type: 3}
+    _initialCapacity: 10
+    _maxCapacity: 25
+  - _prefab: {fileID: 2813877928521109347, guid: dfdc57e9c5a86960cb707d3e6f6a2f24, type: 3}
+    _initialCapacity: 10
+    _maxCapacity: 25

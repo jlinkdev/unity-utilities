@@ -32,7 +32,7 @@ from disk** and select this package's `package.json`.
 
 Subscribe to `BeamPhysicsContacts` events when your game needs contact responses.
 
-## Samples
+## Sample
 
 Import **Beam Kit Demo** from the package's **Samples** tab. Open
 `Scenes/Beam Kit Demo.unity` in the imported folder and press Play. Targets animate,

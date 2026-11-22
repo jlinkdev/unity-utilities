@@ -72,7 +72,7 @@ Underwater:
 ## Reproduce from the source repository
 
 Use a disposable project so validation does not interrupt another open editor or
-change a working project's scene and pipeline. Host helpers are intentionally
+replace the open scene. Host helpers are intentionally
 outside the distributable package; the paths here are repository paths.
 
 1. Install this package and URP, enable Render Graph, and add the package name to
@@ -80,12 +80,13 @@ outside the distributable package; the paths here are repository paths.
    recorded configuration. Run EditMode and PlayMode tests through Unity Test
    Runner or `-runTests -testPlatform EditMode` / `PlayMode` with `-testResults`.
 2. Copy the source authoring folder
-   `Assets/PackageDevelopment/WaterSystem/SampleAuthoring/Water Laboratory` and
-   `Assets/PackageDevelopment/Editor/WaterSystemDevelopmentBuilder.cs` into the
+   `Assets/PackageSamples/com.jlinkdev.water-system/Water Laboratory` and
+   `Assets/PackageDevelopment/Editor/WaterSystemDevelopmentBuilder.cs` together with
+   `Assets/PackageDevelopment/Editor/PackageSamplePublisher.cs` into the
    isolated project. Run
    `jlinkdev.UnityUtilities.WaterSystem.Development.WaterSystemDevelopmentBuilder.BuildAll`.
    The builder opens a new scene and publishes its generated sample into the
-   installed package, so use a writable local package for authoring.
+   installed package, so reference the writable local package in this checkout and put Python 3.9 or newer on PATH.
 3. Copy `Assets/PackageDevelopment/Editor/WaterSystemValidation.cs`. Invoke
    `jlinkdev.UnityUtilities.WaterSystem.Development.WaterSystemValidation.RenderSmoke`
    with Direct3D 11. This asynchronous method exits Unity after capture; omit
@@ -93,7 +94,7 @@ outside the distributable package; the paths here are repository paths.
 4. Copy `Assets/PackageDevelopment/WaterSystem/Validation/WaterPlayerSmoke.cs`
    and ensure the Image Conversion module is present for PNG capture. Invoke
    `WaterSystemValidation.BuildPlayer` in the same namespace. This host helper
-   configures the isolated project's sample pipeline for its player build. Run
+   builds the scene with the isolated project's active URP configuration. Run
    `Builds/WaterLaboratory.exe -water-smoke -water-output <absolute-output-directory>`
    to execute the opt-in player checks and produce their report/captures.
 5. For archive consumption, create another clean project, install the `.tgz`,

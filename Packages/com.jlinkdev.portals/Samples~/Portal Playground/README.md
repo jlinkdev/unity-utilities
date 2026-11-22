@@ -11,3 +11,7 @@ Open **Scenes/Portal Playground** and press Play.
 - Portal fronts show the linked view and accept traversal. Portal backs use a dark inactive panel and do not accept traversal.
 
 The sample uses the Input System when it is installed and falls back to Unity's legacy input API otherwise. The portal runtime itself has no input dependency.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > Portals > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

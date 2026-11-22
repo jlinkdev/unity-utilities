@@ -1,10 +1,7 @@
 using System.IO;
-using jlinkdev.UnityUtilities.InteractiveFog.Samples;
+using jlinkdev.UnityUtilities.InteractiveFog.EditableSamples;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using jlinkdev.UnityUtilities.InteractiveFog.Editor;
 
 namespace jlinkdev.UnityUtilities.InteractiveFog.Development
 {
@@ -15,13 +12,9 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             InteractiveFogDevelopmentBuilder.BuildAll();
             ShaderUtil.allowAsyncCompilation=false;
             var rig=Object.FindFirstObjectByType<MistSanctuary>();
-            var oldGraphics=GraphicsSettings.defaultRenderPipeline; var oldQuality=QualitySettings.renderPipeline;
             string output=Path.GetFullPath("../InteractiveFogCaptures"); Directory.CreateDirectory(output);
             try
             {
-                var pipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(InteractiveFogDevelopmentBuilder.Root+"/Settings/Mist Pipeline.asset");
-                GraphicsSettings.defaultRenderPipeline=pipeline; QualitySettings.renderPipeline=pipeline;
-                FogSetup.AssignRendererToCamera(pipeline,AssetDatabase.LoadAssetAtPath<UniversalRendererData>(InteractiveFogDevelopmentBuilder.Root+"/Settings/Mist Renderer.asset"),rig.view);
                 var interactor=rig.actor.GetComponent<FogInteractor>(); rig.fog.Initialize();
                 var watch=System.Diagnostics.Stopwatch.StartNew();
                 for(int i=0;i<=180;i++)
@@ -40,7 +33,6 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             finally
             {
                 rig.fog.enabled=false;
-                GraphicsSettings.defaultRenderPipeline=oldGraphics; QualitySettings.renderPipeline=oldQuality;
             }
         }
         static void Image(Camera camera,string path)

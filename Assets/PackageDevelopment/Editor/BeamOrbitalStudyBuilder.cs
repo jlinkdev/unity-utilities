@@ -12,7 +12,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
 {
     public static partial class BeamDevelopmentBuilder
     {
-        private const string OrbitalRoot = "Assets/PackageDevelopment/Beams/SampleAuthoring/Orbital Descent";
+        private const string OrbitalRoot = "Assets/PackageSamples/com.jlinkdev.beams/Orbital Descent";
 
         private static Camera CameraIn(Scene scene) =>
             scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Camera>()).First();
@@ -32,7 +32,8 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             var volume = zone.AddComponent<Volume>();
             volume.isGlobal = false;
             volume.priority = 10;
-            string path = root + "/Camera Bloom.asset";
+            EnsureFolder(root + "/Settings");
+            string path = root + "/Settings/Camera Bloom.asset";
             var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(path);
             if (profile == null)
             {
@@ -51,7 +52,8 @@ namespace jlinkdev.UnityUtilities.Beams.Development
 
         private static void BuildOrbital()
         {
-            EnsureFolder(OrbitalRoot);
+            foreach (var folder in new[] { "Scenes", "Animations", "Meshes", "Materials", "Prefabs" })
+                EnsureFolder(OrbitalRoot + "/" + folder);
             var previous = SceneManager.GetActiveScene();
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             try
@@ -81,12 +83,12 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                 BuildTalus();
                 Physics.SyncTransforms();
                 var emitter = CreateOrbitalEmitter();
-                PrefabUtility.SaveAsPrefabAssetAndConnect(emitter, OrbitalRoot + "/Orbital Column.prefab", InteractionMode.AutomatedAction);
-                var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(OrbitalRoot + "/Sweep.anim");
+                PrefabUtility.SaveAsPrefabAssetAndConnect(emitter, OrbitalRoot + "/Prefabs/Orbital Column.prefab", InteractionMode.AutomatedAction);
+                var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(OrbitalRoot + "/Animations/Sweep.anim");
                 if (!clip)
                 {
                     clip = new AnimationClip { legacy = true };
-                    AssetDatabase.CreateAsset(clip, OrbitalRoot + "/Sweep.anim");
+                    AssetDatabase.CreateAsset(clip, OrbitalRoot + "/Animations/Sweep.anim");
                 }
                 clip.wrapMode = WrapMode.PingPong;
                 clip.SetCurve("",typeof(Transform),"localPosition.x", AnimationCurve.EaseInOut(0,-7.7f,5,-4.1f));
@@ -97,7 +99,8 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                 motion.AddClip(clip, "Traverse");
                 motion.clip = clip;
                 emitter.GetComponent<Beam>().Refresh();
-                if (!EditorSceneManager.SaveScene(scene, OrbitalRoot + "/Orbital Descent.unity"))
+                SampleScenePresentation.Apply(scene, OrbitalRoot);
+                if (!EditorSceneManager.SaveScene(scene, OrbitalRoot + "/Scenes/Orbital Descent.unity"))
                     throw new IOException(OrbitalRoot);
             }
             finally
@@ -105,7 +108,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                 SceneManager.SetActiveScene(previous);
                 EditorSceneManager.CloseScene(scene, true);
             }
-            ExportStudy(OrbitalRoot, "Packages/com.jlinkdev.beams/Samples~/Orbital Descent");
+            PackageSamplePublisher.Publish(OrbitalRoot);
         }
 
         private static GameObject CreateOrbitalEmitter()
@@ -266,11 +269,11 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                 faces[j]=i;faces[j+1]=i+count;faces[j+2]=i+1;
                 faces[j+3]=i+1;faces[j+4]=i+count;faces[j+5]=i+count+1;
             }
-            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(OrbitalRoot+"/Basin.asset");
+            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(OrbitalRoot+"/Meshes/Basin.asset");
             if (!mesh)
             {
                 mesh = new Mesh { name="Basalt Basin" };
-                AssetDatabase.CreateAsset(mesh,OrbitalRoot+"/Basin.asset");
+                AssetDatabase.CreateAsset(mesh,OrbitalRoot+"/Meshes/Basin.asset");
             }
             mesh.Clear();
             mesh.vertices=vertices;
@@ -286,8 +289,8 @@ namespace jlinkdev.UnityUtilities.Beams.Development
 
         private static Material StudyMaterial(string name, string shaderFile)
         {
-            string path = OrbitalRoot+"/"+name+".mat";
-            var shader = AssetDatabase.LoadAssetAtPath<Shader>(OrbitalRoot+"/"+shaderFile+".shader");
+            string path = OrbitalRoot+"/Materials/"+name+".mat";
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>(OrbitalRoot+"/Shaders/"+shaderFile+".shader");
             var rock = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (!rock)
             {
@@ -340,7 +343,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                     if(i>0 && i<count-1) Face(rim[0],rim[i+1],rim[i]);
                 }
             }
-            string path=OrbitalRoot+"/Talus.asset";
+            string path=OrbitalRoot+"/Meshes/Talus.asset";
             var mesh=AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (!mesh) { mesh=new Mesh(); AssetDatabase.CreateAsset(mesh,path); }
             mesh.Clear();

@@ -20,7 +20,7 @@ https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.proc
 
 ## Quick start
 
-1. In this repository, open `Assets/PackageDevelopment/ProceduralPots/SampleAuthoring/Pottery Workshop/Pottery Workshop.unity` and press **Play**. In a consuming project, import **Pottery Workshop** from the package’s **Samples** tab, then open the imported scene and press **Play**.
+1. In this repository, open `Assets/PackageSamples/com.jlinkdev.procedural-pots/Pottery Workshop/Scenes/Pottery Workshop.unity` and press **Play**. In a consuming project, import **Pottery Workshop** from the package’s **Samples** tab, then open the imported scene and press **Play**.
 2. Choose **Urn** on the bottom shelf. In **Form**, grab the shoulder itself and drag right. The clay widens all the way around, carrying the handle roots with it. Drag left to pinch a neck. Drag empty space to orbit. Scroll to zoom.
 3. In **Clay**, grab the outside wall and pull left to make a thumbprint. In **Handles**, pull a diamond on a loop to stretch the set.
 4. Use **Keep a copy** to add a version to your runtime shelf. **Save design** creates an editable Unity asset. **Save mesh** bakes a mesh for a Mesh Filter. Both Unity assets survive leaving Play Mode.
@@ -32,7 +32,7 @@ For Substance 3D Painter, **UVs > Export Painter OBJ** writes a mesh with padded
 
 ## Sample
 
-Import **Pottery Workshop** from the package’s Samples tab, open `Pottery Workshop.unity`, and press **Play**. The workshop creates its own camera and wheel in Play Mode. The controls are designed for a mouse. [Sample guide](<Samples~/Pottery Workshop/README.md>)
+Import **Pottery Workshop** from the package’s Samples tab, open `Pottery Workshop.unity`, and press **Play**. Expand Pottery turntable to inspect the saved camera, wheel, and editable vessel. The controls are designed for a mouse. [Sample guide](<Samples~/Pottery Workshop/README.md>)
 
 ## Limitations
 

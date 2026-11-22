@@ -1,58 +1,55 @@
-# Package Development Assets
+# Package development tools
 
-Use this folder for integration scenes, fixtures, and other development assets
-that exercise multiple packages but should not ship in any UPM package.
+See the [editable sample workflow](../PackageSamples/README.md) for authoring and publishing.
 
-Package-specific samples belong in that package's `Samples~` directory, and
-package-specific automated tests belong in that package's `Tests` directory.
+This folder contains the host-only builders, renderer configurations, benchmarks,
+and validation helpers. Rebuild commands regenerate example content. Use the
+publish command directly to distribute hand edits.
 
 ## Object Highlighting sample workflow
 
 Choose **Tools > jlinkdev > Object Highlighting > Open Selection Gallery** or open the
-[editable scene](<ObjectHighlighting/SampleAuthoring/Selection Gallery/Selection Gallery.unity>) and press **Play**.
+[editable scene](<../PackageSamples/com.jlinkdev.object-highlighting/Selection Gallery/Scenes/Selection Gallery.unity>) and press **Play**.
 The gear shows the hover outline and the impeller shows the selection glow. Move the mouse and click to change their states.
 Tune the authoring copy's **Gallery Renderer** to compare glow resolutions.
 
 The Package Manager copy lives in `Packages/com.jlinkdev.object-highlighting/Samples~/Selection Gallery`.
-When transferring edits, preserve each copy's metadata and remap references to its own meshes, materials, pipeline, and controller.
-The authoring assembly definition belongs only in the host project.
 
 ## Procedural Nebulae sample workflow
 
-Open [Starlit Passage](<ProceduralNebulae/SampleAuthoring/Starlit Passage/Starlit Passage.unity>) in the host project and press **Play**. Its Flight Camera is assigned the **Starlit Passage Renderer** override.
+Open [Starlit Passage](<../PackageSamples/com.jlinkdev.procedural-nebulae/Starlit Passage/Scenes/Starlit Passage.unity>) in the host project and press **Play**. Its Flight Camera references the sample’s Nebula Feature.
 
-The distributable copy lives in `Packages/com.jlinkdev.procedural-nebulae/Samples~/Starlit Passage`. When transferring edits, retain each copy’s metadata and local asset references. Both scenes use the package’s Starlit Banks prefab.
+The distributable copy lives in `Packages/com.jlinkdev.procedural-nebulae/Samples~/Starlit Passage`. Both scenes use the package’s Starlit Banks prefab.
 
 ## Procedural Plants sample workflow
 
-Open the [Plant Studio scene](<ProceduralPlants/SampleAuthoring/Plant Studio/Plant Studio.unity>) and press **Play**. Select **Specimen** to generate and bake in edit mode. When publishing sample edits, copy the scene and guide to `Packages/com.jlinkdev.procedural-plants/Samples~/Plant Studio` and retain each copy's metadata.
+Open the [Plant Studio scene](<../PackageSamples/com.jlinkdev.procedural-plants/Plant Studio/Scenes/Plant Studio.unity>) and press **Play**. Select **Specimen** to generate and bake in edit mode.
 
 ## Procedural Picture Frames sample workflow
 
-Open the [Frame Workshop scene](<ProceduralFrames/SampleAuthoring/Frame Workshop/Frame Workshop.unity>) and press **Play**. Copy scene and guide edits to the package’s `Samples~/Frame Workshop` folder when updating the distributable sample. Each copy has its own Unity metadata.
+Open the [Frame Workshop scene](<../PackageSamples/com.jlinkdev.procedural-frames/Frame Workshop/Scenes/Frame Workshop.unity>) and press **Play**.
 
 ## Procedural Pots sample workflow
 
-Open the [Pottery Workshop scene](<ProceduralPots/SampleAuthoring/Pottery Workshop/Pottery Workshop.unity>) and press **Play**. Edit this copy when developing the sample. To publish scene or guide edits, copy `Pottery Workshop.unity` and `README.md` into `Packages/com.jlinkdev.procedural-pots/Samples~/Pottery Workshop`. Each copy keeps its own Unity metadata so both scenes can coexist when the UPM sample is imported into this project.
+Open the [Pottery Workshop scene](<../PackageSamples/com.jlinkdev.procedural-pots/Pottery Workshop/Scenes/Pottery Workshop.unity>) and press **Play**. Edit this copy when developing the sample.
 
 ## Portal sample workflow
 
 The editable Portal Playground source lives at
-`Assets/PackageDevelopment/Portals/SampleAuthoring/Portal Playground`. Use
-**Tools > jlinkdev > Portals > Rebuild Development Content** after editing it.
-The builder regenerates the scene and prefab, configures this host project for
-URP, and publishes an identical copy to
+`Assets/PackageSamples/com.jlinkdev.portals/Portal Playground`. Use
+**Tools > jlinkdev > Portals > Rebuild Development Content** to regenerate it.
+The builder regenerates the scene and prefab and publishes the sample to
 `Packages/com.jlinkdev.portals/Samples~/Portal Playground` for UPM import.
 
 ## Volumetric Rain sample workflow
 
 The saved Rain Laboratory source lives at
-`Assets/PackageDevelopment/VolumetricFogAndRain/SampleAuthoring/Rain Laboratory`.
+`Assets/PackageSamples/com.jlinkdev.volumetric-fog-and-rain/Rain Laboratory`.
 Its standalone UPM sample is in
 `Packages/com.jlinkdev.volumetric-fog-and-rain/Samples~/Rain Laboratory`.
 The package's Tools menu can generate a fresh laboratory without replacing existing assets.
 The development-only `RainBuildValidation.Build` method produces a Windows smoke
-player under `Logs/VolumetricRain/Player` and restores pipeline settings afterward.
+player under `Logs/VolumetricRain/Player` using the host project pipeline.
 
 The new `Volume Laboratory` folder alongside Rain Laboratory demonstrates a bounded
 rain box and a dry canopy. Both samples are distributed independently through UPM.
@@ -62,14 +59,14 @@ another copy without changing the original laboratory.
 `VolumetricFogAndRain/Benchmark` contains the development-only GPU benchmark and original
 reference shader. Run it in an isolated project: it opens an empty scene. See the
 package's `Documentation~/performance.md` for measurements and reproduction.
-`VolumetricFogAndRain/SampleAuthoring/Fog Laboratory` demonstrates Fog Only with the same
+`../PackageSamples/com.jlinkdev.volumetric-fog-and-rain/Fog Laboratory` demonstrates Fog Only with the same
 inclusion/exclusion boxes. The package's **Create Fog Laboratory** menu generates a
 separate scene and assets, leaving existing rain laboratories intact.
 
 ## Water System sample workflow
 
 The editable Water Laboratory source lives at
-`Assets/PackageDevelopment/WaterSystem/SampleAuthoring/Water Laboratory`.
+`Assets/PackageSamples/com.jlinkdev.water-system/Water Laboratory`.
 Use **Tools > jlinkdev > Water System > Rebuild Water Laboratory (Development)**
 to regenerate the pool scene, submerged geometry, floating props, profiles, and
 scoped URP pipeline. The builder is
@@ -84,9 +81,7 @@ Graph settings. It finds the installed Water System package and publishes a
 complete sample to `Samples~/Water Laboratory` inside that package. The imported
 sample has no dependency on this host development folder.
 
-The sample controller temporarily selects its included pipeline while enabled
-in Play Mode and restores the prior Graphics and active Quality pipeline on
-exit. Read the [package guide](../../Packages/com.jlinkdev.water-system/README.md)
+The laboratory camera runs the Water Camera Pass. Read the [package guide](../../Packages/com.jlinkdev.water-system/README.md)
 for scope and [validation record](../../Packages/com.jlinkdev.water-system/Documentation~/validation.md)
 for observed results. The local 0.1.0 implementation passed automated tests,
 editor render checks, a Windows player smoke run, and candidate archive sample
@@ -105,16 +100,14 @@ depending on authoring content or the sample controller's type at compile time.
 
 ## Interactive Fog sample workflow
 
-`InteractiveFog/SampleAuthoring/Mist Sanctuary` contains the editable fog sample.
+`../PackageSamples/com.jlinkdev.interactive-fog/Mist Sanctuary` contains the editable fog sample.
 `Editor/InteractiveFogDevelopmentBuilder.cs` builds its stone hall, dedicated URP
 pipeline, and demonstration. Use **Tools > jlinkdev > Interactive Fog > Rebuild
 Mist Sanctuary (Development)**, or the `BuildAll` batch entry point in
 `jlinkdev.UnityUtilities.InteractiveFog.Development.InteractiveFogDevelopmentBuilder`.
 The builder replaces its generated scene; run it in an isolated project.
 
-`BuildPlayer` is intended only for a disposable validation project: it selects
-Linear color space, windowed player dimensions, and frame timing, then builds a
-Windows sample. `Publish` copies the authoring sample into the installed local
+`BuildPlayer` is intended only for a disposable validation project: it regenerates the scene and builds a Windows sample with the host build settings. `Publish` copies the authoring sample into the installed local
 package's `Samples~` folder. `InteractiveFogValidation.Capture` provides editor
 diagnostic images; final quality checks use the running player's offscreen capture
 sequence. See the [package validation record](../../Packages/com.jlinkdev.interactive-fog/Documentation~/Validation.md).

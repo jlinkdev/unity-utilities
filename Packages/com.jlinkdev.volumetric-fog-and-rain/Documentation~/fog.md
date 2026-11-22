@@ -59,8 +59,7 @@ the fog-only pass entirely.
 ## Demo
 
 Import **Fog Laboratory** from the package's Samples tab, or run **Tools > jlinkdev >
-Volumetric Fog and Rain > Create Fog Laboratory**. Open it alone and press Play. The demo
-pipeline activates temporarily, as in the rain laboratories. The camera starts in
+Volumetric Fog and Rain > Create Fog Laboratory**. Open it alone and press Play. Rain Camera Pass renders fog through the sample camera. The camera starts in
 a clear canopy looking into a fog volume. Move the camera through the opening,
 resize the fog box, and toggle the orange exclusion to inspect the boundaries.
 

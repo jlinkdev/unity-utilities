@@ -7,7 +7,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
-using jlinkdev.UnityUtilities.InteractiveFog.Editor;
 
 namespace jlinkdev.UnityUtilities.InteractiveFog.Development
 {
@@ -52,12 +51,10 @@ namespace jlinkdev.UnityUtilities.InteractiveFog.Development
             if(!pipeline) throw new Exception("Import the sample into a URP project before running setup validation");
             var renderer=AssetDatabase.LoadAssetAtPath<UniversalRendererData>(sample+"/Settings/Mist Renderer.asset");
             if(!renderer || !renderer.rendererFeatures.OfType<FogRendererFeature>().Any()) throw new Exception("Missing sample fog renderer");
-            var graphics=GraphicsSettings.defaultRenderPipeline;var quality=QualitySettings.renderPipeline;
             var camera=serialized.FindProperty("view").objectReferenceValue as Camera;
-            int index=FogSetup.AssignRendererToCamera(pipeline,renderer,camera);
-            if(index<0 || GraphicsSettings.defaultRenderPipeline!=graphics || QualitySettings.renderPipeline!=quality) throw new Exception("Camera setup changed global pipelines");
-            EditorSceneManager.SaveScene(scene);
-            File.WriteAllText("FogPackageImportValidation.txt","PASS: archive import, sample scripts/references, independent Assets dependencies, explicit camera renderer assignment, and GPU initialization. Unity "+Application.unityVersion);
+            if(!camera.TryGetComponent<FogCameraPass>(out var local) || !renderer.rendererFeatures.Contains(local.feature))
+                throw new Exception("Missing camera-local fog feature");
+            File.WriteAllText("FogPackageImportValidation.txt","PASS: archive import, sample scripts/references, independent Assets dependencies, camera-local fog configuration, and GPU initialization. Unity "+Application.unityVersion);
             Debug.Log("FOG_IMPORT_VERIFIED");
         }
     }

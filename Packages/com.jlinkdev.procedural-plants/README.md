@@ -25,27 +25,27 @@ https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.proc
 
 ## Sample
 
-In **Windowsill**, choose **Selected pot** to inspect a new shoot or a freshly rooted plantlet. Switch pots to move the camera, or choose **Both pots** to see them together. The control appears in the Inspector in Edit mode and at the top right in Play mode.
+In **Windowsill**, choose **Selected pot** to inspect a new shoot or a freshly rooted plantlet. Switch pots to move the camera, or choose **Both pots** to see them together. The control appears in the Inspector in Edit mode and in the viewport toolbar in Play mode.
 
 ![A young jade in pot 2, shown from the bench and with Selected pot enabled](Documentation~/windowsill-close-up.png)
 
 Compare the foliage and daylight at the same growth stage across the two releases. [Jade](Documentation~/polish-jade.png) · [Variegated rubber](Documentation~/polish-rubber.png) · [Climbing and trailing pothos](Documentation~/polish-pothos.png)
 
-Open **Windowsill → Grow → Jade shoot**. With default moisture, **Grow +6** takes the shoot from four paired-leaf nodes to ten. Press it again to see a side branch emerge below the growing tip. The same controls work in the Windowsill Inspector and in Play mode.
+Open **Windowsill → Grow** and select the jade preset in the species shelf or the **Jade shoot** button in the Inspector. With default moisture, **Grow +6** takes the shoot from four paired-leaf nodes to ten. Press it again to see a side branch emerge below the growing tip. The same controls work in the Windowsill Inspector and in Play mode.
 
 ![The same jade plant as a young shoot, after two successive growth steps, and at maturity](Documentation~/windowsill-jade.png)
 
-In **Windowsill**, choose **Grow → Spider rosette → Choose a plantlet → Detach and plant in pot 2**. Choose **Grow +6** to advance the daughter independently. **Rubber tree** offers deep-green and variegated presets. Enable **Simulate plant care** on either pot to try watering and reversible wilt. Care starts off.
+In **Windowsill**, choose **Grow**, select **Spider plant** on the shelf (**Spider rosette** in the Inspector), then choose **Choose a plantlet → Detach and plant in pot 2**. Choose **Grow +6** to advance the daughter independently. **Rubber tree** offers deep-green and variegated presets. Enable **Simulate plant care** on either pot to try watering and reversible wilt. Care starts off.
 
 ![The spider plant in pot 1 and the variegated rubber plant in pot 2 in the Windowsill Game view](Documentation~/windowsill-houseplants.png)
 
-Import **Windowsill** from Package Manager or open the authoring scene at `Assets/PackageDevelopment/ProceduralPlants/SampleAuthoring/Windowsill/Windowsill.unity`. Select **Windowsill · select for controls** to use the Inspector in Edit mode, or press **Play** for on-screen controls. **Grow** offers support placement and a climbing Monstera, **Cuttings** guides pruning and propagation into the second pot, and **Tray** compares six seeds with pinning, rerolling and baking. [Windowsill walkthrough](Samples~/Windowsill/README.md)
+Import **Windowsill** from Package Manager or open the authoring scene at `Assets/PackageSamples/com.jlinkdev.procedural-plants/Windowsill/Scenes/Windowsill.unity`. Select **Windowsill · select for controls** to use the Inspector in Edit mode, or press **Play** for on-screen controls. **Grow** offers support placement and a climbing Monstera, **Cuttings** guides pruning and propagation into the second pot, and **Tray** compares six seeds with pinning, rerolling and baking. [Windowsill walkthrough](Samples~/Windowsill/README.md)
 
 Choose **Compare → Start side-by-side → Grow +6** to advance two independent copies of the same eight-node pothos under identical light and moisture. A gold ring shows the next growing bud in the selected pot. Cyan traces its previously supported stems. Save the comparison to resume it later, or choose **Return to original windowsill** to restore the previous pots.
 
 ![Two independent copies of a pothos cutting after six growth units in Windowsill](Documentation~/windowsill-comparison.png)
 
-Import **Plant Studio** from Package Manager and open **Plant Studio.unity**. In this repository, open `Assets/PackageDevelopment/ProceduralPlants/SampleAuthoring/Plant Studio/Plant Studio.unity` directly. Press **Play**, switch species under **Planting**, then use **Growth** to move the light, step time, or save the specimen. Drag to orbit and scroll to zoom. [Sample controls](<Samples~/Plant Studio/README.md>)
+Import **Plant Studio** from Package Manager and open **Plant Studio.unity**. In this repository, open `Assets/PackageSamples/com.jlinkdev.procedural-plants/Plant Studio/Scenes/Plant Studio.unity` directly. Press **Play**, switch species under **Planting**, then use **Growth** to move the light, step time, or save the specimen. Drag to orbit and scroll to zoom. [Sample controls](<Samples~/Plant Studio/README.md>)
 
 Choose **Long pothos** for a mature trailing specimen. Toggle **PBR** above the viewport to compare materials on the same plant.
 

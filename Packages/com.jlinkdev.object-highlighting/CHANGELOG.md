@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Selection Gallery can install and use the shared Sample Framework caption skin on demand.
+
 ## 0.1.0
 
 - Added independent per-object hover and selection with child mesh and skinned mesh support.

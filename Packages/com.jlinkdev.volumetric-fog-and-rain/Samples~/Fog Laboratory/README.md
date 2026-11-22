@@ -1,8 +1,7 @@
 # Fog Laboratory
 
-Open Fog Laboratory.unity alone and press Play. Its camera starts in a clear
-canopy, looking into a fog-only box. Rain Demo Pipeline activates the included
-URP pipeline during Play and restores your previous settings on exit.
+Open Scenes/Fog Laboratory.unity alone and press Play. Its camera starts in a clear
+canopy, looking into a fog-only box. Rain Camera Pass renders the effect through the sample camera.
 
 Select Rain Profile: Render Mode is Fog Only, Extent is Volumes Only. Adjust Fog
 Density, Fog Extinction, Fog Color, Fog Brightness and Fog Scattering. Rain density,
@@ -19,3 +18,7 @@ Set Fog Height Falloff, Fog Noise Velocity, and Directional Scattering to zero,
 and Feather Distance to zero on both boxes, to compare the original fog.
 See Documentation~/rendering.md for render timing and transparent output, and
 Documentation~/runtime-settings.md for the profile blending API.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > Volumetric Fog and Rain > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

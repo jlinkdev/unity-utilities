@@ -53,9 +53,7 @@ alone, and press Play:
 | [Volume Laboratory](<Samples~/Volume Laboratory/README.md>) | Bounded rain and a dry canopy. |
 | [Fog Laboratory](<Samples~/Fog Laboratory/README.md>) | Fog without streaks and a clear interior. |
 
-Each demo temporarily activates its supplied pipeline during Play and restores
-the previous settings afterward. This affects all loaded scenes; run one demo at
-a time. Opening a scene does not change the edit-mode pipeline.
+Each laboratory renders its effect through Rain Camera Pass on its own camera.
 
 ## Limitations
 

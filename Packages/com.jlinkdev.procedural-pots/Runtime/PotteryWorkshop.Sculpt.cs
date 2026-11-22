@@ -19,7 +19,7 @@ namespace JLink.Pots
         Vector2 Project(Vector3 p)
         {
             var screen = view.WorldToScreenPoint(Vessel.transform.TransformPoint(p));
-            return new Vector2(screen.x, Screen.height-screen.y);
+            return new Vector2(screen.x, Screen.height-screen.y) / PixelsPerPoint;
         }
 
         float Edge(float level)
@@ -180,7 +180,7 @@ namespace JLink.Pots
             }
             if (!canvas.HasPointerCapture(e.pointerId)) return;
             Vector2 delta = mouse-pointerStart;
-            float pixelsPerMeter = view.pixelHeight/(2*view.orthographicSize);
+            float pixelsPerMeter = view.pixelHeight/(2*view.orthographicSize*PixelsPerPoint);
             float vertical = Mathf.Max(.17f,Mathf.Cos(pitch*Mathf.Deg2Rad))*pixelsPerMeter;
             if (drag == Drag.Orbit)
             {
@@ -259,7 +259,7 @@ namespace JLink.Pots
         // Test only on pointer-down. Using the triangles avoids cooking a physics mesh during drags.
         bool HitWall(Vector2 mouse, out Vector3 contact)
         {
-            var ray = view.ScreenPointToRay(new Vector3(mouse.x, Screen.height-mouse.y, 0));
+            var ray = view.ScreenPointToRay(new Vector3(mouse.x * PixelsPerPoint, Screen.height - mouse.y * PixelsPerPoint, 0));
             var t = Vessel.transform;
             var origin = t.InverseTransformPoint(ray.origin);
             var dir = t.InverseTransformVector(ray.direction);

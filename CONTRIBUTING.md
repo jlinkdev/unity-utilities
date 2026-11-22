@@ -33,8 +33,11 @@ minimum requirements as tested compatibility without validation evidence.
 
 Every declared sample needs a README and a usable scene. Start with running the
 included scene, then explain optional reconstruction or customization. Document
-any global pipeline changes. When sample authoring copies exist, update their
-guides too so publishing the sample does not overwrite newer instructions.
+any global pipeline changes. Edit the scene and guide under `Assets/PackageSamples/<package-id>/<sample>`.
+Use the sample folder name from the manifest. Put scenes in `Scenes/` and group
+other assets by type. Publish with **Assets > jlinkdev > Publish Package Sample**
+or `python scripts/package_samples.py --publish <package-id> "<sample>"`.
+See the [sample authoring workflow](Assets/PackageSamples/README.md).
 
 ## Static checks
 

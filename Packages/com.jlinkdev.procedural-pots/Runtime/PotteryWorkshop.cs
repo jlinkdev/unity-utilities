@@ -14,15 +14,19 @@ namespace JLink.Pots
         public ProceduralPot Vessel { get; private set; }
         public static event Action<ProceduralPot, bool> ExportRequested;
         public static event Action<ProceduralPot, bool, bool> PaintableExportRequested;
-        Camera view;
-        Transform stage;
+        [SerializeField] ProceduralPot authoredVessel;
+        [SerializeField] Camera view;
+        [SerializeField] Transform stage;
+        [SerializeField] UnityEngine.UIElements.UIDocument controlsDocument;
         GameObject set;
         Material stageMaterial;
         MaterialPropertyBlock previewProperties;
         bool cutaway;
         bool checker, oneTextureSet = true;
+        [SerializeField] private Material previewClay;
+        [SerializeField, Range(.01f,.08f)] private float turntableThickness = .025f;
         Material studioClay, shownMaterial;
-        Light finishLight;
+        [SerializeField] Light finishLight;
         Texture2D checkerTexture;
         Bounds lastBounds;
         Rect lastArea;
@@ -35,17 +39,30 @@ namespace JLink.Pots
 
         void OnEnable()
         {
+            Vessel = authoredVessel;
+            if (!Vessel) CreateRuntimeTurntable();
+            else if (startingDesign && startingDesign.recipe != null) Vessel.Apply(startingDesign.recipe);
+            else Vessel.Rebuild();
+            studioClay = previewClay ? previewClay : Resources.Load<Material>("JLinkPots/Clay");
+            checkerTexture = Resources.Load<Texture2D>("JLinkPots/UvChecker");
+            shownMaterial = null;
+            MakeThumbnails();
+            LoadShelf();
+            Fit();
+            MakeInterface();
+        }
+
+        // Retains programmatic construction for callers creating a workshop on an empty object.
+        void CreateRuntimeTurntable()
+        {
             set = new GameObject("Pottery turntable");
             set.transform.SetParent(transform, false);
             Vessel = Child("Vessel").AddComponent<ProceduralPot>();
             Vessel.Apply(startingDesign && startingDesign.recipe != null ? startingDesign.recipe : PotRecipe.Create(PotForm.Nursery));
-            studioClay = Resources.Load<Material>("JLinkPots/Clay");
-            checkerTexture = Resources.Load<Texture2D>("JLinkPots/UvChecker");
             finishLight = Child("Material preview light").AddComponent<Light>();
             finishLight.type = LightType.Directional;
             finishLight.intensity = 1.25f;
             finishLight.transform.localRotation = Quaternion.Euler(48,-35,0);
-            shownMaterial = null;
             view = Child("Workshop camera").AddComponent<Camera>();
             view.orthographic = true;
             view.clearFlags = CameraClearFlags.SolidColor;
@@ -59,10 +76,6 @@ namespace JLink.Pots
             stageMaterial = new Material(Resources.Load<Material>("JLinkPots/Clay"));
             stageMaterial.color = new Color(.27f,.32f,.31f);
             stage.GetComponent<Renderer>().sharedMaterial = stageMaterial;
-            MakeThumbnails();
-            LoadShelf();
-            Fit();
-            MakeInterface();
         }
 
         GameObject Child(string label)
@@ -74,12 +87,23 @@ namespace JLink.Pots
 
         void OnDisable()
         {
-            if (set) { set.SetActive(false); Destroy(set); }
+            if (studioKey && dimStudio) studioKey.intensity = studioKeyIntensity;
+            dimStudio = false;
+            rootUI?.RemoveFromHierarchy();
+            rootUI = null;
+            viewTools = null; identityHeading = null;
+            if (set)
+            {
+                set.SetActive(false);
+                Destroy(set);
+                set = null;
+                controlsDocument = null;
+            }
             if (stageMaterial) Destroy(stageMaterial);
             if (panelSettings) Destroy(panelSettings);
             canvas = null;
             refreshFields.Clear();
-            if (thumbnails != null) foreach (var image in thumbnails) if (image) Destroy(image);
+            if (thumbnails != null && thumbnails != presetPreviews) foreach (var image in thumbnails) if (image) Destroy(image);
             undo.Clear(); redo.Clear();
             gestureStart = null;
             drag = Drag.None;
@@ -89,6 +113,7 @@ namespace JLink.Pots
         {
             Bounds b = Vessel.GeneratedMesh.bounds;
             framing = Mathf.Max(b.size.y * .8f, Mathf.Max(b.size.x, b.size.z) * .78f, .06f);
+            if (sampleStyle) framing *= .965f;
             targetY = b.center.y * .94f;
             UpdateView();
             canvas?.MarkDirtyRepaint();
@@ -98,25 +123,31 @@ namespace JLink.Pots
         {
             var area = CanvasArea;
             lastArea = area;
-            view.rect = new Rect(area.x / Screen.width, 1 - area.yMax / Screen.height,
-                area.width / Screen.width, area.height / Screen.height);
+            view.rect = new Rect(area.x * PixelsPerPoint / Screen.width, 1 - area.yMax * PixelsPerPoint / Screen.height,
+                area.width * PixelsPerPoint / Screen.width, area.height * PixelsPerPoint / Screen.height);
             view.orthographicSize = framing / Mathf.Min(1, area.width / area.height);
             var rot = Quaternion.Euler(pitch, yaw, 0);
             var localTarget = Vector3.up * targetY;
+            // Leave space on the right of the vessel for its editable profile handles.
+            if (sampleStyle) localTarget += rot * Vector3.right * (.07f * view.orthographicSize * view.aspect);
             view.transform.localRotation = rot;
             view.transform.localPosition = localTarget - rot * Vector3.forward * (framing * 5 + 1);
-            view.farClipPlane = framing * 14 + 5;
+            view.farClipPlane = Mathf.Max(view.clearFlags == CameraClearFlags.Skybox ? 150f : 0f, framing * 14 + 5);
             var b = Vessel.GeneratedMesh.bounds;
             lastBounds = b;
             float diameter = Mathf.Max(b.size.x, b.size.z) * 1.26f;
-            float thickness = Mathf.Max(.003f, diameter * .025f);
-            stage.localScale = new Vector3(diameter, thickness / 2, diameter);
-            stage.localPosition = Vector3.up * (b.min.y - thickness * .5f - .0001f);
+            float thickness = Mathf.Max(.003f, diameter * turntableThickness);
+            if (stage)
+            {
+                stage.localScale = new Vector3(diameter, thickness / 2, diameter);
+                stage.localPosition = Vector3.up * (b.min.y - thickness * .5f - .0001f);
+            }
             if (previewProperties == null) previewProperties = new MaterialPropertyBlock();
             Vector3 normal = Vector3.ProjectOnPlane(view.transform.forward,transform.up).normalized;
             previewProperties.SetVector("_SectionPlane",new Vector4(normal.x,normal.y,normal.z,-Vector3.Dot(normal,Vessel.transform.position)));
             previewProperties.SetFloat("_Section",cutaway ? 1 : 0);
             previewProperties.SetFloat("_ShowChecker",checker ? 1 : 0);
+            previewProperties.SetFloat("_StudioExposure", dimStudio ? .64f : 1f);
             if (checkerTexture) previewProperties.SetTexture("_CheckerTex",checkerTexture);
             ApplyFinish();
             if (shownMaterial == studioClay) Vessel.GetComponent<Renderer>().SetPropertyBlock(previewProperties);
@@ -137,6 +168,7 @@ namespace JLink.Pots
 
         void LateUpdate()
         {
+            PlaceViewTools();
             if (lastArea != CanvasArea || lastBounds != Vessel.GeneratedMesh.bounds) UpdateView();
             else if (shownMaterial != VisibleMaterial) ApplyFinish();
         }

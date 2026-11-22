@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using jlinkdev.UnityUtilities.WaterSystem.Samples;
+using jlinkdev.UnityUtilities.WaterSystem.EditableSamples;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -55,9 +55,7 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
         private WaterLaboratoryController laboratory;
         private WaterProfile frozenProfile;
         private WaterProfile originalProfile;
-        private RenderPipelineAsset originalGraphics, originalQuality;
         private float startedAt;
-        private bool pipelineOverridden;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Install()
@@ -107,9 +105,9 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             Directory.CreateDirectory(outputDirectory);
             laboratory = FindFirstObjectByType<WaterLaboratoryController>();
             Require(laboratory != null, "Water Laboratory controller is missing from the player scene.");
-            Require(laboratory.Water != null && laboratory.ViewCamera != null && laboratory.Pipeline != null, "Laboratory references are incomplete.");
+            Require(laboratory.Water != null && laboratory.ViewCamera != null, "Laboratory references are incomplete.");
             Require(laboratory.FloatingProps != null && laboratory.FloatingProps.Length == 3, "Expected exactly three configured floating props.");
-            Require(GraphicsSettings.currentRenderPipeline == laboratory.Pipeline, "The laboratory has not activated its configured URP pipeline.");
+            Require(laboratory.ViewCamera.TryGetComponent<WaterCameraPass>(out var local) && local.feature, "The sample camera needs its water feature.");
 
             float warmupRealtime = Time.realtimeSinceStartup;
             float warmupSimulation = Time.time;
@@ -121,13 +119,8 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             }
             ValidateFloatingProps(true);
 
-            // Stop the sample's camera/GUI controls, then explicitly retain its pipeline for captures.
-            originalGraphics = GraphicsSettings.defaultRenderPipeline;
-            originalQuality = QualitySettings.renderPipeline;
+            // Position the camera independently of the interactive controls during captures.
             laboratory.enabled = false;
-            GraphicsSettings.defaultRenderPipeline = laboratory.Pipeline;
-            QualitySettings.renderPipeline = laboratory.Pipeline;
-            pipelineOverridden = true;
             yield return null;
             yield return null;
 
@@ -261,11 +254,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             Application.logMessageReceived -= RecordLog;
             if (laboratory != null && originalProfile != null) laboratory.Water.Profile = originalProfile;
             if (frozenProfile != null) Destroy(frozenProfile);
-            if (pipelineOverridden)
-            {
-                GraphicsSettings.defaultRenderPipeline = originalGraphics;
-                QualitySettings.renderPipeline = originalQuality;
-            }
             result.elapsedSeconds = Time.realtimeSinceStartup - startedAt;
             result.passed = result.errors.Count == 0;
             string json = JsonUtility.ToJson(result, true);

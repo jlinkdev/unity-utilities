@@ -10,6 +10,11 @@ namespace JLink.Frames
     [DisallowMultipleComponent]
     public sealed partial class FrameWorkshop : MonoBehaviour
     {
+        [SerializeField] private StyleSheet sampleStyle;
+        [SerializeField] private VisualTreeAsset sliderTemplate;
+        [SerializeField] private VisualTreeAsset shelfTemplate;
+        [SerializeField] private Texture2D[] mouldingPreviews;
+        [SerializeField] private UIDocument sampleIdentity;
         public FrameDesign startingDesign;
         public Material mouldingMaterial, matMaterial, artworkMaterial;
         public ProceduralFrame Frame { get; private set; }
@@ -17,8 +22,10 @@ namespace JLink.Frames
         public static readonly Color Accent = new Color(.98f,.73f,.39f);
 
         GameObject stage;
-        Camera view;
-        VisualElement viewport;
+        [SerializeField] ProceduralFrame authoredFrame;
+        [SerializeField] Camera view;
+        [SerializeField] UIDocument controlsDocument;
+        VisualElement viewport, viewTools, identityHeading, sidebar;
         Label status, measure, handleValue;
         ProfilePad pad;
         PanelSettings settings;
@@ -41,6 +48,20 @@ namespace JLink.Frames
 
         void OnEnable()
         {
+            Frame = authoredFrame;
+            if (!Frame) CreateRuntimeBench();
+            else if (startingDesign) Frame.Apply(startingDesign.recipe);
+            else Frame.Rebuild();
+            if (!controlsDocument.panelSettings)
+                controlsDocument.panelSettings = Resources.Load<PanelSettings>("JLinkFrames/WorkshopPanel");
+            BuildUI(controlsDocument.rootVisualElement);
+            Fit();
+            Refresh();
+        }
+
+        // Retains programmatic construction for callers creating a workshop on an empty object.
+        void CreateRuntimeBench()
+        {
             stage = new GameObject("Framing bench");
             stage.transform.SetParent(transform,false);
             Frame = Child("Frame").AddComponent<ProceduralFrame>();
@@ -58,12 +79,9 @@ namespace JLink.Frames
             var host = Child("Workshop controls");
             host.SetActive(false);
             settings = Instantiate(Resources.Load<PanelSettings>("JLinkFrames/WorkshopPanel"));
-            var doc = host.AddComponent<UIDocument>();
-            doc.panelSettings = settings;
+            controlsDocument = host.AddComponent<UIDocument>();
+            controlsDocument.panelSettings = settings;
             host.SetActive(true);
-            BuildUI(doc.rootVisualElement);
-            Fit();
-            Refresh();
         }
 
         GameObject Child(string label)
@@ -75,10 +93,11 @@ namespace JLink.Frames
 
         void OnDisable()
         {
+            controlsDocument?.rootVisualElement?.Clear();
             if (stage) { stage.SetActive(false); Destroy(stage); }
             if (settings) Destroy(settings);
             sync.Clear(); undo.Clear(); redo.Clear();
-            before = null; grabbed = -1; viewport = null;
+            before = null; grabbed = -1; viewport = null; viewTools = null; identityHeading = null; sidebar = null;
             mode=FrameEditMode.Frame; bandTool.Select(-1); cornerTool.Release(); edgeTool.Release();
         }
 
@@ -94,11 +113,22 @@ namespace JLink.Frames
         void BuildUI(VisualElement root)
         {
             root.styleSheets.Add(Resources.Load<StyleSheet>("JLinkFrames/Workshop"));
+            if (sampleStyle)
+            {
+                root.styleSheets.Add(sampleStyle);
+                root.AddToClassList("sample-studio");
+            }
             root.AddToClassList("bench");
-            var side = new ScrollView();
-            side.AddToClassList("side");
-            root.Add(side);
-            AddText(side,"Frame workshop","title");
+            sidebar = new VisualElement();
+            sidebar.AddToClassList("side");
+            sidebar.AddToClassList("sidebar");
+            root.Add(sidebar);
+            AddText(sidebar,"Frame workshop","title");
+            var tabs = Row(sidebar);
+            tabs.AddToClassList("tabs");
+            var side = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
+            side.AddToClassList("inspector");
+            sidebar.Add(side);
             measure = AddText(side,"","measure");
             var form = new VisualElement();
             side.Add(form);
@@ -108,14 +138,21 @@ namespace JLink.Frames
             AddCornerControls(side);
             AddEdgeControls(side);
             Section(side,"UVs and export");
-            BuildExports(side);
+            var footer = new VisualElement();
+            footer.AddToClassList("footer");
+            sidebar.Add(footer);
+            var history = Row(footer);
+            var back = Button(history,"Undo",() => Restore(undo,redo));
+            var forward = Button(history,"Redo",() => Restore(redo,undo));
+            sync.Add(() => { back.SetEnabled(undo.Count > 0); forward.SetEnabled(redo.Count > 0); });
+            BuildExports(side,footer);
 
             var work = new VisualElement(); work.AddToClassList("work"); root.Add(work);
             var tools = Row(work); tools.AddToClassList("toolbar");
-            var formButton = Button(tools,"Frame",() => SetMode(FrameEditMode.Frame));
-            var loopsButton = Button(tools,"Loops",() => SetMode(FrameEditMode.Loops));
-            var edgeButton=Button(tools,"Edges",()=>SetMode(FrameEditMode.Edges));
-            var cornerButton = Button(tools,"Corners",()=>SetMode(FrameEditMode.Corners));
+            var formButton = Button(tabs,"Frame",() => SetMode(FrameEditMode.Frame));
+            var loopsButton = Button(tabs,"Loops",() => SetMode(FrameEditMode.Loops));
+            var edgeButton=Button(tabs,"Edges",()=>SetMode(FrameEditMode.Edges));
+            var cornerButton = Button(tabs,"Corners",()=>SetMode(FrameEditMode.Corners));
             sync.Add(() => {
                 formButton.EnableInClassList("selected",mode==FrameEditMode.Frame);
                 edgeButton.EnableInClassList("selected",mode==FrameEditMode.Edges);
@@ -123,6 +160,28 @@ namespace JLink.Frames
                 cornerButton.EnableInClassList("selected",mode==FrameEditMode.Corners);
             });
             BuildViewport(work,tools);
+            if (shelfTemplate) BuildMouldingShelf(work);
+        }
+
+        static readonly string[] MouldingNames = { "Flat", "Bevel", "Scoop", "Reverse scoop", "Ogee", "Stepped" };
+
+        void BuildMouldingShelf(VisualElement work)
+        {
+            shelfTemplate.CloneTree(work);
+            var cards = work.Q("preset-cards");
+            for (int i = 0; i < MouldingNames.Length; i++)
+            {
+                var kind = (Moulding)i;
+                var curve = FrameRecipe.Profile(kind);
+                var card = new Button(() => Edit(() => R.profile = FrameRecipe.Profile(kind)))
+                    { name = "Preset" + kind, tooltip = MouldingNames[i] };
+                card.AddToClassList("preset");
+                cards.Add(card);
+                if (mouldingPreviews != null && i < mouldingPreviews.Length)
+                    card.Add(new Image { image = mouldingPreviews[i], pickingMode = PickingMode.Ignore, scaleMode = ScaleMode.ScaleToFit });
+                AddText(card,kind == Moulding.ReverseScoop ? "Rev. scoop" : MouldingNames[i],"preset-title").pickingMode = PickingMode.Ignore;
+                sync.Add(() => card.EnableInClassList("active-preset", R.profile.Equals(curve)));
+            }
         }
 
         void BuildForm(VisualElement side)
@@ -132,8 +191,8 @@ namespace JLink.Frames
             var radius = Slider(side,"Corner (%)",1,45,() => R.cornerFraction*100,v => R.cornerFraction = v*.01f);
             sync.Add(() => radius.style.display = R.outline == FrameOutline.Rounded ? DisplayStyle.Flex : DisplayStyle.None);
             Section(side,"Moulding");
-            Choices(side,new[] { "Flat","Bevel","Scoop","Reverse scoop","Ogee","Stepped" },
-                i => R.profile = FrameRecipe.Profile((Moulding)i));
+            if (!shelfTemplate)
+                Choices(side,MouldingNames,i => R.profile = FrameRecipe.Profile((Moulding)i));
             pad = new ProfilePad(() => R,Begin,Changed,End);
             side.Add(pad);
             AddText(side,"Drag a point to sculpt. Double-click to add one. Right-click to remove it.","help");
@@ -153,31 +212,28 @@ namespace JLink.Frames
             art.RegisterValueChangedCallback(e => Edit(() => R.includeArtwork = e.newValue));
         }
 
-        void BuildExports(VisualElement side)
+        void BuildExports(VisualElement side,VisualElement footer)
         {
             Choices(side,new[] { "Tiled material","Painter atlas" }, i => R.uvLayout = (FrameUV)i, () => (int)R.uvLayout);
             var tile = Slider(side,"Tile size (cm)",.5f,200,() => R.tileSize*100,v => R.tileSize = v*.01f);
             sync.Add(() => tile.style.display = R.uvLayout == FrameUV.Tiled ? DisplayStyle.Flex : DisplayStyle.None);
-            var files = Row(side);
-            Button(files,"Export OBJ",Export);
-            if (SaveMeshRequested != null) Button(files,"Save mesh asset",() => SaveMeshRequested?.Invoke(Frame));
-            var store = Row(side);
-            Button(store,"Keep design",() => { PlayerPrefs.SetString(SavedKey,JsonUtility.ToJson(R)); PlayerPrefs.Save(); Notice("Saved on this device."); });
-            var load = Button(store,"Recall",Recall);
+            Button(footer,"Keep design",() => { PlayerPrefs.SetString(SavedKey,JsonUtility.ToJson(R)); PlayerPrefs.Save(); Notice("Saved on this device."); }).AddToClassList("primary");
+            var files = Row(footer);
+            var load = Button(files,"Recall",Recall);
             sync.Add(() => load.SetEnabled(PlayerPrefs.HasKey(SavedKey)));
-            status = AddText(side,"","notice");
-
+            Button(files,"Export OBJ",Export);
+            if (SaveMeshRequested != null)
+                Button(files,"Save mesh",() => SaveMeshRequested?.Invoke(Frame)).tooltip = "Save the frame mesh as a Unity asset";
+            status = AddText(footer,"","notice");
+            status.style.display = DisplayStyle.None;
         }
 
         void BuildViewport(VisualElement work,VisualElement tools)
         {
-            var back = Button(tools,"Undo",() => Restore(undo,redo));
-            var forward = Button(tools,"Redo",() => Restore(redo,undo));
-            sync.Add(() => { back.SetEnabled(undo.Count > 0); forward.SetEnabled(redo.Count > 0); });
+            Button(tools,"Fit",Fit);
             Button(tools,"Front",() => { yaw = pitch = 0; UpdateView(); });
             var rear=Button(tools,"Back",()=>{yaw=150; pitch=10; UpdateView();});
             sync.Add(()=>rear.style.display=R.easelBack ? DisplayStyle.Flex : DisplayStyle.None);
-            Button(tools,"Fit",Fit);
             handleValue = AddText(tools,"","handle-value");
             viewport = new VisualElement { name = "FrameViewport" };
             viewport.AddToClassList("viewport"); work.Add(viewport);
@@ -189,14 +245,33 @@ namespace JLink.Frames
             viewport.RegisterCallback<PointerLeaveEvent>(_ => { bandTool.Leave(); viewport.MarkDirtyRepaint(); if (grabbed < 0) handleValue.text = ""; });
             viewport.RegisterCallback<WheelEvent>(e => {
                 zoom = Mathf.Clamp(zoom*Mathf.Exp(e.delta.y*.035f),.035f,8); UpdateView(); e.StopPropagation(); });
-            var foot = AddText(work,"","foot");
+            var foot = sampleStyle ? new Label() : AddText(work,"","foot");
+            if (sampleStyle)
+            {
+                foot.AddToClassList("help");
+                measure.parent.Insert(measure.parent.IndexOf(measure) + 1,foot);
+                var overlay = new VisualElement { pickingMode = PickingMode.Ignore };
+                overlay.AddToClassList("frame-tools");
+                work.Add(overlay);
+                tools.RemoveFromHierarchy();
+                tools.RemoveFromClassList("toolbar");
+                tools.AddToClassList("view-tools");
+                tools.pickingMode = PickingMode.Ignore;
+                overlay.Add(tools);
+                viewTools = tools;
+            }
             sync.Add(() => foot.text = mode==FrameEditMode.Edges ? "Drag an edge handle to sculpt the silhouette   ·   Adjust individual loops under Loops" : mode==FrameEditMode.Corners ? "Drag any corner handle to adjust all four   ·   Drag empty space to turn" : mode==FrameEditMode.Loops && bandTool.Current(R) is FrameBand band && band.ornament != BandOrnament.None ?
                 "Drag along the rail: green changes detail size, coral changes spacing   ·   Gold adjusts loop width   ·   Blue adjusts height" :
                 mode==FrameEditMode.Loops ? "Drag a loop to move   ·   Side dots change width   ·   Drag the blue dot up or down for height" :
                 "Pull a dot to resize   ·   Drag a rail up or down to sculpt   ·   Drag empty space to turn   ·   Scroll to zoom");
         }
 
-        void Notice(string text) { status.text = text; Refresh(); }
+        void Notice(string text)
+        {
+            status.text = text;
+            status.style.display = DisplayStyle.Flex;
+            Refresh();
+        }
         static Label AddText(VisualElement parent,string value,string style)
         {
             var label = new Label(value); label.AddToClassList(style); parent.Add(label); return label;
@@ -208,7 +283,9 @@ namespace JLink.Frames
         }
         static Button Button(VisualElement p,string text,Action click)
         {
-            var b = new Button(click) { text = text }; p.Add(b); return b;
+            var b = new Button(click) { text = text };
+            b.AddToClassList("action-" + text.Replace(' ', '-').ToLowerInvariant());
+            p.Add(b); return b;
         }
         void Choices(VisualElement p,string[] labels,Action<int> setter,Func<int> selected = null)
         {
@@ -222,7 +299,11 @@ namespace JLink.Frames
         }
         Slider Slider(VisualElement p,string text,float min,float max,Func<float> get,Action<float> set)
         {
-            var field = new Slider(text,min,max) { showInputField = true };
+            var field = sliderTemplate ? sliderTemplate.Instantiate().Q<Slider>() : null;
+            if (field == null) field = new Slider { showInputField = true };
+            field.label = text;
+            field.lowValue = min;
+            field.highValue = max;
             p.Add(field);
             sync.Add(() => field.SetValueWithoutNotify(get()));
             field.RegisterCallback<PointerDownEvent>(_ => Begin(),TrickleDown.TrickleDown);
@@ -298,18 +379,33 @@ namespace JLink.Frames
             zoom=Mathf.Max(Span(rotation*Vector3.right),Span(rotation*Vector3.up))*.70f;
             UpdateView();
         }
-        void LateUpdate() { if (viewport != null && viewport.worldBound != lastArea) UpdateView(); }
+        void LateUpdate()
+        {
+            if (viewport != null && viewport.worldBound != lastArea) UpdateView();
+            if (viewTools == null || !sampleIdentity) return;
+            if (identityHeading?.panel == null)
+                identityHeading = sampleIdentity.rootVisualElement?.Q(className:"sample-identity");
+            if (identityHeading?.panel == null) return;
+            // Let the header determine the minimum width while the stylesheet supplies the usual quarter-width rail.
+            float titleWidth = identityHeading.worldBound.xMax - sidebar.worldBound.xMin + 12f;
+            if (float.IsFinite(titleWidth)) sidebar.style.minWidth = titleWidth;
+            float left = Mathf.Max(0f, identityHeading.worldBound.xMax - viewTools.parent.worldBound.xMin) + 12f;
+            if (float.IsFinite(left)) viewTools.style.left = left;
+        }
         void UpdateView()
         {
             var area = viewport.worldBound;
             if (!(area.width > 1 && area.height > 1)) return;
             lastArea = area;
-            view.rect = new Rect(area.x/Screen.width,1-area.yMax/Screen.height,area.width/Screen.width,area.height/Screen.height);
+            var panel = controlsDocument.rootVisualElement.worldBound;
+            if (!(panel.width > 1 && panel.height > 1)) return;
+            view.rect = new Rect((area.x-panel.x)/panel.width, 1-(area.yMax-panel.y)/panel.height,
+                area.width/panel.width, area.height/panel.height);
             view.orthographicSize = zoom/Mathf.Min(1,area.width/area.height);
             var rot = Quaternion.Euler(pitch,yaw,0);
             view.transform.localRotation = rot;
             view.transform.localPosition = orbitCentre+rot*Vector3.back*(zoom*5+2);
-            view.farClipPlane = zoom*12+10;
+            view.farClipPlane = Mathf.Max(view.clearFlags == CameraClearFlags.Skybox ? 150f : 0f, zoom*12+10);
             viewport.MarkDirtyRepaint();
         }
         Vector2 Project(Vector3 local)

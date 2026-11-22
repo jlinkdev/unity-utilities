@@ -1,11 +1,7 @@
 using System.IO;
 using jlinkdev.UnityUtilities.Beams;
-using jlinkdev.UnityUtilities.Beams.DevelopmentSample;
+using jlinkdev.UnityUtilities.Beams.EditableSamples;
 using jlinkdev.UnityUtilities.Beams.Editor;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -15,17 +11,16 @@ namespace jlinkdev.UnityUtilities.Beams.Development
 {
     public static partial class BeamDevelopmentBuilder
     {
-        private const string AuthoringRoot = "Assets/PackageDevelopment/Beams/SampleAuthoring/Beam Kit Demo";
-        private const string PackageSampleRoot = "Packages/com.jlinkdev.beams/Samples~/Beam Kit Demo";
+        private const string AuthoringRoot = "Assets/PackageSamples/com.jlinkdev.beams/Beam Kit Demo";
 
         [MenuItem("Tools/jlinkdev/Beams/Rebuild Development Content")]
         public static void BuildAll()
         {
             EnsureFolder(AuthoringRoot);
             RebuildScene($"{AuthoringRoot}/Scenes/Beam Kit Demo.unity", BuildDemoScene);
-            PublishSample();
-            RebuildScene("Assets/PackageDevelopment/Beams/SampleAuthoring/Energy Studies/Energy Studies.unity", BuildEnergyStudies);
-            RebuildScene(OrbitalRoot + "/Orbital Descent.unity", BuildOrbital);
+            PackageSamplePublisher.Publish(AuthoringRoot);
+            RebuildScene("Assets/PackageSamples/com.jlinkdev.beams/Energy Studies/Scenes/Energy Studies.unity", BuildEnergyStudies);
+            RebuildScene(OrbitalRoot + "/Scenes/Orbital Descent.unity", BuildOrbital);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[jlinkdev Beams] Beam Kit Demo rebuilt and published to Samples~.");
@@ -38,7 +33,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             if (open.isDirty) throw new IOException($"Save the open sample before rebuilding: {path}");
             bool active = SceneManager.GetActiveScene() == open;
             var scratch = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-            string scratchPath = AssetDatabase.GenerateUniqueAssetPath("Assets/PackageDevelopment/Beams/Builder Staging.unity");
+            string scratchPath = AssetDatabase.GenerateUniqueAssetPath("Assets/PackageDevelopment/Builder Staging.unity");
             if (!EditorSceneManager.SaveScene(scratch, scratchPath))
             {
                 EditorSceneManager.CloseScene(scratch, true);
@@ -92,6 +87,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             string scenePath = $"{AuthoringRoot}/Scenes/Beam Kit Demo.unity";
+            SampleScenePresentation.Apply(scene, AuthoringRoot);
             if (!EditorSceneManager.SaveScene(scene, scenePath)) throw new IOException(scenePath);
             if (previous.IsValid())
                 SceneManager.SetActiveScene(previous);
@@ -249,46 +245,10 @@ namespace jlinkdev.UnityUtilities.Beams.Development
             return AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
         }
 
-        private static void PublishSample()
-        {
-            string sampleContainer = Path.GetDirectoryName(PackageSampleRoot);
-            if (!string.IsNullOrEmpty(sampleContainer) && !Directory.Exists(sampleContainer))
-                Directory.CreateDirectory(sampleContainer);
-            if (Directory.Exists(PackageSampleRoot))
-                FileUtil.DeleteFileOrDirectory(PackageSampleRoot);
-            FileUtil.CopyFileOrDirectory(AuthoringRoot, PackageSampleRoot);
-            RemapSampleAssets(PackageSampleRoot);
-            string controller = Path.Combine(PackageSampleRoot, "BeamKitDemoController.cs");
-            File.WriteAllText(controller, File.ReadAllText(controller).Replace("Beams.DevelopmentSample", "Beams.Samples"));
-            string scene = Path.Combine(PackageSampleRoot, "Scenes/Beam Kit Demo.unity");
-            File.WriteAllText(scene, File.ReadAllText(scene).Replace("Beams.DevelopmentSample", "Beams.Samples"));
-        }
-
-        // Imported assets can coexist with the authoring scene. Keep external package references intact.
-        private static void RemapSampleAssets(string folder)
-        {
-            var ids = new Dictionary<string, string>();
-            using var hash = MD5.Create();
-            foreach (string meta in Directory.GetFiles(folder, "*.meta", SearchOption.AllDirectories))
-            {
-                string guid = Regex.Match(File.ReadAllText(meta), @"(?m)^guid: ([a-f0-9]{32})").Groups[1].Value;
-                if (guid.Length == 0) continue;
-                ids[guid] = new System.Guid(hash.ComputeHash(Encoding.UTF8.GetBytes("BeamSample/" + guid))).ToString("N");
-            }
-            foreach (string file in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
-            {
-                string source = File.ReadAllText(file);
-                string mapped = Regex.Replace(source, @"\b[a-f0-9]{32}\b", m =>
-                    ids.TryGetValue(m.Value, out string replacement) ? replacement : m.Value);
-                if (mapped != source) File.WriteAllText(file, mapped);
-            }
-        }
-
         private static void BuildEnergyStudies()
         {
-            const string root = "Assets/PackageDevelopment/Beams/SampleAuthoring/Energy Studies";
-            const string destination = "Packages/com.jlinkdev.beams/Samples~/Energy Studies";
-            EnsureFolder(root + "/Prefabs");
+            const string root = "Assets/PackageSamples/com.jlinkdev.beams/Energy Studies";
+            foreach (var folder in new[] { "Scenes", "Prefabs", "Animations" }) EnsureFolder(root + "/" + folder);
             Scene previous = SceneManager.GetActiveScene();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             try
@@ -310,7 +270,7 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                     beam.transform.SetPositionAndRotation(new Vector3(-2.5f, y, 0), Quaternion.Euler(0, 90, 0));
                     if (style == BeamCreationMenu.EnergyStyle.GoldenTether)
                     {
-                        const string clipPath = root + "/Tether Motion.anim";
+                        const string clipPath = root + "/Animations/Tether Motion.anim";
                         var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(clipPath);
                         if (clip == null)
                         {
@@ -335,28 +295,15 @@ namespace jlinkdev.UnityUtilities.Beams.Development
                     label.transform.localScale = Vector3.one * 0.12f;
                     beam.GetComponent<Beam>().Refresh();
                 }
-                if (!EditorSceneManager.SaveScene(scene, root + "/Energy Studies.unity")) throw new IOException(root);
+                SampleScenePresentation.Apply(scene, root);
+                if (!EditorSceneManager.SaveScene(scene, root + "/Scenes/Energy Studies.unity")) throw new IOException(root);
             }
             finally
             {
                 SceneManager.SetActiveScene(previous);
                 EditorSceneManager.CloseScene(scene, true);
             }
-            ExportStudy(root, destination);
-        }
-
-        private static void ExportStudy(string root, string destination)
-        {
-            // Copy individual assets so package-only documentation is preserved on rebuild.
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            foreach (var file in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
-            {
-                string to = destination + file.Substring(root.Length);
-                Directory.CreateDirectory(Path.GetDirectoryName(to));
-                File.Copy(file, to, true);
-            }
-            RemapSampleAssets(destination);
+            PackageSamplePublisher.Publish(root);
         }
 
         private static void EnsureFolder(string path)

@@ -1,28 +1,21 @@
+using SliderDraw = System.Func<UnityEngine.Rect, string, string, float, float, float, float>;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 namespace jlinkdev.UnityUtilities.WaterSystem.Samples
 {
-    /// <summary>Mouse-only laboratory controls and a scoped sample pipeline override.</summary>
+    /// <summary>Mouse-only laboratory controls.</summary>
     public sealed class WaterLaboratoryController : MonoBehaviour
     {
         public WaterBody Water;
         public Camera ViewCamera;
-        public UniversalRenderPipelineAsset Pipeline;
         public WaterProfile[] Presets;
         public Rigidbody[] FloatingProps;
 
-        private RenderPipelineAsset previousGraphics;
-        private RenderPipelineAsset previousQuality;
-        private UniversalRenderPipelineAsset appliedPipeline;
-        private int previousQualityLevel;
         private WaterProfile previousProfile;
         private WaterProfile assignedProfile;
         private Vector3[] propPositions;
         private Quaternion[] propRotations;
         private WaterCamera waterCamera;
-        private bool pipelineApplied;
         private bool autoTour;
         private float cameraHeight = 1.6f;
         private float yaw;
@@ -33,16 +26,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Samples
 
         private void OnEnable()
         {
-            if (Pipeline != null)
-            {
-                previousGraphics = GraphicsSettings.defaultRenderPipeline;
-                previousQuality = QualitySettings.renderPipeline;
-                previousQualityLevel = QualitySettings.GetQualityLevel();
-                appliedPipeline = Pipeline;
-                GraphicsSettings.defaultRenderPipeline = Pipeline;
-                QualitySettings.renderPipeline = Pipeline;
-                pipelineApplied = true;
-            }
             if (Water != null)
             {
                 previousProfile = Water.Profile;
@@ -72,30 +55,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Samples
 
         private void OnDisable()
         {
-            if (pipelineApplied)
-            {
-                // Respect a deliberate pipeline change by other code while this sample is active.
-                if (GraphicsSettings.defaultRenderPipeline == appliedPipeline)
-                    GraphicsSettings.defaultRenderPipeline = previousGraphics;
-                if (QualitySettings.GetRenderPipelineAssetAt(previousQualityLevel) == appliedPipeline)
-                {
-                    // Restore the setting we changed even if another script selected a new quality level.
-                    int activeLevel = QualitySettings.GetQualityLevel();
-                    try
-                    {
-                        if (activeLevel != previousQualityLevel)
-                            QualitySettings.SetQualityLevel(previousQualityLevel, false);
-                        QualitySettings.renderPipeline = previousQuality;
-                    }
-                    finally
-                    {
-                        if (activeLevel != previousQualityLevel)
-                            QualitySettings.SetQualityLevel(activeLevel, false);
-                    }
-                }
-                pipelineApplied = false;
-                appliedPipeline = null;
-            }
             if (Water != null && Water.Profile == assignedProfile)
                 Water.Profile = previousProfile;
         }
@@ -140,17 +99,46 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Samples
             }
         }
 
+        [SerializeField] private GUISkin sampleSkin;
+        [SerializeField] private ScriptableObject sliderPresenter;
+        private SliderDraw drawSampleSlider;
+        private SliderDraw SampleSlider
+        {
+            get
+            {
+                if (drawSampleSlider == null && sliderPresenter)
+                    drawSampleSlider = (SliderDraw)System.Delegate.CreateDelegate(typeof(SliderDraw), sliderPresenter, "Draw", false);
+                return drawSampleSlider;
+            }
+        }
+
+
         private void OnGUI()
+        {
+            var previous = GUI.skin;
+            if (sampleSkin) GUI.skin = sampleSkin;
+            try { DrawControls(); }
+            finally { GUI.skin = previous; }
+        }
+
+        private float DrawValueSlider(string label,string formatted,float value,float min,float max)
+        {
+            if (SampleSlider != null) return SampleSlider(GUILayoutUtility.GetRect(0, 35, GUILayout.ExpandWidth(true)),label,formatted,value,min,max);
+            GUILayout.Label(label+"  "+formatted,labelStyle);
+            return GUILayout.HorizontalSlider(value,min,max);
+        }
+
+        private void DrawControls()
         {
             if (titleStyle == null)
             {
                 titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold, wordWrap = true };
                 labelStyle = new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 13 };
             }
-            float scale = Mathf.Clamp(Screen.height / 800f, 0.7f, 1.6f);
+            float scale = Mathf.Min(Screen.height / 800f, Screen.width / 440f, 1.6f);
             Matrix4x4 previousMatrix = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
-            GUILayout.BeginArea(new Rect(20f, 20f, 325f, 590f), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(20f, Screen.height / scale - 610f, 325f, 590f), GUI.skin.box);
             GUILayout.Label("WATER LABORATORY", titleStyle);
             GUILayout.Label("A continuous surface, waterline and underwater volume", labelStyle);
             GUILayout.Space(12f);
@@ -159,15 +147,13 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Samples
             if (GUILayout.Button("Waterline", GUILayout.Height(30f))) SetHeight(0.02f);
             if (GUILayout.Button("Below", GUILayout.Height(30f))) SetHeight(-1.6f);
             GUILayout.EndHorizontal();
-            GUILayout.Label($"Camera height  {cameraHeight:+0.00;-0.00;0.00} m", labelStyle);
-            float newHeight = GUILayout.HorizontalSlider(cameraHeight, -2.6f, 3.5f);
+            float newHeight = DrawValueSlider("Camera height",cameraHeight.ToString("+0.00;-0.00;0.00")+" m",cameraHeight,-2.6f,3.5f);
             if (!Mathf.Approximately(newHeight, cameraHeight))
             {
                 cameraHeight = newHeight;
                 autoTour = false;
             }
-            GUILayout.Label("Look left / right", labelStyle);
-            yaw = GUILayout.HorizontalSlider(yaw, -65f, 65f);
+            yaw = DrawValueSlider("Look left / right",yaw.ToString("0")+"°",yaw,-65f,65f);
             autoTour = GUILayout.Toggle(autoTour, "  Automatic above / below tour");
             GUILayout.Space(12f);
             GUILayout.Label("Water profile", labelStyle);
@@ -202,7 +188,7 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Samples
             GUILayout.Space(8f);
             GUILayout.Label("Look across the floating crates, then lower the camera through the waves. Submerged steps and columns reveal absorption and caustics.", labelStyle);
             GUILayout.Space(8f);
-            GUILayout.Label("All controls use the mouse. The sample pipeline is active only while this controller is enabled and restores the previous settings on exit.", labelStyle);
+            GUILayout.Label("All controls use the mouse.", labelStyle);
             GUILayout.EndArea();
             GUI.matrix = previousMatrix;
         }

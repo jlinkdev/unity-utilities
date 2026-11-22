@@ -1,5 +1,7 @@
+using SliderDraw = System.Func<UnityEngine.Rect, string, string, float, float, float, float>;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace JLink.Plants.Studio
 {
@@ -9,9 +11,71 @@ namespace JLink.Plants.Studio
             (PlantSpecies[])Enum.GetValues(typeof(PlantSpecies)), species => PlantSpeciesProfile.For(species).DisplayName);
         Vector2 scroll;
         float UiScale=>Mathf.Clamp(Mathf.Min(Screen.width/1000f,Screen.height/730f),.65f,1.65f);
-        bool dragging;
+        bool dragging, showPlantingSettings;
         GUIStyle heading,subheading;
+        [SerializeField] GUISkin sampleSkin;
+        [SerializeField] private UIDocument sampleIdentity;
+        [SerializeField] private ScriptableObject sliderPresenter;
+        private SliderDraw drawSampleSlider;
+        private SliderDraw SampleSlider
+        {
+            get
+            {
+                if (drawSampleSlider == null && sliderPresenter)
+                    drawSampleSlider = (SliderDraw)System.Delegate.CreateDelegate(typeof(SliderDraw), sliderPresenter, "Draw", false);
+                return drawSampleSlider;
+            }
+        }
+
         GUISkin workshopSkin;
+        [SerializeField] PlantWorkshopPanel workshop = new PlantWorkshopPanel();
+        Button restoreButton, focusButton;
+        Label workshopMessage;
+
+        void UpdateWorkshop()
+        {
+            if (workshop.Open(sampleIdentity,SelectSpecies))
+            {
+                foreach (View tab in Enum.GetValues(typeof(View)))
+                    workshop.Tab(tab.ToString(), () => SetView(tab));
+                workshop.Tool("Fit",() => { orbit = -9; zoom = 1; FrameCamera(); },"action-fit");
+                focusButton = workshop.Tool("Selected pot",() => SetPotCloseUp(!PotCloseUp));
+                workshopMessage = workshop.Message();
+                workshop.Action("Save windowsill",SaveWindow,"primary");
+                restoreButton = workshop.Action("Restore",RestoreWindow,"action-undo");
+            }
+            if (!workshop.Mounted) return;
+            workshop.Select((int)view,Active.Growth.Recipe.species,view==View.Grow && !(useNursery && frozen));
+            focusButton.text = PotCloseUp ? "Both pots" : "Selected pot";
+            focusButton.SetEnabled(view!=View.Tray);
+            restoreButton.SetEnabled(PlayerPrefs.HasKey(SaveKey));
+            workshopMessage.text = notice;
+        }
+
+        void SelectSpecies(PlantSpecies kind)
+        {
+            if (view != View.Grow || (useNursery && frozen)) return;
+            switch (kind)
+            {
+                case PlantSpecies.SpiderPlant: ShowSpiderPreset(); break;
+                case PlantSpecies.RubberPlant: ShowRubberPreset(); break;
+                case PlantSpecies.JadePlant: ShowJadePreset(); break;
+                default: Generate(kind,seed,kind==PlantSpecies.Pothos ? 44 : 16); break;
+            }
+        }
+
+        void SaveWindow()
+        {
+            PlayerPrefs.SetString(SaveKey,SaveBench());
+            PlayerPrefs.Save();
+            notice = "Windowsill saved.";
+        }
+
+        void RestoreWindow()
+        {
+            try { RestoreBench(PlayerPrefs.GetString(SaveKey)); notice="Windowsill restored."; }
+            catch(ArgumentException) { notice="Could not read the saved windowsill."; }
+        }
 
         public void DrawControls()
         {
@@ -24,6 +88,17 @@ namespace JLink.Plants.Studio
             }
             GUILayout.EndHorizontal();
             GUILayout.Space(8);
+            DrawInspectorBody(false);
+            GUILayout.Space(10);
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("Save windowsill")) SaveWindow();
+            bool enabled=GUI.enabled; GUI.enabled=PlayerPrefs.HasKey(SaveKey);
+            if(GUILayout.Button("Restore")) RestoreWindow();
+            GUI.enabled=enabled; GUILayout.EndHorizontal();
+            if(!string.IsNullOrEmpty(notice)) GUILayout.Label(notice);
+        }
+        void DrawInspectorBody(bool useShelf)
+        {
             if(view==View.Compare) ComparisonPanel();
             else if(view!=View.Tray)
             {
@@ -36,37 +111,32 @@ namespace JLink.Plants.Studio
                 string name=current.Profile.DisplayName;
                 GUILayout.Label(placementPreview ? $"{name} cutting  ·  {current.OrganCount} nodes" :
                     $"{name}  ·  {current.OrganCount} nodes  ·  age {current.Age:0.0}");
-                if(view==View.Grow) GrowPanel(); else CutPanel();
+                if(view==View.Grow) GrowPanel(useShelf); else CutPanel();
             }
             else TrayPanel();
-            GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-            if(GUILayout.Button("Save windowsill")) { PlayerPrefs.SetString(SaveKey,SaveBench());PlayerPrefs.Save();notice="Windowsill saved."; }
-            bool enabled=GUI.enabled; GUI.enabled=PlayerPrefs.HasKey(SaveKey);
-            if(GUILayout.Button("Restore"))
-            {
-                try { RestoreBench(PlayerPrefs.GetString(SaveKey));notice="Windowsill restored."; }
-                catch(ArgumentException) { notice="Could not read the saved windowsill."; }
-            }
-            GUI.enabled=enabled; GUILayout.EndHorizontal();
-            if(!string.IsNullOrEmpty(notice)) GUILayout.Label(notice);
         }
+
         void FocusIfChanged(bool value) { if(useNursery!=value) FocusNursery(value); }
-        static float Slider(string label,float value,float min,float max,string format="0.00")
+        float Slider(string label,float value,float min,float max,string format="0.00")
         {
+            if (SampleSlider != null) return SampleSlider(GUILayoutUtility.GetRect(0, 35, GUILayout.ExpandWidth(true)),label,value.ToString(format),value,min,max);
             GUILayout.Label(label+"    "+value.ToString(format));
             return GUILayout.HorizontalSlider(value,min,max);
         }
-        void GrowPanel()
+        void GrowPanel(bool useShelf)
         {
             bool live=!(useNursery && frozen);
             if(!live) GUILayout.Label("Static copy · mesh and materials");
+            if (useShelf) GUILayout.Label("Placement",workshop.SectionStyle);
             bool old=GUI.enabled; GUI.enabled=live;
-            GUILayout.BeginHorizontal();
-            if(GUILayout.Button("Spider rosette")) ShowSpiderPreset();
-            if(GUILayout.Button("Rubber tree")) ShowRubberPreset();
-            if(GUILayout.Button("Jade shoot")) ShowJadePreset();
-            GUILayout.EndHorizontal();
+            if (!useShelf)
+            {
+                GUILayout.BeginHorizontal();
+                if(GUILayout.Button("Spider rosette")) ShowSpiderPreset();
+                if(GUILayout.Button("Rubber tree")) ShowRubberPreset();
+                if(GUILayout.Button("Jade shoot")) ShowJadePreset();
+                GUILayout.EndHorizontal();
+            }
             if(Active.Growth.Recipe.species==PlantSpecies.RubberPlant && GUILayout.Button(
                 Active.Growth.Recipe.variegated?"Deep green preset":"Variegated preset"))
                 ShowRubberPreset(!Active.Growth.Recipe.variegated);
@@ -83,6 +153,11 @@ namespace JLink.Plants.Studio
             {
                 float edge=Slider("Pot to front edge (m)",edgeDistance,.16f,.68f);
                 if(!Mathf.Approximately(edge,edgeDistance)) SetEdgeDistance(edge);
+            }
+            if (useShelf)
+            {
+                GUILayout.Space(7);
+                GUILayout.Label("Growing conditions",workshop.SectionStyle);
             }
             var conditions=Active.Conditions;
             bool care=GUILayout.Toggle(Active.Care.Enabled,"Simulate plant care");
@@ -101,8 +176,21 @@ namespace JLink.Plants.Studio
             if(!conditions.Equals(Active.Conditions)) { Active.Conditions=conditions; UpdateCutGuide(); }
             GrowthButtons();
             if(live && vine) TipsPanel();
-            GUILayout.Space(8); GUILayout.Label("New planting");
-            species=(PlantSpecies)GUILayout.SelectionGrid((int)species,SpeciesNames,2);
+            GUILayout.Space(8);
+            if (useShelf)
+            {
+                if (GUILayout.Button(showPlantingSettings ? "Hide seed settings" : "Seed settings"))
+                    showPlantingSettings = !showPlantingSettings;
+            }
+            else GUILayout.Label("New planting");
+            if (!useShelf || showPlantingSettings) DrawPlantingSettings(useShelf);
+            GUI.enabled=old;
+            if(occupied && GUILayout.Button("Empty pot 2")) EmptyNursery();
+        }
+
+        void DrawPlantingSettings(bool useShelf)
+        {
+            if (!useShelf) species=(PlantSpecies)GUILayout.SelectionGrid((int)species,SpeciesNames,2);
             if(species==PlantSpecies.RubberPlant) rubberVariegated=GUILayout.Toggle(rubberVariegated,"Variegated rubber leaves");
             GUILayout.BeginHorizontal(); GUILayout.Label("Seed",GUILayout.Width(40));
             string input=GUILayout.TextField(seed.ToString(),12);
@@ -115,8 +203,6 @@ namespace JLink.Plants.Studio
                 Generate(species,seed,startingUnits,species==PlantSpecies.RubberPlant && rubberVariegated);
             if(GUILayout.Button("Climbing Monstera"))
             { SetPole(true); Generate(PlantSpecies.Monstera,53,16); }
-            GUI.enabled=old;
-            if(occupied && GUILayout.Button("Empty pot 2")) EmptyNursery();
         }
         void GrowthButtons()
         {
@@ -193,9 +279,31 @@ namespace JLink.Plants.Studio
         {
             if(!Application.IsPlaying(gameObject) || !Ready) return;
             var oldMatrix=GUI.matrix; var oldSkin=GUI.skin;
+            float scale=workshop.Ready ? workshop.Scale : UiScale, w=Screen.width/scale, h=Screen.height/scale;
+            float panel=workshop.Ready ? workshop.RailWidth : Mathf.Min(294,w*.44f);
+            GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));
+            if (workshop.Ready)
+            {
+                GUI.skin = workshop.InspectorSkin(sampleSkin ? sampleSkin : oldSkin);
+                Rect body = workshop.Body;
+                GUILayout.BeginArea(body);
+                scroll = GUILayout.BeginScrollView(scroll,false,false,GUIStyle.none,GUI.skin.verticalScrollbar);
+                GUILayout.BeginVertical(GUILayout.Width(Mathf.Max(1,body.width-10)));
+                DrawInspectorBody(true);
+                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
+                GUILayout.EndArea();
+            }
+            else DrawStandaloneInspector(panel,h,scale);
+            DrawViewport(w,h,panel,scale);
+            GUI.matrix=oldMatrix; GUI.skin=oldSkin;
+        }
+
+        void DrawStandaloneInspector(float panel,float h,float scale)
+        {
             if(!workshopSkin)
             {
-                workshopSkin=Instantiate(GUI.skin);
+                workshopSkin=Instantiate(sampleSkin ? sampleSkin : GUI.skin);
                 workshopSkin.hideFlags=HideFlags.DontSave;
                 workshopSkin.label.wordWrap=true;
                 workshopSkin.label.normal.textColor=new Color(.83f,.88f,.80f);
@@ -205,16 +313,28 @@ namespace JLink.Plants.Studio
                 subheading=new GUIStyle(workshopSkin.label){fontSize=12};
             }
             GUI.skin=workshopSkin;
-            float scale=UiScale,w=Screen.width/scale,h=Screen.height/scale,panel=Mathf.Min(294,w*.44f);
-            GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));
-            Color oldColor=GUI.color; GUI.color=new Color(.12f,.18f,.15f);
-            GUI.DrawTexture(new Rect(0,0,panel,h),Texture2D.whiteTexture);GUI.color=oldColor;
-            GUILayout.BeginArea(new Rect(14,12,panel-28,h-22));
-            GUILayout.Label("PLANT STUDIO",subheading);
-            GUILayout.Label("Windowsill",heading);
+            float header = PlantStudio.LayoutInspectorHeader(sampleIdentity,scale,panel);
+            if (header <= 0f)
+            {
+                Color oldColor=GUI.color;
+                GUI.color=sampleSkin ? new Color(.09f,.12f,.16f) : new Color(.12f,.18f,.15f);
+                GUI.DrawTexture(new Rect(0,0,panel,h),Texture2D.whiteTexture);
+                GUI.color=oldColor;
+            }
+            float controlsTop = Mathf.Max(12f,header);
+            GUILayout.BeginArea(new Rect(14,controlsTop,panel-28,Mathf.Max(1f,h-controlsTop-10f)));
+            if (header <= 0f)
+            {
+                GUILayout.Label("PLANT STUDIO",subheading);
+                GUILayout.Label("Windowsill",heading);
+            }
             scroll=GUILayout.BeginScrollView(scroll);
             DrawControls();
             GUILayout.EndScrollView(); GUILayout.EndArea();
+        }
+
+        void DrawViewport(float w,float h,float panel,float scale)
+        {
             if(view==View.Tray && previews!=null)
                 for(int i=0;i<6;i++)
                 {
@@ -224,16 +344,15 @@ namespace JLink.Plants.Studio
                 }
             else
             {
-                if(GUI.Button(new Rect(w-206,12,108,27),PotCloseUp?"Both pots":"Selected pot")) SetPotCloseUp(!PotCloseUp);
-                if(GUI.Button(new Rect(w-93,12,80,27),"Fit view")) {orbit=-9;zoom=1;FrameCamera();}
+                if(!workshop.Ready && GUI.Button(new Rect(w-206,12,108,27),PotCloseUp?"Both pots":"Selected pot")) SetPotCloseUp(!PotCloseUp);
+                if(!workshop.Ready && GUI.Button(new Rect(w-93,12,80,27),"Fit view")) {orbit=-9;zoom=1;FrameCamera();}
                 var e=Event.current;
-                if(e.mousePosition.x>panel && e.type==EventType.MouseDown && e.button==0) {dragging=true;e.Use();}
+                if((workshop.Ready ? workshop.OverViewport(e.mousePosition) : e.mousePosition.x>panel) && e.type==EventType.MouseDown && e.button==0) {dragging=true;e.Use();}
                 else if(dragging && e.type==EventType.MouseDrag) {orbit=Mathf.Clamp(orbit+e.delta.x*.27f,-46,46);e.Use();}
                 else if(e.type==EventType.MouseUp) dragging=false;
-                else if(e.mousePosition.x>panel && e.type==EventType.ScrollWheel)
+                else if((workshop.Ready ? workshop.OverViewport(e.mousePosition) : e.mousePosition.x>panel) && e.type==EventType.ScrollWheel)
                 {zoom=Mathf.Clamp(zoom*Mathf.Exp(e.delta.y*.05f),.35f,1.7f);e.Use();}
             }
-            GUI.matrix=oldMatrix; GUI.skin=oldSkin;
         }
         void OnDestroy()
         {

@@ -27,3 +27,7 @@
 .viewport { flex-grow: 1; }
 .foot { -unity-text-align: middle-center; }
 .notice { color: rgb(249,206,149); }
+
+.bench .inspector { flex-grow: 1; flex-basis: 0; }
+.bench .footer { flex-shrink: 0; }
+.bench .footer Button { flex-grow: 1; }

@@ -184,7 +184,7 @@ the exact target hardware before establishing a production budget.
 | Symptom | Check |
 | --- | --- |
 | Surface visible, underwater effects missing | Correct renderer data, active feature, Render Graph enabled, base camera |
-| Entire sample looks wrong before Play | The scene's scoped pipeline is activated by its controller in Play |
+| Entire sample looks wrong before Play | Preview the Laboratory Camera in Game view and check its Water Camera Pass feature reference |
 | Wrong body selected | Assign `WaterCamera.BodyOverride`; one volume is composited |
 | Mesh and physics disagree | Identity world rotation/scale, shared profile, adequate grid resolution |
 | Foam or caustics missing | Opaque receiving geometry, surface/depth separation, nonzero strength |

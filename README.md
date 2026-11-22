@@ -11,6 +11,7 @@ and an importable demo.
 | [Procedural Plants](Packages/com.jlinkdev.procedural-plants/README.md) | Unity 6.0 | 2.3.1. Seven seeded houseplants with textured foliage, optional care and propagation. Inspect a young plant up close or grow the same cutting in two pots on the Windowsill. |
 | [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3; any pipeline | Experimental; avatar validation remains necessary. |
 | [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3; any pipeline | Initial extraction; no package-specific automated tests yet. |
+| [Sample Framework](Packages/com.jlinkdev.sample-framework/README.md) | Unity 2022.3, UI Toolkit and IMGUI | Optional package and sample headers, controls, fonts, icons, and grid environments. Includes Caption Preview. |
 | [Object Highlighting](Packages/com.jlinkdev.object-highlighting/README.md) | Unity 6.0, URP 17.0.4, Render Graph, desktop | Per-object hover contours and selection glows with an interactive Selection Gallery. |
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3; URP 14.0.11 | Initial 0.1.0 release. |
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3; URP 14.0.11 | Initial implementation; validate camera and motor integration. |
@@ -50,15 +51,14 @@ pipeline; sample guides explain any additional renderer setup or temporary chang
 Rain includes **Rain Laboratory**, **Volume Laboratory**, and **Fog Laboratory**.
 Water includes **Water Laboratory**, with animated waves, waterline transitions,
 underwater atmosphere, and floating props. Procedural Plants includes **Windowsill**
-and **Plant Studio**. The remaining packages include a focused demo.
+and **Plant Studio**. Beams includes **Beam Kit Demo**, **Energy Studies**, and **Orbital Descent**.
 
 ## Develop and validate
 
 Open this repository root in Unity `6000.3.21f1` to work on the embedded packages.
 Package runtime code lives in `Runtime`, editor tooling in `Editor`, detailed docs
 in `Documentation~`, importable demos in `Samples~`, and existing automated tests
-in `Tests`. Host-only fixtures and authoring assets live under
-[Assets/PackageDevelopment](Assets/PackageDevelopment/README.md).
+in `Tests`. Edit demos under `Assets/PackageSamples/<package-id>/<sample>/Scenes`. Publish from the Project window with **Assets > jlinkdev > Publish Package Sample**. See the [sample authoring guide](Assets/PackageSamples/README.md). Host-only fixtures and builders live under [Assets/PackageDevelopment](Assets/PackageDevelopment/README.md).
 
 Run the static packaging check from the repository root with Python 3.9 or newer:
 

@@ -37,3 +37,9 @@
 .compact .heading { font-size: 18px; }
 .compact .design-name { margin-bottom: 3px; }
 .compact .tray { height: 64px; }
+
+.display-tools { position: absolute; right: 8px; top: 5px; flex-direction: row; }
+.workshop.focus-view .sidebar, .workshop.focus-view .tray { display: none; }
+.workshop.focus-view .view-tools { left: 255px; }
+
+.readout { flex-direction: row; align-items: center; }

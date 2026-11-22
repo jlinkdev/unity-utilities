@@ -3,7 +3,7 @@
 ## Run the included scene
 
 Open `Scenes/IK Demo.unity` in this imported sample and press Play.
-Use the on-screen overlay; no scene construction is required.
+Use the on-screen overlay to control the demo. The editable Studio Grid uses the optional Sample Framework floor and lighting assets.
 
 This sample supports a runtime UI similar to the object pooling sample, but uses grid controls to move IK targets and pole hints.
 
@@ -29,10 +29,14 @@ If `Show Only Active Station` is enabled, the controller will toggle station roo
 
 For each target or pole:
 
-1. Create a visible target object, usually a small green sphere for targets or magenta cube for poles.
+1. Create a visible target object, usually a small teal sphere for targets or amber cube for poles.
 2. Add `IKDemoTargetGrid` to a separate control object or directly to the target object.
 3. Assign the target transform.
 4. Assign an origin transform near the rig. If you leave origin empty, the grid captures a fallback origin from the target's current position.
 5. Choose the grid axes and cell size. A limb facing forward usually works well with horizontal `Vector3.right` and vertical `Vector3.up`.
 
 The overlay shows a 2D pad for each assigned target or pole grid. Dragging the pad point moves the target continuously and solves the active rig.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > IK > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

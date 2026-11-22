@@ -1,7 +1,6 @@
-using System.IO;
 using jlinkdev.UnityUtilities.WorldScanning;
 using jlinkdev.UnityUtilities.WorldScanning.Rendering;
-using jlinkdev.UnityUtilities.WorldScanning.Samples;
+using jlinkdev.UnityUtilities.WorldScanning.EditableSamples;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,72 +12,19 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Development
 {
     public static class WorldScanDevelopmentBuilder
     {
-        private const string RenderingRoot = "Assets/PackageDevelopment/WorldScanning/Rendering";
-        private const string AuthoringRoot = "Assets/PackageDevelopment/WorldScanning/SampleAuthoring/World Scan Demo";
-        private const string PackageSampleRoot = "Packages/com.jlinkdev.world-scanning/Samples~/World Scan Demo";
+        private const string AuthoringRoot = "Assets/PackageSamples/com.jlinkdev.world-scanning/World Scan Demo";
 
         [MenuItem("Tools/jlinkdev/World Scanning/Rebuild Development Content")]
         public static void BuildAll()
         {
-            UniversalRenderPipelineAsset pipeline = ConfigureUrp();
-            BuildDemo(pipeline);
-            PublishSample();
+            BuildDemo();
+            PackageSamplePublisher.Publish(AuthoringRoot);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[jlinkdev World Scanning] URP configuration and World Scan Demo rebuilt.");
+            Debug.Log("[jlinkdev World Scanning] World Scan Demo rebuilt.");
         }
 
-        private static UniversalRenderPipelineAsset ConfigureUrp()
-        {
-            EnsureFolder(RenderingRoot);
-            string rendererPath = $"{RenderingRoot}/World Scan Universal Renderer.asset";
-            UniversalRendererData rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererPath);
-            if (rendererData == null)
-            {
-                rendererData = ScriptableObject.CreateInstance<UniversalRendererData>();
-                rendererData.name = "World Scan Universal Renderer";
-                AssetDatabase.CreateAsset(rendererData, rendererPath);
-            }
-
-            bool hasFeature = false;
-            foreach (ScriptableRendererFeature rendererFeature in rendererData.rendererFeatures)
-            {
-                if (rendererFeature is ScanRendererFeature)
-                {
-                    hasFeature = true;
-                    break;
-                }
-            }
-            if (!hasFeature)
-            {
-                ScanRendererFeature feature = ScriptableObject.CreateInstance<ScanRendererFeature>();
-                feature.name = "World Scan Renderer Feature";
-                AssetDatabase.AddObjectToAsset(feature, rendererData);
-                rendererData.rendererFeatures.Add(feature);
-                feature.Create();
-                EditorUtility.SetDirty(feature);
-            }
-
-            string pipelinePath = $"{RenderingRoot}/World Scan Universal Render Pipeline.asset";
-            UniversalRenderPipelineAsset pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
-            if (pipeline == null)
-            {
-                pipeline = UniversalRenderPipelineAsset.Create(rendererData);
-                pipeline.name = "World Scan Universal Render Pipeline";
-                AssetDatabase.CreateAsset(pipeline, pipelinePath);
-            }
-            pipeline.renderScale = 1f;
-            pipeline.msaaSampleCount = 1;
-            pipeline.supportsHDR = true;
-            GraphicsSettings.defaultRenderPipeline = pipeline;
-            QualitySettings.renderPipeline = pipeline;
-            PlayerSettings.colorSpace = ColorSpace.Linear;
-            EditorUtility.SetDirty(rendererData);
-            EditorUtility.SetDirty(pipeline);
-            return pipeline;
-        }
-
-        private static void BuildDemo(UniversalRenderPipelineAsset pipeline)
+        private static void BuildDemo()
         {
             EnsureFolder($"{AuthoringRoot}/Scenes");
             EnsureFolder($"{AuthoringRoot}/Materials");
@@ -123,6 +69,7 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Development
             serializedController.FindProperty("automaticInterval").floatValue = 5f;
             serializedController.ApplyModifiedPropertiesWithoutUndo();
 
+            SampleScenePresentation.Apply(scene, AuthoringRoot);
             EditorSceneManager.SaveScene(scene, $"{AuthoringRoot}/Scenes/World Scan Demo.unity");
         }
 
@@ -229,6 +176,10 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Development
             cameraObject.transform.position = new Vector3(17f, 11f, -17f);
             cameraObject.transform.LookAt(focus.position + Vector3.up * 1.5f);
             Camera camera = cameraObject.AddComponent<Camera>();
+            cameraObject.AddComponent<ScanCameraPass>().feature = AssetDatabase.LoadAssetAtPath<ScanRendererFeature>(
+                AuthoringRoot + "/Settings/Scan Feature.asset");
+            camera.allowMSAA = false;
+            camera.GetUniversalAdditionalCameraData().requiresDepthTexture = true;
             camera.fieldOfView = 55f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 250f;
@@ -236,7 +187,7 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Development
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.006f, 0.009f, 0.015f);
             cameraObject.AddComponent<AudioListener>();
-            UniversalAdditionalCameraData cameraData = cameraObject.AddComponent<UniversalAdditionalCameraData>();
+            UniversalAdditionalCameraData cameraData = camera.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = true;
             WorldScanDemoCamera orbit = cameraObject.AddComponent<WorldScanDemoCamera>();
             SerializedObject serialized = new SerializedObject(orbit);
@@ -365,15 +316,6 @@ namespace jlinkdev.UnityUtilities.WorldScanning.Development
             gameObject.transform.localScale = scale;
             gameObject.GetComponent<Renderer>().sharedMaterial = material;
             return gameObject;
-        }
-
-        private static void PublishSample()
-        {
-            FileUtil.DeleteFileOrDirectory(PackageSampleRoot);
-            FileUtil.DeleteFileOrDirectory($"{PackageSampleRoot}.meta");
-            Directory.CreateDirectory(Path.GetDirectoryName(PackageSampleRoot));
-            FileUtil.CopyFileOrDirectory(AuthoringRoot, PackageSampleRoot);
-            FileUtil.CopyFileOrDirectory($"{AuthoringRoot}.meta", $"{PackageSampleRoot}.meta");
         }
 
         private static void EnsureFolder(string path)

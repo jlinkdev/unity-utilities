@@ -4002,7 +4002,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 1973331794}
   beaconRenderer: {fileID: 528408626}
@@ -4018,7 +4018,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -4465,7 +4465,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
   m_IsGlobal: 1
   priority: 10
@@ -4743,7 +4743,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 439985694}
   beaconRenderer: {fileID: 591419765}
@@ -4759,7 +4759,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -7248,7 +7248,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 587667252}
   beaconRenderer: {fileID: 1021268196}
@@ -7264,7 +7264,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -7694,6 +7694,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1084024005}
   - component: {fileID: 1084024004}
+  - component: {fileID: 1802035411}
   - component: {fileID: 1084024003}
   - component: {fileID: 1084024002}
   - component: {fileID: 1084024001}
@@ -7714,7 +7715,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9826146500d55ae47a889dd33ccdac06, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoCamera
   focus: {fileID: 772447064}
   angularSpeed: 5
@@ -7729,10 +7730,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
   m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
+  m_RequiresDepthTextureOption: 1
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
@@ -7771,6 +7772,19 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084024000}
   m_Enabled: 1
+--- !u!114 &1802035411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084024000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25166556ff7247a2ad54b554e00fbce4, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  feature: {fileID: 11400000, guid: 1d43782a0d950b4510c6579cafac29bd, type: 2}
 --- !u!20 &1084024004
 Camera:
   m_ObjectHideFlags: 0
@@ -7816,7 +7830,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -8780,7 +8794,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 1392307484}
   beaconRenderer: {fileID: 1227592493}
@@ -8796,7 +8810,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -9151,7 +9165,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 2131931920}
   beaconRenderer: {fileID: 1253246415}
@@ -9167,7 +9181,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -10571,7 +10585,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 1334479046}
   beaconRenderer: {fileID: 1420802180}
@@ -10587,7 +10601,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -11279,7 +11293,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dbde7c7d22f8ea49a2153ba5770380a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoBeacon
   beaconLight: {fileID: 241312936}
   beaconRenderer: {fileID: 1505524276}
@@ -11295,7 +11309,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e51a69c1a1367cc42b0e2f72edb14290, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanReceiver
   samplePoint: {fileID: 0}
   onScanned:
@@ -11631,7 +11645,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b060e205453ac8b4285ebee50fb7dc64, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.WorldScanning.Samples.WorldScanDemoController
   emitter: {fileID: 1549750055}
   profiles:
@@ -11639,6 +11653,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e4cd77ee5d04f1c4a8cd3c8384c34743, type: 2}
   - {fileID: 11400000, guid: 001547589532f654589dbecf555bdf7b, type: 2}
   automaticInterval: 5
+  sampleSkin: {fileID: 11400000, guid: 9c2d14c878d2bb44c80e528214d6e66f, type: 2}
 --- !u!114 &1549750055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11649,7 +11664,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3577cbf7dca44774d8425e2d6fe1f5c0, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: jlinkdev.WorldScanning::jlinkdev.UnityUtilities.WorldScanning.ScanEmitter
   profile: {fileID: 11400000, guid: a4c4044ce473bbb4782966bb367b81e8, type: 2}
   origin: {fileID: 0}
@@ -16079,10 +16094,46 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2133608030}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &88844101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 88844102}
+  - component: {fileID: 88844103}
+  m_Layer: 5
+  m_Name: Sample Identity
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &88844102
+Transform:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 88844101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &88844103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 88844101}
+  m_Enabled: 1
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name:
+  m_EditorClassIdentifier:
+  m_PanelSettings: {fileID: 11400000, guid: 02f3a5fee7e15a94a9b0847f8353e0cf, type: 2}
+  sourceAsset: {fileID: 9197481963319205126, guid: b5fe2b6d94da1371015b18ccc17d4767, type: 3}
+  m_SortingOrder: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 88844102}
   - {fileID: 914908613}
   - {fileID: 1648211892}
   - {fileID: 134926293}

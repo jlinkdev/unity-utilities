@@ -41,7 +41,7 @@ public sealed class SelectablePart : MonoBehaviour
 
 ## Sample
 
-Import **Selection Gallery** from Package Manager, open **Selection Gallery.unity**, and enter Play Mode. The gear starts with a cyan outline and the impeller with an amber outline and glow. Hover and click the three parts to change their states. The scene uses its own URP asset during play and restores the previous pipeline on exit. [Gallery guide](<Samples~/Selection Gallery/README.md>)
+Import **Selection Gallery** from Package Manager. Choose **Install** for the shared Sample Framework captions or **Later** to keep the default captions. Open **Scenes/Selection Gallery.unity** and enter Play Mode. The gear starts with a cyan outline and the impeller with an amber outline and glow. Hover and click the three parts to change their states. The gallery camera runs the included highlighting feature. [Gallery guide](<Samples~/Selection Gallery/README.md>) · [Manual installation and version support](Documentation~/sample-framework.md)
 
 ## Limitations
 

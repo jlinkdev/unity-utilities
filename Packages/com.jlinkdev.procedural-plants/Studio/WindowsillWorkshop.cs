@@ -187,6 +187,7 @@ namespace JLink.Plants.Studio
         {
             if (!Ready) return;
             if (dirtyView) Sync();
+            if (Application.IsPlaying(gameObject) && Active.Growth != null) UpdateWorkshop();
             if (Application.IsPlaying(gameObject) && playingClock)
             {
                 elapsed+=Time.deltaTime;
@@ -245,6 +246,7 @@ namespace JLink.Plants.Studio
         }
         void OnDisable()
         {
+            workshop.Close();
             playingClock=false;
             ClearTray(); DisposeObject(ref frozenDisplay); ClearGuide(); ClearPlacementPreview();
         }

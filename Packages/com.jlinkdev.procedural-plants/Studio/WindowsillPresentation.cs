@@ -201,7 +201,14 @@ namespace JLink.Plants.Studio
             // Reserve a fixed fraction of the Game view for the controls.
             float scale=UiScale;
             float fraction=Application.IsPlaying(gameObject)?Mathf.Min(294*scale/Mathf.Max(1,Screen.width),.44f):0;
-            float aspect=Mathf.Max(.3f,viewCamera.aspect), available=aspect*(1-fraction);
+            float bottomFraction=0;
+            if (workshop.Ready)
+            {
+                fraction = workshop.RailWidth / workshop.PanelWidth;
+                bottomFraction = workshop.ShelfHeight / workshop.PanelHeight;
+            }
+            float heightFraction=Mathf.Max(.1f,1-bottomFraction);
+            float aspect=Mathf.Max(.3f,viewCamera.aspect), available=aspect*(1-fraction)/heightFraction;
             Vector3 center;
             float size;
             Quaternion rotation;
@@ -235,8 +242,9 @@ namespace JLink.Plants.Studio
                 rotation=Quaternion.Euler(8,orbit,0);
                 size=Mathf.Max(bounds.extents.y+.16f,(bounds.extents.x+.12f)/available)*1.08f*zoom;
             }
+            size /= heightFraction;
             viewCamera.orthographicSize=size;
-            viewCamera.transform.SetPositionAndRotation(center-rotation*Vector3.right*(size*aspect*fraction)-rotation*Vector3.forward*4,rotation);
+            viewCamera.transform.SetPositionAndRotation(center-rotation*Vector3.right*(size*aspect*fraction)-rotation*Vector3.up*(size*bottomFraction)-rotation*Vector3.forward*4,rotation);
         }
     }
 }

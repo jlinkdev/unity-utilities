@@ -1,0 +1,16 @@
+{
+  "name": "EditableAssembly.jlinkdev.Forcefields.Showcase",
+  "rootNamespace": "jlinkdev.UnityUtilities.Forcefields.EditableSamples",
+  "references": [
+    "jlinkdev.Forcefields"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

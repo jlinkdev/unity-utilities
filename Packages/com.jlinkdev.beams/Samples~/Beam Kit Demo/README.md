@@ -21,3 +21,7 @@ reported as data; the sample does not apply damage or other gameplay effects.
 If beams are missing, confirm an active URP pipeline and assigned beam materials.
 For authoring and performance details, see the installed package's README and
 Documentation~ folder.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > Beams > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

@@ -12,7 +12,7 @@
     {
       "displayName": "Object Pooling",
       "description": "Demonstrates single-prefab handles and multi-prefab registries backed by definition sets.",
-      "path": "Samples~/ObjectPooling"
+      "path": "Samples~/Object Pooling"
     }
   ]
 }

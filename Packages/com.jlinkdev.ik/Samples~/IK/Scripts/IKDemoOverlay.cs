@@ -1,4 +1,6 @@
+using SliderDraw = System.Func<UnityEngine.Rect, string, string, float, float, float, float>;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace jlinkdev.UnityUtilities.Samples.IK
 {
@@ -14,17 +16,62 @@ namespace jlinkdev.UnityUtilities.Samples.IK
         [SerializeField] [Tooltip("Pixel size for 2D target pads.")]
         private float _padSize = 180f;
 
+        [SerializeField] private GUISkin sampleSkin;
+        [SerializeField] private UIDocument sampleIdentity;
+        [SerializeField] private ScriptableObject sliderPresenter;
+        private SliderDraw drawSampleSlider;
+        private SliderDraw SampleSlider
+        {
+            get
+            {
+                if (drawSampleSlider == null && sliderPresenter)
+                    drawSampleSlider = (SliderDraw)System.Delegate.CreateDelegate(typeof(SliderDraw), sliderPresenter, "Draw", false);
+                return drawSampleSlider;
+            }
+        }
+
+
         private void OnGUI()
         {
-            _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, DrawWindow, "IK Demo");
+            var previous = GUI.skin;
+            if (sampleSkin) GUI.skin = sampleSkin;
+            try { DrawControls(); }
+            finally { GUI.skin = previous; }
+        }
+
+        private Vector2 scroll;
+        private float contentHeight;
+
+        private void DrawControls()
+        {
+            var root = sampleIdentity ? sampleIdentity.rootVisualElement : null;
+            var header = root?.Q(className: "sample-identity");
+            float top = header?.panel != null && header.worldBound.height > 0f && root.worldBound.height > 0f
+                ? (header.worldBound.yMax + 8f) * Screen.height / root.worldBound.height : 0f;
+            float available = Mathf.Max(1f, Screen.height - top - 8f);
+            _windowRect.height = Mathf.Min(contentHeight > 0f ? contentHeight : _windowRect.height, available);
+            _windowRect.y = Mathf.Clamp(_windowRect.y, top, Mathf.Max(top, Screen.height - _windowRect.height));
+            _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, DrawWindow, "IK Demo",
+                GUILayout.Height(_windowRect.height));
         }
 
         private void DrawWindow(int windowId)
         {
+            scroll = GUILayout.BeginScrollView(scroll);
+            GUILayout.BeginVertical(GUILayout.ExpandHeight(false));
+            DrawWindowContents();
+            GUILayout.EndVertical();
+            if (Event.current.type == EventType.Repaint)
+                contentHeight = GUILayoutUtility.GetLastRect().height + GUI.skin.window.padding.vertical + 8f;
+            GUILayout.EndScrollView();
+            GUI.DragWindow(new Rect(0f, 0f, _windowRect.width, 20f));
+        }
+
+        private void DrawWindowContents()
+        {
             if (_controller == null)
             {
                 GUILayout.Label("Assign IKDemoController.");
-                GUI.DragWindow();
                 return;
             }
 
@@ -35,8 +82,6 @@ namespace jlinkdev.UnityUtilities.Samples.IK
             DrawGrid("Target Grid", _controller.CurrentTargetGrid, false);
             DrawGrid("Pole Grid", _controller.CurrentPoleGrid, true);
             DrawSolverControls();
-
-            GUI.DragWindow();
         }
 
         private void DrawDescription()
@@ -153,7 +198,7 @@ namespace jlinkdev.UnityUtilities.Samples.IK
 
             Vector2 point = NormalizedToPadPosition(rect, grid.NormalizedPosition);
             Rect pointRect = new Rect(point.x - 6f, point.y - 6f, 12f, 12f);
-            GUI.color = poleGrid ? new Color(1f, 0.35f, 1f, 1f) : new Color(0.35f, 1f, 0.45f, 1f);
+            GUI.color = poleGrid ? new Color(1f, .65f, .24f) : new Color(.16f, .86f, .84f);
             GUI.DrawTexture(pointRect, Texture2D.whiteTexture);
 
             GUI.color = previousColor;
@@ -304,6 +349,7 @@ namespace jlinkdev.UnityUtilities.Samples.IK
 
         private float DrawSlider(string label, float value, float min, float max)
         {
+            if (SampleSlider != null) return SampleSlider(GUILayoutUtility.GetRect(0, 35, GUILayout.ExpandWidth(true)),label,value.ToString("0.00"),value,min,max);
             GUILayout.BeginHorizontal();
             GUILayout.Label($"{label}: {value:0.00}", GUILayout.Width(145f));
             float nextValue = GUILayout.HorizontalSlider(value, min, max);

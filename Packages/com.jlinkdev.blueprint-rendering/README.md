@@ -24,7 +24,7 @@ https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.blue
 
 ## Sample
 
-Import **Planetary Gearbox** from Package Manager. Open `Planetary Gearbox.unity` and enter Play Mode. Drag to orbit, scrub **Explode**, and switch **Layers** between one and four. The demo temporarily selects its included URP asset in Play Mode and restores the previous selection on exit. [Sample guide](<Samples~/Planetary Gearbox/README.md>)
+Import **Planetary Gearbox** from Package Manager. Open `Planetary Gearbox.unity` and enter Play Mode. Drag to orbit, scrub **Explode**, and switch **Layers** between one and four. The sample camera runs the included blueprint feature. [Sample guide](<Samples~/Planetary Gearbox/README.md>)
 
 ## Limitations
 

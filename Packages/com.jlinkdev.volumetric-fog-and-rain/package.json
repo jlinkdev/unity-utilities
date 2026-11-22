@@ -31,7 +31,7 @@
     },
     {
       "displayName": "Fog Laboratory",
-      "description": "Fog-only volume with a clear canopy interior and its own URP pipeline.",
+      "description": "Fog-only volume with a clear canopy interior and camera-local rendering.",
       "path": "Samples~/Fog Laboratory"
     }
   ]

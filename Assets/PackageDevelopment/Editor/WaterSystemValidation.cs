@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using jlinkdev.UnityUtilities.WaterSystem;
-using jlinkdev.UnityUtilities.WaterSystem.Samples;
+using jlinkdev.UnityUtilities.WaterSystem.EditableSamples;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
@@ -16,7 +16,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
     public static class WaterSystemValidation
     {
         static WaterLaboratoryController laboratory;
-        static RenderPipelineAsset oldGraphics, oldQuality;
         static int frames;
         static readonly string CaptureDirectory = "WaterValidationCaptures";
 
@@ -26,10 +25,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             EditorSceneManager.OpenScene(WaterSystemDevelopmentBuilder.Root + "/Scenes/Water Laboratory.unity");
             laboratory = UnityEngine.Object.FindFirstObjectByType<WaterLaboratoryController>();
             if (laboratory == null) throw new InvalidOperationException("Sample controller missing.");
-            oldGraphics = GraphicsSettings.defaultRenderPipeline;
-            oldQuality = QualitySettings.renderPipeline;
-            GraphicsSettings.defaultRenderPipeline = laboratory.Pipeline;
-            QualitySettings.renderPipeline = laboratory.Pipeline;
             frames = 0;
             EditorApplication.update += Tick;
         }
@@ -41,11 +36,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             int exit = 0;
             try { CaptureAndValidate(); }
             catch (Exception exception) { Debug.LogException(exception); exit = 1; }
-            finally
-            {
-                GraphicsSettings.defaultRenderPipeline = oldGraphics;
-                QualitySettings.renderPipeline = oldQuality;
-            }
             EditorApplication.Exit(exit);
         }
 
@@ -153,10 +143,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
         public static void BuildPlayer()
         {
             EditorSceneManager.OpenScene(WaterSystemDevelopmentBuilder.Root + "/Scenes/Water Laboratory.unity");
-            var controller = UnityEngine.Object.FindFirstObjectByType<WaterLaboratoryController>();
-            GraphicsSettings.defaultRenderPipeline = controller.Pipeline;
-            QualitySettings.renderPipeline = controller.Pipeline;
-            AssetDatabase.SaveAssets();
             Directory.CreateDirectory("Builds");
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                 scenes = new[] { WaterSystemDevelopmentBuilder.Root + "/Scenes/Water Laboratory.unity" },

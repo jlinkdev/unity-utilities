@@ -30,7 +30,7 @@ https://github.com/jlinkdev/unity-utilities.git?path=/Packages/com.jlinkdev.proc
 
 ## Sample
 
-In this checkout open `Assets/PackageDevelopment/ProceduralFrames/SampleAuthoring/Frame Workshop/Frame Workshop.unity`. In another project import **Frame Workshop** from the package’s **Samples** tab and open the imported scene. Press **Play** and choose **Loops**. The included **Ornament study** design opens with beads on the inner lip and a running leaf scroll on the outer rail. Select either loop to edit its repeats. Switch to **Frame** to reshape the base moulding or change the mount. [Workshop controls](<Samples~/Frame Workshop/README.md>)
+In this checkout open `Assets/PackageSamples/com.jlinkdev.procedural-frames/Frame Workshop/Scenes/Frame Workshop.unity`. In another project import **Frame Workshop** from the package’s **Samples** tab and open the imported scene. Press **Play** and choose **Loops**. The included **Ornament study** design opens with beads on the inner lip and a running leaf scroll on the outer rail. Select either loop to edit its repeats. Switch to **Frame** to reshape the base moulding or change the mount. [Workshop controls](<Samples~/Frame Workshop/README.md>)
 
 ## Limitations
 

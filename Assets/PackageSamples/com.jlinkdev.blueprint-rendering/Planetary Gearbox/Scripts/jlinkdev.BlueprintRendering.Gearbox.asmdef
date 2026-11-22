@@ -1,0 +1,4 @@
+{
+  "name": "EditableAssembly.jlinkdev.BlueprintRendering.Gearbox",
+  "references": ["jlinkdev.BlueprintRendering", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime"]
+}

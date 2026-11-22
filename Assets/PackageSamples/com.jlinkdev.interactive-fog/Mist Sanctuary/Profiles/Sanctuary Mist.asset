@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25fe43d6842d46e7802cebf2edfe45ac, type: 3}
+  m_Name: Sanctuary Mist
+  m_EditorClassIdentifier:
+  settings:
+    vorticity: 1.8
+    turbulence: 0.4
+    eddySize: 1.2
+    velocityDamping: 0.45
+    wind: {x: 0.035, y: 0, z: 0.015}
+    densityShape: 2
+    puffSize: 1.48
+    cloudCoverage: 0
+    plumeLift: 0
+    fogHeight: 0.55
+    replenishment: 0
+    restRecovery: 0.25
+    extinction: 3.0
+    albedo: {r: 0.49, g: 0.50, b: 0.52, a: 1}
+    ambient: {r: 0.19, g: 0.22, b: 0.28, a: 1}
+    anisotropy: 0.15
+    detail: 0.65
+    foldSize: 1.85
+    wispDisplacement: 0.14
+    wispOpacity: 0
+    puffs:
+      spacing: 0.5
+      coverage: 1
+      fieldSeed: 173
+      growthRange: {x: 2, y: 3.5}
+      settlingRange: {x: 2.5, y: 4}
+      quietRange: {x: 0.5, y: 1}
+      radiusRange: {x: 0.1, y: 0.6}
+      density: 1.4
+      mistAmount: 0.46
+      spreadSpeed: 0.4

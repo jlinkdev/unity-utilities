@@ -19,22 +19,9 @@ to retain detail in the bright sunlit geometry.
 All controls are mouse-operated IMGUI. The camera-state readout uses five sample
 points; the renderer computes the underwater portion per pixel independently.
 
-## Pipeline setup and restoration
+## Camera rendering
 
-Use Unity 6 with URP 17.0.3 and Render Graph enabled. The sample controller
-temporarily assigns `Settings/Water Pipeline.asset` to Graphics and the active
-Quality setting while enabled in Play Mode. On disable or scene unload, it
-restores the previous assets if they are still set to the sample pipeline.
-It does not overwrite a pipeline change made by other code while it is active.
-
-This is a global runtime pipeline override. Run the sample as a standalone scene;
-do not combine multiple sample controllers in an additive scene. Before Play,
-the Scene view uses your existing project pipeline. To preview the full effect
-there, explicitly add the Water Renderer Feature to your normal renderer or
-select the sample pipeline in your project settings yourself.
-
-The sample does not change color space or the Render Graph compatibility switch.
-The package setup menu is separate and changes only the renderer you select.
+Use Unity 6 with URP 17 and Render Graph enabled. The Laboratory Camera requests depth and opaque textures. Its Water Camera Pass references the feature in Water Renderer. Open the Game view to preview the effect through that camera.
 
 ## Customize
 
@@ -49,3 +36,7 @@ development builder or other files from the source repository's `Assets` folder
 are required. Source-repository maintainers can rebuild this scene with
 `WaterSystemDevelopmentBuilder.BuildAll`; it publishes the authoring assets into
 the package sample and does not alter project Graphics or Quality settings.
+
+## Sample presentation
+
+On import, choose **Install** to use the shared fonts, icons, and sample header. To install later, choose **Tools > jlinkdev > Water System > Install Sample Framework**. Before the release tag is published, use Package Manager's **Install package from disk** and select `Packages/com.jlinkdev.sample-framework/package.json` from a Unity Utilities checkout.

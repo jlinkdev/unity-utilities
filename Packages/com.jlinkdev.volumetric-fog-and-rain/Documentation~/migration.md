@@ -28,7 +28,7 @@ remain unchanged. Asset/script GUIDs are preserved, and Unity object types carry
 `MovedFrom` metadata for their former namespace/assembly. Existing scene and
 profile references are intended to survive the move; ordinary C# source references
 still need the namespace update. Host authoring assets now live under
-`Assets/PackageDevelopment/VolumetricFogAndRain`.
+`Assets/PackageSamples/com.jlinkdev.volumetric-fog-and-rain`.
 
 Defaults preserve the previous renderer: before post-processing, hard boxes,
 rain-linked combined fog, zero height falloff, stationary noise, no directional

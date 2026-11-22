@@ -132,9 +132,13 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
                                 "Floating rigidbody and buoyancy " + i, errors, report);
                         }
                     }
-                    var pipeline = serialized.FindProperty("Pipeline").objectReferenceValue as UniversalRenderPipelineAsset;
-                    Check(pipeline != null, "Controller pipeline reference", errors, report);
-                    if (pipeline != null) VerifyPipeline(pipeline, errors, report);
+                    if (camera != null)
+                    {
+                        var local = camera.GetComponent<WaterCameraPass>();
+                        Check(local && local.feature && local.feature.isActive, "Camera-local water feature", errors, report);
+                        var data = camera.GetComponent<UniversalAdditionalCameraData>();
+                        Check(data && data.requiresDepthTexture && data.requiresColorTexture, "Camera requests depth and color", errors, report);
+                    }
                 }
                 var volume = components.OfType<Volume>().FirstOrDefault(item => item.isGlobal);
                 Check(volume != null && volume.sharedProfile != null, "Global grading Volume and profile", errors, report);
@@ -165,22 +169,6 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             if (errors.Count != 0)
                 throw new InvalidOperationException("Water Laboratory consumer verification failed. See " + ReportFile + Environment.NewLine + string.Join(Environment.NewLine, errors));
             Debug.Log("[Water System] Clean consumer sample verification passed. " + ReportFile);
-        }
-
-        private static void VerifyPipeline(UniversalRenderPipelineAsset pipeline, List<string> errors, StringBuilder report)
-        {
-            Check(pipeline.supportsCameraDepthTexture && pipeline.supportsCameraOpaqueTexture,
-                "Sample pipeline enables depth and opaque textures", errors, report);
-            var serialized = new SerializedObject(pipeline);
-            var renderers = serialized.FindProperty("m_RendererDataList");
-            int index = serialized.FindProperty("m_DefaultRendererIndex").intValue;
-            var renderer = renderers != null && index >= 0 && index < renderers.arraySize
-                ? renderers.GetArrayElementAtIndex(index).objectReferenceValue as UniversalRendererData : null;
-            Check(renderer != null, "Pipeline's default Universal Renderer reference", errors, report);
-            if (renderer == null) return;
-            Check(renderer.rendererFeatures.Any(item => item is WaterRendererFeature && item.isActive),
-                "Active WaterRendererFeature sub-asset", errors, report);
-            Check(renderer.postProcessData != null, "Renderer post-processing resources", errors, report);
         }
 
         private static void CheckObjectReferences(Component component, List<string> errors)

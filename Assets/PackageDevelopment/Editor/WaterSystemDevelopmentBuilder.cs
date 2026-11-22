@@ -1,7 +1,7 @@
 using System.IO;
 using jlinkdev.UnityUtilities.WaterSystem;
 using jlinkdev.UnityUtilities.WaterSystem.Editor;
-using jlinkdev.UnityUtilities.WaterSystem.Samples;
+using jlinkdev.UnityUtilities.WaterSystem.EditableSamples;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
     /// <summary>Host-only authoring utility. Never changes Graphics or Quality project settings.</summary>
     public static class WaterSystemDevelopmentBuilder
     {
-        public const string Root = "Assets/PackageDevelopment/WaterSystem/SampleAuthoring/Water Laboratory";
+        public const string Root = "Assets/PackageSamples/com.jlinkdev.water-system/Water Laboratory";
 
         [MenuItem("Tools/jlinkdev/Water System/Rebuild Water Laboratory (Development)")]
         public static void BuildAll()
@@ -156,16 +156,16 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             var laboratory = new GameObject("Water Laboratory Controls").AddComponent<WaterLaboratoryController>();
             laboratory.Water = water;
             laboratory.ViewCamera = camera;
-            laboratory.Pipeline = pipeline;
+            camera.gameObject.AddComponent<WaterCameraPass>().feature =
+                (WaterRendererFeature)renderer.rendererFeatures.Find(item => item is WaterRendererFeature);
+            camera.allowMSAA = false;
             laboratory.Presets = profiles;
             laboratory.FloatingProps = floating;
+            SampleScenePresentation.Apply(scene, Root);
             EditorSceneManager.SaveScene(scene, Root + "/Scenes/Water Laboratory.unity");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            var package = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(WaterBody).Assembly);
-            if (package == null)
-                throw new System.InvalidOperationException("Cannot locate the installed Water System package for sample publishing.");
-            CopyDirectory(Root, Path.Combine(package.resolvedPath, "Samples~/Water Laboratory"));
+            PackageSamplePublisher.Publish(Root);
             Debug.Log("[Water System] Water Laboratory built and published. Project Graphics and Quality settings were not changed.");
         }
 
@@ -223,13 +223,5 @@ namespace jlinkdev.UnityUtilities.WaterSystem.Development
             AssetDatabase.CreateFolder(parent, Path.GetFileName(path));
         }
 
-        private static void CopyDirectory(string source, string destination)
-        {
-            Directory.CreateDirectory(destination);
-            foreach (string file in Directory.GetFiles(source))
-                File.Copy(file, Path.Combine(destination, Path.GetFileName(file)), true);
-            foreach (string directory in Directory.GetDirectories(source))
-                CopyDirectory(directory, Path.Combine(destination, Path.GetFileName(directory)));
-        }
     }
 }

@@ -35,8 +35,7 @@ For a code-driven scan, see the complete example in the API guide.
 
 Import **World Scan Demo** from the package's **Samples** tab. Open
 `Scenes/World Scan Demo.unity` and press Play. Use **Emit Pulse** and **Next Profile**
-to explore spherical and cylindrical scans. Configure the renderer feature first;
-the sample does not change your project's pipeline settings.
+to explore spherical and cylindrical scans. The sample camera has its own Scan Camera Pass.
 See the [sample guide](<Samples~/World Scan Demo/README.md>).
 
 ## Limitations

@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement class="sample-identity gallery-heading" picking-mode="Ignore">
+        <ui:VisualElement class="sample-identity-content" picking-mode="Ignore">
+            <ui:VisualElement class="sample-identity-gradient" picking-mode="Ignore" />
+            <ui:VisualElement class="studio-mark studio-mark--gallery" picking-mode="Ignore" />
+            <ui:VisualElement picking-mode="Ignore">
+                <ui:Label name="package-name" class="sample-package" text="Object Highlighting" picking-mode="Ignore" />
+                <ui:Label name="sample-name" class="sample-name" text="Selection Gallery" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Label name="gallery-instructions" class="gallery-instructions" text="Hover to outline. Click to select. Click again or click empty space to clear." picking-mode="Ignore" />
+    <ui:VisualElement name="station-0" class="station-caption" picking-mode="Ignore"><ui:Label class="station-name" text="Spur gear" picking-mode="Ignore" /><ui:Label class="station-state" picking-mode="Ignore" /></ui:VisualElement>
+    <ui:VisualElement name="station-1" class="station-caption" picking-mode="Ignore"><ui:Label class="station-name" text="Impeller" picking-mode="Ignore" /><ui:Label class="station-state" picking-mode="Ignore" /></ui:VisualElement>
+    <ui:VisualElement name="station-2" class="station-caption" picking-mode="Ignore"><ui:Label class="station-name" text="Coupling" picking-mode="Ignore" /><ui:Label class="station-state" picking-mode="Ignore" /></ui:VisualElement>
+</ui:UXML>

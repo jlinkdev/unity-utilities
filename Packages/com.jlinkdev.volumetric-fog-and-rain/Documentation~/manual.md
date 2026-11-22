@@ -22,13 +22,7 @@ Import **Rain Laboratory** from the package Samples tab and open its scene. Alte
 run **Tools > jlinkdev > Volumetric Fog and Rain > Create Rain Laboratory**. It creates a unique
 folder under `Assets/VolumetricFogAndRain` containing a scene, profile, material, renderer,
 and URP pipeline. The normal save prompt protects unsaved scene work before opening the new scene.
-Open the scene on its own and press **Play**. Its **Rain Demo Pipeline** component
-temporarily assigns the demo pipeline to Graphics and the active Quality level, then
-restores previous settings on disable, scene unload, or exiting Play mode.
-This opt-in demo component changes the pipeline globally while active; use one
-laboratory at a time. Edit-mode preview still requires manually assigning the demo
-pipeline or adding the rain feature to your current renderer. The component does
-not change settings simply by opening the scene.
+Open the scene and press **Play**. Its Rain Camera Pass references the supplied rain feature. Preview the laboratory through Rain Camera in Game view.
 
 Select Rain Camera to freeze time, adjust intensity, or switch debug views:
 

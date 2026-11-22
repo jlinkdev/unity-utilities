@@ -1,6 +1,5 @@
-using System.IO;
 using jlinkdev.UnityUtilities.Portals;
-using jlinkdev.UnityUtilities.Portals.Samples;
+using jlinkdev.UnityUtilities.Portals.EditableSamples;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,52 +11,22 @@ namespace jlinkdev.UnityUtilities.Portals.Development
 {
     public static class PortalDevelopmentBuilder
     {
-        private const string RenderingRoot = "Assets/PackageDevelopment/Rendering";
-        private const string AuthoringRoot = "Assets/PackageDevelopment/Portals/SampleAuthoring/Portal Playground";
-        private const string PackageSampleRoot = "Packages/com.jlinkdev.portals/Samples~/Portal Playground";
+        private const string AuthoringRoot = "Assets/PackageSamples/com.jlinkdev.portals/Portal Playground";
 
         [MenuItem("Tools/jlinkdev/Portals/Rebuild Development Content")]
         public static void BuildAll()
         {
-            ConfigureUrp();
             BuildPlayground();
-            PublishSample();
+            PackageSamplePublisher.Publish(AuthoringRoot);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[jlinkdev Portals] URP host configuration and Portal Playground sample rebuilt.");
-        }
-
-        private static void ConfigureUrp()
-        {
-            EnsureFolder(RenderingRoot);
-            string rendererPath = $"{RenderingRoot}/Portal Universal Renderer.asset";
-            UniversalRendererData rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererPath);
-            if (rendererData == null)
-            {
-                rendererData = ScriptableObject.CreateInstance<UniversalRendererData>();
-                AssetDatabase.CreateAsset(rendererData, rendererPath);
-            }
-
-            string pipelinePath = $"{RenderingRoot}/Portal Universal Render Pipeline.asset";
-            UniversalRenderPipelineAsset pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
-            if (pipeline == null)
-            {
-                pipeline = UniversalRenderPipelineAsset.Create(rendererData);
-                pipeline.name = "Portal Universal Render Pipeline";
-                AssetDatabase.CreateAsset(pipeline, pipelinePath);
-            }
-
-            pipeline.renderScale = 1f;
-            pipeline.msaaSampleCount = 4;
-            GraphicsSettings.defaultRenderPipeline = pipeline;
-            QualitySettings.renderPipeline = pipeline;
-            PlayerSettings.colorSpace = ColorSpace.Linear;
-            EditorUtility.SetDirty(pipeline);
+            Debug.Log("[jlinkdev Portals] Portal Playground sample rebuilt.");
         }
 
         private static void BuildPlayground()
         {
             EnsureFolder($"{AuthoringRoot}/Scenes");
+            EnsureFolder($"{AuthoringRoot}/Settings");
             EnsureFolder($"{AuthoringRoot}/Materials");
             EnsureFolder($"{AuthoringRoot}/Prefabs");
 
@@ -89,6 +58,7 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             CreateRigidbodyTraveller(orange);
             new GameObject("Sample Instructions").AddComponent<PortalSampleOverlay>();
 
+            SampleScenePresentation.Apply(scene, AuthoringRoot);
             EditorSceneManager.SaveScene(scene, $"{AuthoringRoot}/Scenes/Portal Playground.unity");
         }
 
@@ -429,7 +399,7 @@ namespace jlinkdev.UnityUtilities.Portals.Development
 
         private static PortalRenderSettings Settings()
         {
-            string path = $"{AuthoringRoot}/Portal Playground Render Settings.asset";
+            string path = $"{AuthoringRoot}/Settings/Portal Playground Render Settings.asset";
             PortalRenderSettings settings = AssetDatabase.LoadAssetAtPath<PortalRenderSettings>(path);
             if (settings == null)
             {
@@ -448,15 +418,6 @@ namespace jlinkdev.UnityUtilities.Portals.Development
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(settings);
             return settings;
-        }
-
-        private static void PublishSample()
-        {
-            FileUtil.DeleteFileOrDirectory(PackageSampleRoot);
-            FileUtil.DeleteFileOrDirectory($"{PackageSampleRoot}.meta");
-            Directory.CreateDirectory(Path.GetDirectoryName(PackageSampleRoot));
-            FileUtil.CopyFileOrDirectory(AuthoringRoot, PackageSampleRoot);
-            FileUtil.CopyFileOrDirectory($"{AuthoringRoot}.meta", $"{PackageSampleRoot}.meta");
         }
 
         private static void EnsureFolder(string path)

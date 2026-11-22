@@ -11141,6 +11141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 921a40ff0c5ba1344823ce410319124b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.UnityUtilities.Portals.Samples.PortalSampleOverlay
+  sampleSkin: {fileID: 11400000, guid: 9c2d14c878d2bb44c80e528214d6e66f, type: 2}
 --- !u!4 &2131569625
 Transform:
   m_ObjectHideFlags: 0
@@ -11156,10 +11157,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &88844101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 88844102}
+  - component: {fileID: 88844103}
+  m_Layer: 5
+  m_Name: Sample Identity
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &88844102
+Transform:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 88844101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &88844103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 88844101}
+  m_Enabled: 1
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name:
+  m_EditorClassIdentifier:
+  m_PanelSettings: {fileID: 11400000, guid: 02f3a5fee7e15a94a9b0847f8353e0cf, type: 2}
+  sourceAsset: {fileID: 9197481963319205126, guid: e8b7ce3dcf8319fe3832b211a8a06298, type: 3}
+  m_SortingOrder: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 88844102}
   - {fileID: 531978225}
   - {fileID: 369520591}
   - {fileID: 1721199521}
