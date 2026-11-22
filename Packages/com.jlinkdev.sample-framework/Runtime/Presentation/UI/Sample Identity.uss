@@ -29,6 +29,7 @@
 }
 .studio-mark--gallery { background-image: url("Studio Cube.png"); }
 .studio-mark--pottery { background-image: url("Studio Vessel.png"); }
+.studio-mark--rain { background-image: url("Studio Rain.png"); }
 .gallery-heading { width: 400px; }
 .gallery-instructions { position: absolute; top: 72px; left: 19px; font-size: 13px; color: rgb(222,228,235); -unity-font: url("../Fonts/Barlow-Medium.ttf"); -unity-font-definition: initial; }
 .station-caption { position: absolute; width: 140px; align-items: center; }

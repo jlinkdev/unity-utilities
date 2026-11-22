@@ -26,6 +26,10 @@ The **Sample Panel** scales against a 1024 × 576 reference. Use it for every pa
 
 **Studio Plinth** is the same prefab used under the selection parts and the pottery vessel. **Architectural Grid** uses half-metre world-space tiles on walls, floors and curved surfaces. Drag **Studio Grid** into a URP scene for the larger ground plane. Assign **Studio Sky** to a Skybox component on its camera, and set camera clear flags to Skybox. The studio samples enable exponential fog in their own scene lighting settings and use the same haze color as the sky (sRGB 0.186, 0.212, 0.253). An isolated ground prefab also fades with viewing distance when scene fog is disabled. Orthographic and downward-facing cameras can show ground across the whole frame.
 
+**Amber Sconce** is a wall-mounted bronze capsule with an emissive diffuser and a warm point light. Place the prefab origin against the mounting surface, with local +Y up and +Z facing into the room. The samples use the same fixture on brackets, courtyard posts, and low bollards. In Interactive Fog, assign the prefab's child Light to the fog volume's Local Lights to illuminate the mist.
+
+The **Courtyard Stone** folder contains the neutral albedo, surface normal and roughness used in both weather laboratories. They share a physical texture scale so dry and wet stone can sit next to each other. [Stone scan credits](<Runtime/Presentation/Environment/Courtyard Stone/Source.md>)
+
 ## Sample
 
 Import **Caption Preview**, open `Scenes/Caption Preview.unity`, and press Play. [Preview guide](<Samples~/Caption Preview/README.md>)
