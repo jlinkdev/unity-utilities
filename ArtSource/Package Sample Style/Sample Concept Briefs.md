@@ -1,6 +1,6 @@
 # Sample concept briefs
 
-The 14 briefs below were rendered with built-in ImageGen. Each sample links to its full-size concept. The references are listed in the order supplied to the image generator.
+The 15 briefs below were rendered with built-in ImageGen. Each sample links to its full-size concept. The references are listed in the order supplied to the image generator.
 
 Frame Workshop, Plant Studio, and Windowsill share the Pottery Workshop reference. Starlit Passage was left without a separate brief.
 
@@ -157,6 +157,112 @@ Reference inputs in order
 2. [Interactive Fog - Mist Sanctuary](<Interactive Fog - Mist Sanctuary - Concept.png>)
 
 Generate a NEW single landscape 16:9 in-engine Unity game-view concept at 1920×1080 equivalent, edge-to-edge. Use image 1, Object Highlighting, as the exact reference for the small upper-left two-line identity, amber outline icon, hierarchy, understated separator, type scale and light grey subtitle. Use image 2, Mist Sanctuary, only for its economical modular architecture, fine continuous half-meter square grid material and restrained lighting. Change the architecture to fit this particular demonstration. Crisp physically plausible realtime materials. A real render an engineer can reproduce from a small kit of authored meshes. Practical negative space, upper-left header has softly feathered charcoal backing with comfortable internal padding. Match the references' modest scale; avoid oversized titles, posters, overlay editor chrome, callouts, arrows, diagram labels, fabricated watermarks and brand logos. Package feature: particleless world-space rain, meaningful streak scale and haze by distance, depth occlusion. Scene concept: open-air instrument yard viewed diagonally at human eye height; an offset foreground dark bevelled calibration block on the right cuts off streaks behind it, an ochre-painted mid-distance freestanding baffle and repeated slim grey depth posts recede in two sparse staggered rows, a charcoal gridded retaining wall closes the yard. Design the composition around long oblique layers of rain visibly crossing the open sky, middle and distance, finer and less contrasted in the far field; immediate near block is crisp and lit on a planar face. Slim strip drains break up a satin, grid-paved floor. Evening steel-blue light, slight warm lateral kick, short specular glints on concrete rather than a mirrored floor, reserved bright streaks so primary effect reads on dark vertical planes. Practical minimalist rain-measurement yard, no shelter overhead, high camera enough to read the floor pattern. Upper left overlay ONLY, exactly 'Volumetric Fog and Rain' then 'Rain Laboratory', with an outlined amber cloud/rain icon. This sample is configured in the Unity Inspector, so the game view has NO widgets, dashboard, sliders, sample control buttons, debug graph or explanatory text. Keep the rain convincingly visible without washing out the scene.
+
+### Wet window in the existing courtyard view
+
+[Rain Laboratory — wet window concept](<Volumetric Fog and Rain - Rain Laboratory - Wet Window Concept.png>)
+
+Reference inputs in order
+
+1. [Rain Laboratory Game view](<../../Packages/com.jlinkdev.volumetric-fog-and-rain/Documentation~/rain-laboratory.jpg>)
+2. [Rain Observatory — walk-through test bay](<Volumetric Fog and Rain - Rain Observatory - Walkthrough Test Bay Concept.png>)
+
+Make a surgical architectural concept edit to image 1, the actual Unity Rain Laboratory Game view. Keep its exact 16:9 shot, camera transform and framing, unobstructed storm sky, grading, tiled paving, every amber pier and its reflection, central ochre divider, right-hand foreground parapet and the original overlay reading “Volumetric Fog and Rain” and “Rain Laboratory”. Preserve the look and modest fidelity of the actual screenshot. Image 2 is a detail reference ONLY for the window frame, latch and droplet scale.
+
+Add one slim, transparent, rain-wet casement pane in the immediate LEFT foreground, occupying only the left quarter to third of the picture. Put it just in front of the nearest existing amber pier so its capsule lamp is visible through the glass exactly where it is in image 1. Give the pane a thin dark metal frame, a small real latch and a shallow stone sill tied into a short entry windbreak continuing off the left edge. Its narrow right jamb falls between the nearest lamp and the ochre screen, and the courtyard remains entirely open beyond that jamb. No ceiling, no doorway, no extra room, no new light fixtures, no change of viewpoint. Keep the original HUD overlaid in front of the pane, fully readable. On the glass show sparse irregular pinhead beads much smaller than the latch screws, one or two hairline runoff trails and subtle local refraction of the actual lamp and wall joints. Keep the clear glass transmissive. Confine all stuck-on water to this one physical pane. This is one new object in the existing view, not a reimagining of the scene.
+
+#### Wider pane
+
+[Rain Laboratory — wider wet window concept](<Volumetric Fog and Rain - Rain Laboratory - Wider Wet Window Concept.png>)
+
+Reference input
+
+1. [Rain Laboratory — wet window concept](<Volumetric Fog and Rain - Rain Laboratory - Wet Window Concept.png>)
+
+Edit this existing Rain Laboratory concept with exactly one small architectural adjustment. Widen the foreground window horizontally by about one quarter of its current pane width. Use the left jamb as the fixed anchor. At this 1672-pixel-wide reference the right jamb is near x=475: place it near x=570–580, leaving a clear gap before the ochre wall that starts near x=645. The new right rail should stand in the open space between the second lamp and the ochre divider. Extend the thin top rail, bottom rail, clear wet glass, and supporting stone sill naturally along their existing perspective. Carry the small latch along to the new bottom-right corner without changing its size. Preserve the scale of the beads and fill the added glass area with similarly sparse pinhead droplets. This is a localized object edit: keep the existing camera, crop, image aspect, lamps and their exact positions behind the glass, header typography, wet stone, ochre wall, rain, cloud pattern, colors, and right foreground block as in the source. Return one full-frame image.
+
+## Volumetric Fog and Rain - Rain Observatory
+
+[Volumetric Fog and Rain - Rain Observatory](<Volumetric Fog and Rain - Rain Observatory - Concept.png>)
+
+Reference inputs in order
+
+1. [Volumetric Fog and Rain - Rain Laboratory](<Volumetric Fog and Rain - Rain Laboratory - Concept.png>)
+2. [Volumetric Fog and Rain - Volume Laboratory](<Volumetric Fog and Rain - Volume Laboratory - Concept.png>)
+
+Create one 16:9 landscape concept plate for the Unity Utilities sample “Rain Observatory”. Use the Rain Laboratory reference for its storm sky, gridded slate and amber capsule lamps, and the Volume Laboratory reference for its sheltered architecture and upper-left identity. Match their realistic, achievable Unity Game view art direction.
+
+Frame an eye-level, oblique view from a dry observation room. A single large window on a deep slate sill fills the left half, beside an open walk-through doorway on the right. A slim dark jamb separates them. The same courtyard paving, wall and evenly spaced lamps continue across both openings in one coherent perspective. Place a warm lamp just outside, visible through the doorway near the edge of the glass. On the nearby pane, a few beads catch and bend its amber light. Show varied pinhead drops, several larger lens-like beads, and two or three gravity-drawn rivulets with cleared tracks. Through the opening the lamp and wet paving remain crisp. Keep the droplets confined to the pane, the interior floor matte and dry, and the glass transparent enough to recognize the courtyard. Cool blue-grey cloud detail, light wind-driven rain outdoors, broken amber reflections and distance haze. Let the window be the first thing the eye notices.
+
+Use the small shared header in the upper left: amber outline rain-cloud icon, white “Volumetric Fog and Rain”, smaller “Rain Observatory”, subtle translucent dark gradient and fine rule. One full-bleed scene, no other interface, no people, drains, furniture or camera-lens droplets.
+
+### Ridge station revision
+
+[Rain Observatory — ridge station concept](<Volumetric Fog and Rain - Rain Observatory - Ridge Station Concept.png>)
+
+Reference input
+
+1. [Original Rain Observatory concept](<Volumetric Fog and Rain - Rain Observatory - Concept.png>)
+
+Reimagine this Unity sample as a completely different place. Landscape 16:9 realistic, buildable Unity Game view. The attached concept is a reference ONLY for the little upper-left header, amber accent, and restrained material rendering. Replace its scene and composition entirely.
+
+Rain Observatory is a small blue-grey folded-steel weather hut perched on a rocky ridge above a remote reservoir. From inside at standing eye level, look obliquely ALONG a bank of shoulder-height industrial casement windows toward the bright water and overlapping forested hills disappearing into cool blue rain. The close window sash and its modest painted metal 10 cm lever latch in the center-left are the foreground subject. A neighboring narrow casement on the right is swung open outward thirty degrees on visible hinges, admitting a crisp sliver of the exact same lakeshore. A little exterior amber maintenance lamp rakes the nearby glass from one side. A spare rail and compact real anemometer on a mast against the bright sky establish the function of the station. Keep the horizon and the roof flashing coherent across panes. Weathered charcoal steel profiles, fasteners, shallow zinc sill, subdued dry interior, moody overcast sky breaking lighter over the water, industrial PBR realism. An intimate practical lookout, no stone plaza, ochre wall, bollard rows, broad doorway, or astronomical dome.
+
+Get the water scale right. View a normal 70-centimetre-wide pane from about one metre away. Real adhered beads are roughly 0.5–2 millimetres across, most just one or two pixels at this image size. A visible 4 mm screw head on the sash is bigger than almost every drop. Show small irregular clusters of tiny highlights against the dark ridge, exactly a few fine threading gravity tracks, irregular clear glass between showers. A few pinpoints pick up the lamp. Rain reads in grazing light over a transparent pane, with slight local distortion of distant forms. NO marble-sized blobs, cartoon teardrops, black bubble outlines, thick ropes of runoff, or overlay of water on the viewing camera. The far landscape through the open casement is naturally free of adhered beads. Keep a plausible sense of scale at full frame.
+
+Match the reference's modest upper-left UI headed “Volumetric Fog and Rain” with “Rain Observatory” below and the amber rain-cloud outline to the left. One immersive shot, just this header, physically consistent and suitable as art direction before building the scene.
+
+### Glazing test bay revision
+
+[Rain Observatory — glazing test bay concept](<Volumetric Fog and Rain - Rain Observatory - Glazing Test Bay Concept.png>)
+
+Reference inputs in order
+
+1. [Volumetric Fog and Rain - Volume Laboratory](<Volumetric Fog and Rain - Volume Laboratory - Concept.png>)
+2. [Interactive Fog - Mist Sanctuary](<Interactive Fog - Mist Sanctuary - Concept.png>)
+
+Use these two references to design one 16:9 Unity Game view concept for Rain Observatory. From Volume Laboratory, carry over the softly lit gridded slate and its small upper-left title treatment. From Mist Sanctuary, borrow the economy of broad, plain shapes and the simple amber capsule light. Design a compact glazing test bay that a developer could block out using a handful of boxes and one pane of glass.
+
+The camera is at eye height in a dry room, a little off center. Two adjacent 90 cm square openings are cut into the same flat charcoal grid wall, separated by one narrow post, on a common waist-high sill. Frame them close enough to occupy most of the picture, with a little dry floor and the wall returns for depth. The LEFT opening holds one clear pane with a slim dark frame and an ordinary 8 cm latch near the lower edge. The RIGHT opening is empty, exposing a strip of wet floor and the same single exterior grey tiled wall two metres away. Its horizontal grid line continues behind both apertures. Mount exactly one small vertical amber capsule on that far wall where it shines through the glass and casts a soft wash toward the open bay. Overcast daylight fills this simple outdoor slot. Barely a sliver of pale sky.
+
+Water is the subject. Small irregular groups of pinhead rain beads on the left pane, mostly 0.5–2 mm, visibly smaller than the latch screws. A little grazing amber light and slight local refraction of the grid reveal them. Two very fine short runoff trails; generous clear glass between clusters. The right aperture shows the plain wall sharply. Nothing on the camera lens. Visually restrained prototype quality: a legible blockout with softly beveled edges, subtle tile joints, no secondary ornament, signage, distant landscape, equipment, rows of lamps, furniture, storm spectacle or industrial set dressing.
+
+Upper-left identity only, the amber outline rain-cloud symbol and the exact two lines “Volumetric Fog and Rain” and “Rain Observatory”, as in the first reference. Keep the composition quiet enough that the difference between the two openings is immediately visible.
+
+### Walk-through test bay revision
+
+[Rain Observatory — walk-through test bay](<Volumetric Fog and Rain - Rain Observatory - Walkthrough Test Bay Concept.png>)
+
+Reference input
+
+1. [Glazing test bay concept](<Volumetric Fog and Rain - Rain Observatory - Glazing Test Bay Concept.png>)
+
+Edit the attached Rain Observatory glazing-test-bay concept for the next design review. Deliver one landscape 16:9 Unity Game view. Keep the exact modest gridded concrete prototype, slate and amber palette, small black window latch with visible screw heads, cool outdoor light, and the existing small upper-left “Volumetric Fog and Rain” / “Rain Observatory” identity. This is a close iteration of the same room.
+
+Three changes to show clearly:
+1. Move the eye-level camera into the left half of the room and closer to the pane, looking slightly to the right, about fifteen degrees oblique. The wet pane fills about sixty percent of the frame. Keep its right-hand edge, part of its sill and the small latch in frame. Preserve comfortable interior depth and natural architectural perspective.
+2. On the right remove the entire panel below the opening and its sill. Make a genuine person-height, floor-level open doorway aligned to the window lintel. Dry matte interior tiles meet rain-darkened outdoor paving directly across a flush walkable threshold. We can see a couple of metres of wet paving and the same simple wall beyond. Keep the view empty and readable.
+3. Move the one exterior amber capsule sconce along that far tiled wall to immediately left of the central jamb in the camera view. Its warm light rakes one pale, narrow horizontal stone joint that runs behind BOTH openings at the same height. Make the effect legible: a fine, slightly wandering water track on the FRONT surface of the glass crosses the lit joint, creating a tiny offset/kink in its image and a few broken warm glints. The same joint remains straight away from droplets and is seen sharply through the doorway. Preserve a genuinely transparent pane with irregular small clusters of pinhead beads, mostly 0.5–2 mm, plainly smaller than the latch screws. Use the camera distance and grazing light to show the refraction. Keep the straight joint, localized lensing, and rivulet tangibly visible at full image size without oversized drops, broad smears, wavy masonry or thick ropes of water. Rain falls outside; only the left pane carries adhered drops. Keep the architecture and image free of extra props, landscape, labels, callouts or other UI.
+
+### Open bay with repeating wall lights
+
+[Rain Observatory — open bay concept](<Volumetric Fog and Rain - Rain Observatory - Open Bay Concept.png>)
+
+ImageGen reference input: the supplied JPEG of the [glazing test bay concept](<Volumetric Fog and Rain - Rain Observatory - Glazing Test Bay Concept.png>).
+
+Edit this specific attached Rain Observatory concept. Retain its straight-on eye-level view from inside a simple dry concrete shelter, 16:9 composition, restrained grey modular tiles, and existing small upper-left “Volumetric Fog and Rain” / “Rain Observatory” header. Make two architectural changes.
+
+FIRST: the front wall ENDS at the right edge of the LEFT window. Keep the left window exactly as a glazed square opening with a black metal frame, latch, and waist-high solid wall beneath it. Delete the entire right-hand half of the front wall, from the sheltered floor up to the ceiling soffit; remove the right windowsill, the tiled knee wall below, the window head and outer trim around the old opening. This is an open-fronted shelter with glazing on its left half, a completely open bay on its right half. Show uninterrupted walkable paving continuing directly from the dry interior across a flush threshold into rain. Keep an overhead slab to shelter the standing camera and a simple perpendicular side return at the edge if visible. There is no door or sash on the right. Nothing stands between the viewer and the left pane. The camera, floor on the camera side, and the air in front of the pane are DRY. Show tiny irregular pinhead beads and one or two delicate vertical runoff tracks on the OUTER surface of the left glass; keep the beads smaller than the latch screws. Falling rain is confined to the exterior, visible beyond the glass and through the right opening.
+
+SECOND: turn the original solitary vertical amber capsule sconce into one evenly spaced horizontal row of matching lamps mounted directly to the single exterior tiled wall. Keep the original lamp and size; continue a regular masonry-bay spacing so at least two lamps are seen through the left pane and at least two through open air to the right. Every lamp is at the same real mounting height, with gentle amber light on the wall and a broken reflection in the wet exterior paving. The wall and its grid lines extend continuously behind both halves. Preserve the simple prototype, with no extra foreground objects, freestanding posts, ochre block, bench, drain, signs, or added UI. Use the attached image as the edit target, keep this a modest revision of that layout.
+
+#### Fixed pane
+
+[Rain Observatory — open bay with fixed pane](<Volumetric Fog and Rain - Rain Observatory - Open Bay Fixed Pane Concept.png>)
+
+ImageGen reference input: the [open bay concept](<Volumetric Fog and Rain - Rain Observatory - Open Bay Concept.png>).
+
+Retouch this exact Rain Observatory concept image. Remove only the little black latch near the lower right of the left glazed window, including its raised tab, mounting plate, both silver screw heads and contact shadow. In this 1672 by 941 image the hardware occupies approximately x=690–775 and y=641–690. Fill the small patch with the natural continuation of the straight slim black bottom rail, rain-speckled glass and wet paving visible through the glass. Match the existing heights, colors and reflections to either side. The result should look like a fixed pane in a plain frame. Preserve the original pixel framing, window dimensions, UI text, four amber wall lamps, open right bay, illumination and all surrounding scene detail. Return the full edited image.
 
 ## Volumetric Fog and Rain - Volume Laboratory
 
