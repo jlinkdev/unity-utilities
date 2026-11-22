@@ -1,0 +1,7 @@
+{
+  "name": "com.jlinkdev.object-pooling.SampleInstaller.Editor",
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}

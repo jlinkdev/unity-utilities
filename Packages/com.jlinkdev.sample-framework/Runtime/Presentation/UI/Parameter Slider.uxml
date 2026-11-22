@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:studio="JLinkDev.SampleFramework">
+    <studio:StudioSlider />
+</ui:UXML>

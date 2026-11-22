@@ -1,0 +1,5 @@
+{
+  "name": "jlinkdev.ObjectHighlighting.SampleInstaller.Editor",
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false
+}

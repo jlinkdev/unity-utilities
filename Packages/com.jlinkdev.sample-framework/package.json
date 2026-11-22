@@ -1,0 +1,15 @@
+{
+  "name": "com.jlinkdev.sample-framework",
+  "displayName": "jlinkdev Sample Framework",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Shared presentation assets for Unity Utilities demo scenes.",
+  "license": "MIT",
+  "author": { "name": "Justin Link" },
+  "dependencies": { "com.unity.modules.imgui": "1.0.0", "com.unity.modules.uielements": "1.0.0" },
+  "samples": [{
+    "displayName": "Caption Preview",
+    "description": "Preview the shared title and instruction styles.",
+    "path": "Samples~/Caption Preview"
+  }]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "jlinkdev.SampleFramework.Editor",
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}

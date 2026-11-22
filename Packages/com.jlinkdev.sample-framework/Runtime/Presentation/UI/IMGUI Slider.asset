@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 008964ff24734f1c91d7927c653e452c, type: 3}
+  m_Name: IMGUI Slider
+  m_EditorClassIdentifier:
+  track: {fileID: 2800000, guid: 3e1c13cd1eb8e2a4bb86670d7d4c77b1, type: 3}
+  accent: {fileID: 2800000, guid: 633d4c2e739e70846890bae942e80d97, type: 3}
+  valueBackground: {fileID: 2800000, guid: a81fb9d15c437a24083e915de55060b8, type: 3}

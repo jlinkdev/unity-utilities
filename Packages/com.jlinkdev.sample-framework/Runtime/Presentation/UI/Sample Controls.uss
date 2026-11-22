@@ -1,0 +1,223 @@
+.sample-studio {
+    -unity-font: url("../Fonts/Barlow-Medium.ttf");
+    -unity-font-definition: initial;
+    color: rgb(231,235,239);
+    font-size: 12px;
+}
+
+.sample-studio .sidebar, .sample-studio .plant-rail {
+    background-color: rgb(23,31,41);
+    padding: 59px 15px 10px;
+    border-right-width: 1px;
+    border-right-color: rgb(56,65,76);
+    flex-shrink: 0;
+}
+.sample-studio.bench .side { width: 25%; min-width: 0; max-width: 100%; }
+.sample-studio.plant-workshop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.sample-studio .plant-rail { position: absolute; left: 0; top: 0; bottom: 0; width: 25%; min-width: 245px; }
+.sample-studio .plant-body, .sample-studio .inspector { flex-grow: 1; flex-basis: 0; min-height: 0; margin-top: 7px; }
+.sample-studio .heading, .sample-studio .title, .sample-studio.workshop .design-name { display: none; }
+.sample-studio .plant-shelf { position: absolute; left: 25%; right: 0; bottom: 0; }
+
+.sample-studio Button {
+    font-size: 12px;
+    color: rgb(234,237,240);
+    background-color: rgb(31,41,52);
+    border-width: 1px;
+    border-color: rgb(51,62,73);
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px 7px;
+    min-width: 0;
+    min-height: 23px;
+    -unity-text-align: middle-center;
+}
+.sample-studio Button:hover { background-color: rgb(46,58,70); border-color: rgb(81,92,104); }
+.sample-studio Button:active, .sample-studio Button.chosen, .sample-studio Button.selected {
+    background-color: rgb(108,76,50);
+    border-width: 1px;
+    border-color: rgb(151,107,69);
+    color: rgb(255,240,219);
+}
+.sample-studio Button:focus { border-color: rgb(213,161,99); }
+.sample-studio Button.primary {
+    background-color: rgb(218,158,96);
+    border-color: rgb(235,178,116);
+    color: rgb(26,29,34);
+    -unity-font-style: bold;
+}
+.sample-studio Button.primary:hover { background-color: rgb(237,179,116); }
+.sample-studio Button:disabled { opacity: .52; }
+.sample-studio .tabs, .sample-studio .footer .row, .sample-studio .view-tools {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+.sample-studio .tabs { flex-shrink: 0; margin: 0 0 1px; }
+.sample-studio .tabs Button, .sample-studio .footer .row Button { flex-grow: 1; flex-basis: 0; }
+.sample-studio .tabs Button {
+    flex-basis: auto;
+    font-size: 11px;
+    height: 23px;
+    min-height: 0;
+    padding: 0 4px;
+    background-image: url("Workshop Button.png");
+    -unity-slice-top: 6;
+    -unity-slice-bottom: 6;
+    -unity-slice-left: 6;
+    -unity-slice-right: 6;
+    background-color: rgba(0,0,0,0);
+    border-width: 0;
+}
+.sample-studio .tabs Button.chosen, .sample-studio .tabs Button.selected {
+    background-image: url("Workshop Selected.png");
+}
+.sample-studio .tabs Button:hover { -unity-background-image-tint-color: rgb(229,219,206); }
+.sample-studio .section { color: rgb(240,242,245); font-size: 14px; -unity-font-style: bold; margin: 6px 0 2px; min-height: 16px; }
+.sample-studio .hint, .sample-studio .help, .sample-studio .measure, .sample-studio .foot {
+    color: rgb(203,211,218);
+    font-size: 11px;
+    white-space: normal;
+    margin: 2px 0;
+}
+.sample-studio .notice { color: rgb(223,181,130); margin: 0; font-size: 11px; }
+.sample-studio .footer {
+    flex-shrink: 0;
+    margin-top: 5px;
+    padding-top: 6px;
+    border-top-width: 1px;
+    border-top-color: rgba(108,124,140,.23);
+}
+.sample-studio .footer Button { height: 26px; min-height: 0; font-size: 12px; padding: 2px 6px; }
+.sample-studio .footer > .primary { flex-grow: 0; }
+.sample-studio .footer .row { width: 100%; }
+.sample-studio .profile-pad { height: 65px; background-color: rgb(17,24,33); }
+
+.sample-studio .view-tools {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    background-color: rgba(0,0,0,0);
+}
+.sample-studio.bench .frame-tools { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.sample-studio .view-tools Button { min-height: 0; height: 24px; padding: 1px 7px; font-size: 12px; }
+.sample-studio .display-tools { top: 6px; right: 10px; }
+.sample-studio.workshop .display-tools Button {
+    width: 25px; height: 24px; min-height: 0;
+    margin: 2px; padding: 0; font-size: 0;
+    background-size: 15px 15px; background-repeat: no-repeat;
+    background-position-x: center; background-position-y: center;
+}
+.sample-studio .action-fit, .sample-studio .action-side, .sample-studio .action-front, .sample-studio .action-above,
+.sample-studio .action-slice, .sample-studio .action-guides, .sample-studio .action-undo, .sample-studio .action-redo,
+.sample-studio .action-keep-a-copy, .sample-studio .action-keep-design, .sample-studio .action-save-design,
+.sample-studio .action-save-mesh, .sample-studio .action-save-mesh-asset {
+    background-size: 14px 14px; background-repeat: no-repeat;
+    background-position-x: left 6px; background-position-y: center;
+}
+.sample-studio .action-fit { background-image: url("Icons/fit.png"); }
+.sample-studio .action-side, .sample-studio .action-front { background-image: url("Icons/side.png"); }
+.sample-studio .action-above { background-image: url("Icons/above.png"); }
+.sample-studio .action-slice { background-image: url("Icons/slice.png"); }
+.sample-studio .action-guides { background-image: url("Icons/guides.png"); }
+.sample-studio .action-undo { background-image: url("Icons/undo.png"); }
+.sample-studio .action-redo { background-image: url("Icons/redo.png"); }
+.sample-studio .action-keep-a-copy, .sample-studio .action-keep-design { background-image: url("Icons/keep-a-copy.png"); }
+.sample-studio .action-save-design { background-image: url("Icons/save-design.png"); }
+.sample-studio .action-save-mesh, .sample-studio .action-save-mesh-asset { background-image: url("Icons/save-mesh.png"); }
+.sample-studio .action-lighting { background-image: url("Icons/lighting.png"); }
+.sample-studio .action-grid { background-image: url("Icons/grid.png"); }
+.sample-studio .action-focus { background-image: url("Icons/focus.png"); }
+.sample-studio .view-tools .action-fit, .sample-studio .view-tools .action-side, .sample-studio .view-tools .action-front,
+.sample-studio .view-tools .action-above, .sample-studio .view-tools .action-slice, .sample-studio .view-tools .action-guides,
+.sample-studio .footer .action-undo, .sample-studio .footer .action-redo, .sample-studio .footer .action-save-design,
+.sample-studio .footer .action-save-mesh, .sample-studio .footer .action-save-mesh-asset,
+.sample-studio .footer .action-keep-a-copy, .sample-studio .footer .action-keep-design { padding-left: 23px; }
+
+/* The shelf uses the space below the viewport. Each card gets the same share even with long names. */
+.sample-studio .studio-shelf {
+    height: 88px; min-height: 88px; flex-shrink: 0;
+    flex-direction: row; align-items: stretch;
+    background-color: rgb(18,25,34);
+    border-top-width: 1px; border-top-color: rgb(48,59,71);
+    padding: 5px 16px 15px;
+}
+.sample-studio #preset-cards { flex-direction: row; flex-grow: 1; flex-basis: 0; min-width: 0; align-items: stretch; }
+.sample-studio .studio-shelf Button.preset {
+    flex-grow: 1; flex-basis: 0; min-width: 0; min-height: 0;
+    flex-direction: column; align-items: stretch; justify-content: center;
+    margin: 0 2px; padding: 4px 2px 3px;
+    background-image: url("Workshop Button.png");
+    -unity-slice-top: 6; -unity-slice-bottom: 6; -unity-slice-left: 6; -unity-slice-right: 6;
+    background-color: rgb(29,39,49);
+    border-width: 1px; border-color: rgb(44,55,67); border-radius: 6px;
+}
+.sample-studio .studio-shelf Button.preset:hover { border-color: rgb(104,115,124); }
+.sample-studio .studio-shelf Button.active-preset { border-color: rgb(230,165,94); }
+.sample-studio .studio-shelf .preset Image { flex-grow: 1; flex-basis: 0; min-height: 0; width: 78%; align-self: center; margin: 2px 0; }
+.sample-studio .studio-shelf .preset-title {
+    -unity-text-align: middle-center; font-size: 11px; color: rgb(231,235,239);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0; margin: 2px 0 0;
+}
+.sample-studio Toggle .unity-toggle__checkmark {
+    width: 15px; height: 15px; min-width: 15px; min-height: 15px;
+    background-image: none; background-color: rgb(27,36,46); border-radius: 3px;
+    border-width: 1px; border-color: rgb(75,89,102);
+}
+.sample-studio Toggle:checked .unity-toggle__checkmark {
+    background-color: rgb(231,167,105); border-width: 3px; border-color: rgb(82,63,48);
+}
+
+.sample-studio .studio-shelf .active-preset .preset-title { color: rgb(245,191,127); }
+.sample-studio .studio-shelf Button.shelf-arrow {
+    width: 22px; flex-shrink: 0; min-height: 0;
+    background-color: rgba(0,0,0,0); border-width: 0;
+    color: rgb(218,226,232); -unity-text-align: middle-center;
+    font-size: 22px; margin: 0; padding: 0;
+}
+.sample-studio .studio-shelf Button.shelf-arrow:hover { background-color: rgb(35,46,57); }
+.sample-studio.workshop.focus-view .studio-shelf { display: none; }
+
+.sample-studio .unity-base-text-field__input { background-color: rgb(36,46,57); color: rgb(237,242,245); }
+.sample-studio.workshop .value-row { height: 20px; min-height: 20px; align-items: flex-start; }
+.sample-studio.workshop .value-row FloatField { width: 49px; height: 18px; min-height: 18px; margin: 0; }
+.sample-studio.workshop .value-row .unity-base-text-field__input { font-size: 12px; padding: 0 3px; -unity-text-align: middle-right; }
+.sample-studio.workshop .parameter { -unity-text-align: middle-left; margin: 0; padding: 0; height: 18px; }
+.sample-studio.workshop .readout { height: 18px; border-radius: 3px; padding-right: 3px; background-color: rgb(37,48,60); }
+.sample-studio.workshop .readout FloatField { width: 36px; }
+.sample-studio.workshop .unit { font-size: 11px; margin: 0; padding: 0; color: rgb(218,226,232); }
+
+.sample-studio .studio-slider { flex-direction: column; align-items: stretch; height: 35px; min-height: 35px; margin: 1px 0 3px; padding: 0; }
+.sample-studio .studio-slider > .unity-base-field__label { display: none; }
+.sample-studio .studio-slider .slider-caption-row { position: absolute; top: 0; left: 0; right: 0; flex-direction: row; justify-content: space-between; align-items: center; height: 19px; }
+.sample-studio .studio-slider .slider-caption-row Label { font-size: 12px; margin: 0; padding: 0; color: rgb(228,233,237); }
+.sample-studio .studio-slider .slider-readout { flex-direction: row; align-items: center; height: 18px; border-radius: 4px; padding: 0 4px; background-color: rgb(34,45,56); }
+.sample-studio .studio-slider .slider-readout FloatField { width: 35px; min-width: 0; height: 17px; margin: 0; padding: 0; }
+.sample-studio .studio-slider .slider-readout .unity-base-text-field__input { background-color: rgba(0,0,0,0); -unity-text-align: middle-right; font-size: 12px; margin: 0; padding: 0 2px; border-width: 0; }
+.sample-studio .studio-slider > .unity-base-slider__input { position: absolute; top: 19px; bottom: 0; left: 3px; right: 3px; height: 14px; min-height: 14px; margin: 0; }
+.sample-studio .studio-slider .unity-base-slider__tracker { height: 4px; top: 50%; margin-top: -2px; padding: 0; border-width: 0; background-image: none; background-color: rgb(61,76,89); border-radius: 2px; }
+.sample-studio .studio-slider .slider-fill { height: 100%; background-color: rgb(205,141,84); border-radius: 2px; }
+.sample-studio .studio-slider .unity-base-slider__dragger, .sample-studio .studio-slider .unity-base-slider__dragger-border {
+    top: 50%; width: 8px; height: 15px; margin-top: -7.5px; border-width: 0; border-radius: 3px;
+}
+.sample-studio .studio-slider .unity-base-slider__dragger { background-color: rgb(231,167,105); }
+
+/* ScrollView creates its own Slider. Keep its entire input hierarchy inside the narrow gutter. */
+.sample-studio .inspector .unity-scroller--vertical {
+    width: 5px; min-width: 5px; max-width: 5px; margin: 0 0 0 2px; padding: 0;
+}
+.sample-studio .inspector .unity-scroller--vertical .unity-repeat-button { display: none; }
+.sample-studio .inspector .unity-scroller--vertical Slider,
+.sample-studio .inspector .unity-scroller--vertical .unity-base-slider__input,
+.sample-studio .inspector .unity-scroller--vertical .unity-base-slider__drag-container {
+    width: 5px; min-width: 0; max-width: 5px; margin: 0; padding: 0;
+}
+.sample-studio .inspector .unity-scroller--vertical .unity-base-slider__tracker {
+    background-color: rgba(21,29,39,.6); border-width: 0; width: 5px;
+}
+.sample-studio .inspector .unity-scroller--vertical .unity-base-slider__dragger,
+.sample-studio .inspector .unity-scroller--vertical .unity-base-slider__dragger-border {
+    width: 4px; min-width: 0; max-width: 4px; margin: 0; padding: 0; border-width: 0; border-radius: 2px;
+    background-color: rgb(66,79,92);
+}

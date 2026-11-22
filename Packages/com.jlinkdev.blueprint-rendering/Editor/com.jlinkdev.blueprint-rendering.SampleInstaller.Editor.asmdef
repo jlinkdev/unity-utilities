@@ -1,0 +1,7 @@
+{
+  "name": "com.jlinkdev.blueprint-rendering.SampleInstaller.Editor",
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}

@@ -127,6 +127,15 @@
         "com.unity.modules.physics": "1.0.0"
       }
     },
+    "com.jlinkdev.sample-framework": {
+      "version": "file:com.jlinkdev.sample-framework",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
+      }
+    },
     "com.jlinkdev.volumetric-fog-and-rain": {
       "version": "file:com.jlinkdev.volumetric-fog-and-rain",
       "depth": 0,

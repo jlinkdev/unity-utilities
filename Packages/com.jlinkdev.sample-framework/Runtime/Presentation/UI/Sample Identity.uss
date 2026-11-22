@@ -1,0 +1,43 @@
+.sample-identity {
+    position: absolute; top: 7px; left: 23px; height: 51px;
+    flex-direction: row; align-items: center; padding: 0 0 7px;
+    border-bottom-width: 1px; border-bottom-color: rgba(192,207,229,.25);
+}
+/* Fit the fade to the title and icon even when a scene uses a longer divider. */
+.sample-identity-content { flex-direction: row; align-items: center; }
+.sample-identity-gradient {
+    /* Leave solid backing around the content before each feather starts. */
+    position: absolute; left: -40px; right: -70px; top: -33px; bottom: -30px;
+    background-image: url("Header Gradient.png");
+    -unity-slice-left: 24; -unity-slice-right: 48;
+    -unity-slice-top: 18; -unity-slice-bottom: 18;
+}
+.sample-symbol, .studio-mark { width: 40px; height: 40px; margin: 0 14px 0 0; padding: 0; flex-shrink: 0; }
+.sample-symbol {
+    -unity-font: url("../Fonts/MaterialIconsOutlined-Regular.otf"); -unity-font-definition: initial;
+    -unity-text-align: middle-center; font-size: 34px; color: rgb(226,165,103);
+}
+.studio-mark { -unity-background-scale-mode: scale-to-fit; }
+.sample-package, .sample-name { margin: 0; padding: 0; text-shadow: 0 1px 3px rgba(7,12,18,.85); }
+.sample-package {
+    -unity-font: url("../Fonts/Barlow-SemiBold.ttf"); -unity-font-definition: initial;
+    font-size: 21px; color: rgb(242,245,248);
+}
+.sample-name {
+    -unity-font: url("../Fonts/Barlow-Medium.ttf"); -unity-font-definition: initial;
+    font-size: 13px; color: rgb(178,191,205);
+}
+.studio-mark--gallery { background-image: url("Studio Cube.png"); }
+.studio-mark--pottery { background-image: url("Studio Vessel.png"); }
+.gallery-heading { width: 400px; }
+.gallery-instructions { position: absolute; top: 72px; left: 19px; font-size: 13px; color: rgb(222,228,235); -unity-font: url("../Fonts/Barlow-Medium.ttf"); -unity-font-definition: initial; }
+.station-caption { position: absolute; width: 140px; align-items: center; }
+.station-name, .station-state { -unity-font: url("../Fonts/Barlow-SemiBold.ttf"); -unity-font-definition: initial; color: rgb(172,181,194); }
+.station-name { font-size: 16px; margin: 0 0 3px 0; }
+.station-state { font-size: 13px; padding: 1px 10px; border-width: 1px; border-radius: 12px; border-color: rgb(121,132,146); background-color: rgba(10,16,24,.64); }
+.station-hover .station-name, .station-hover .station-state { color: rgb(51,222,234); }
+.station-hover .station-state { border-color: rgb(40,172,186); }
+.station-selected .station-name, .station-selected .station-state { color: rgb(255,192,77); }
+.station-selected .station-state { border-color: rgb(218,158,57); }
+
+.sample-inspector-backdrop { position: absolute; left: 0; top: 0; bottom: 0; background-color: rgb(23,31,41); }
