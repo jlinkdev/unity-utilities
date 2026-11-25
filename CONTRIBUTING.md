@@ -68,7 +68,7 @@ Before publishing a version:
   and follow its quick start. Check for missing assets/scripts, setup errors, and
   unintended project-setting changes. Confirm temporary settings are restored.
 - Run applicable package EditMode and PlayMode tests. Where tests are absent, record
-  manual coverage and the gap; Object Pooling currently has no automated suite.
+  manual coverage and the gap.
 - Build and run a representative player, including shaders and serialized assets.
   Exercise relevant lifecycle cases such as disable, scene unload, and repeated use.
 - Measure performance-sensitive changes on target hardware. Visual quality and

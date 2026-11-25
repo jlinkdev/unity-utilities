@@ -29,7 +29,6 @@ and gameplay.
 | [Forcefields](Packages/com.jlinkdev.forcefields/README.md) | Unity 2022.3, URP 14.0.11 | Forcefield surfaces with glow, refraction, and impact ripples. |
 | [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3, any render pipeline | Limb, chain, and aim solvers with ground probes. |
 | [Object Highlighting](Packages/com.jlinkdev.object-highlighting/README.md) | Unity 6.0, URP 17.0.4, Render Graph, desktop | Separate hover and selection outlines and glows for 3D objects. |
-| [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3, any render pipeline | Reuse managed objects, GameObjects, components, and prefabs. |
 | [Portals](Packages/com.jlinkdev.portals/README.md) | Unity 2022.3, URP 14.0.11 | Paired planar portals with recursive views, teleportation, and velocity mapping. |
 | [Procedural Meshes](Packages/com.jlinkdev.procedural-meshes/README.md) | Unity 6.0 | Generate mesh assets from configurable primitives with UV and pivot controls. |
 | [Procedural Nebulae](Packages/com.jlinkdev.procedural-nebulae/README.md) | Unity 6.0, URP 17.0.3, Render Graph, desktop compute shaders | Generate seeded volumetric clouds lit by movable stars. |

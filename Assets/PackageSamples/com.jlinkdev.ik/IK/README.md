@@ -5,7 +5,7 @@
 Open `Scenes/IK Demo.unity` in this imported sample and press Play.
 Use the on-screen overlay to control the demo. The editable Studio Grid uses the optional Sample Framework floor and lighting assets.
 
-This sample supports a runtime UI similar to the object pooling sample, but uses grid controls to move IK targets and pole hints.
+Use the grid controls to move IK targets and pole hints.
 
 ## Optional: rebuild or customize the scene
 
