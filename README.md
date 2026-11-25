@@ -3,6 +3,23 @@
 Independent Unity Package Manager utilities. Each package includes setup
 instructions, a license, and a changelog. Released packages include an importable demo.
 
+> [!NOTE]
+> **From jlink**
+>
+> This is an experimental collection of Unity packages. I use it to try out
+> features I've been thinking about, bring over systems from other projects,
+> and capture ideas as they come up. I decide what to build and use Codex to
+> write the code.
+>
+> I've reviewed some packages and use some in my own projects. Others I haven't
+> looked at since Codex generated them. They're at different stages of
+> completeness, so check the individual package READMEs for current status and
+> known limitations.
+>
+> My goal is for each package to have clear docs, a runnable sample, and
+> performance suited to what it does. I'm working on unifying the samples
+> visually, as well as implementing more cohesive and human-friendly architecture.
+
 ## Packages
 
 | Package and quick start | Declared requirements | Maturity |
