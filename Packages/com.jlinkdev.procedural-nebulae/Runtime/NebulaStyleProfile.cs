@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae
+namespace jlinkdev.ProceduralNebulae
 {
     public enum NebulaShape { CloudsAndLanes, PainterlyCavity, Plumes, BacklitBank, SculptedBank, SweptArc }
     public enum NebulaStructureWarp { None, Vortex, Switchback, OverturningBillows, CarapacePlates, BranchingGills, PoreCups }

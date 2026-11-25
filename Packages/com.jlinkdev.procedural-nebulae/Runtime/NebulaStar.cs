@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae
+namespace jlinkdev.ProceduralNebulae
 {
     [DisallowMultipleComponent]
     public sealed class NebulaStar : MonoBehaviour

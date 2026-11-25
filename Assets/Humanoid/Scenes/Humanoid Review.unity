@@ -506,7 +506,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eda20a127c4888541ab9e2bcddfb37dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JLinkDev.HumanoidStudio.HumanoidReview
+  m_EditorClassIdentifier: Assembly-CSharp::jlinkdev.HumanoidStudio.HumanoidReview
   figures:
   - {fileID: 816841502}
   - {fileID: 188026747}

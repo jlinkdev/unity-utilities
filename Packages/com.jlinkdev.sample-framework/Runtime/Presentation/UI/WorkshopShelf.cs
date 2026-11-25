@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace JLinkDev.SampleFramework
+namespace jlinkdev.SampleFramework
 {
 #if UNITY_6000_0_OR_NEWER
     [UxmlElement]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace JLinkDev.HumanoidStudio.Editor
+namespace jlinkdev.HumanoidStudio.Editor
 {
     internal sealed class HumanoidImport : AssetPostprocessor
     {

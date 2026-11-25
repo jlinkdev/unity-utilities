@@ -1,5 +1,5 @@
-#ifndef JLINKDEV_WATER_COMMON_INCLUDED
-#define JLINKDEV_WATER_COMMON_INCLUDED
+#ifndef jlinkdev_WATER_COMMON_INCLUDED
+#define jlinkdev_WATER_COMMON_INCLUDED
 
 // All consumers use the same phase, displacement and mesh diagonal. Never animate a visual-only vertex offset.
 CBUFFER_START(UnityPerMaterial)

@@ -6,9 +6,9 @@ using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
-using Settings = JLinkDev.SampleInstallation.SampleFrameworkSettings;
+using Settings = jlinkdev.SampleInstallation.SampleFrameworkSettings;
 
-namespace JLinkDev.SampleInstallation
+namespace jlinkdev.SampleInstallation
 {
     // Maintained in Object Highlighting and distributed by scripts/sample_installers.py.
     internal sealed class SampleFrameworkImport : AssetPostprocessor

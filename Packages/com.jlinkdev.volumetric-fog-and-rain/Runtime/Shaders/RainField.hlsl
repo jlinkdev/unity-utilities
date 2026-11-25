@@ -1,5 +1,5 @@
-#ifndef JLINKDEV_RAIN_FIELD_INCLUDED
-#define JLINKDEV_RAIN_FIELD_INCLUDED
+#ifndef jlinkdev_RAIN_FIELD_INCLUDED
+#define jlinkdev_RAIN_FIELD_INCLUDED
 float4 _RainField, _RainDistances, _RainAppearance, _RainNoise, _RainColor;
 float4 _RainOffset, _RainOffsetCells, _RainRight, _RainUp, _RainForward;
 float4 _FogOffset, _FogHeight;

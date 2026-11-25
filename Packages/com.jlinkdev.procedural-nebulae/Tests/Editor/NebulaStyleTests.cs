@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae.Tests
+namespace jlinkdev.ProceduralNebulae.Tests
 {
     public class NebulaStyleTests
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae.Samples
+namespace jlinkdev.ProceduralNebulae.Samples
 {
     [RequireComponent(typeof(Camera))]
     public sealed class NebulaFlight : MonoBehaviour

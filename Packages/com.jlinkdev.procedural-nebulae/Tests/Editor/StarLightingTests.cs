@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
-namespace JLinkDev.ProceduralNebulae.Tests
+namespace jlinkdev.ProceduralNebulae.Tests
 {
     public class StarLightingTests
     {

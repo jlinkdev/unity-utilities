@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace JLinkDev.SampleFramework
+namespace jlinkdev.SampleFramework
 {
     // Optional samples bind Draw once from the serialized asset. They can compile without this assembly.
     public sealed class SampleSliderGUI : ScriptableObject

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace JLinkDev.ProceduralNebulae.Editor
+namespace jlinkdev.ProceduralNebulae.Editor
 {
     public static class NebulaSetup
     {

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace JLinkDev.HumanoidStudio
+namespace jlinkdev.HumanoidStudio
 {
     public sealed class HumanoidReview : MonoBehaviour
     {

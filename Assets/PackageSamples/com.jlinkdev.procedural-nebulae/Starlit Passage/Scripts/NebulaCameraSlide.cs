@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae.EditableSamples
+namespace jlinkdev.ProceduralNebulae.EditableSamples
 {
     [RequireComponent(typeof(Camera))]
     public sealed class NebulaCameraSlide : MonoBehaviour

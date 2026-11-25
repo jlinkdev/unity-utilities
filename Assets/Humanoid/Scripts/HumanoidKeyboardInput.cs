@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static JLinkDev.HumanoidStudio.HumanoidCharacterController;
+using static jlinkdev.HumanoidStudio.HumanoidCharacterController;
 
-namespace JLinkDev.HumanoidStudio
+namespace jlinkdev.HumanoidStudio
 {
     [DefaultExecutionOrder(-100)]
     [RequireComponent(typeof(HumanoidCharacterController))]

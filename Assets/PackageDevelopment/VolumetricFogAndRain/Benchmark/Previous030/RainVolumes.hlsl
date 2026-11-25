@@ -1,5 +1,5 @@
-#ifndef JLINKDEV_RAIN_VOLUMES_INCLUDED
-#define JLINKDEV_RAIN_VOLUMES_INCLUDED
+#ifndef jlinkdev_RAIN_VOLUMES_INCLUDED
+#define jlinkdev_RAIN_VOLUMES_INCLUDED
 #define RAIN_MAX_INTERVALS 12
 #if defined(_RAIN_VOLUMES)
 float4x4 _RainBoxes[4];

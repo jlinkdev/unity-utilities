@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace JLinkDev.ProceduralNebulae.Editor
+namespace jlinkdev.ProceduralNebulae.Editor
 {
     [CustomEditor(typeof(NebulaStyleProfile))]
     public sealed class NebulaStyleProfileEditor : UnityEditor.Editor

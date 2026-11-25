@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace JLinkDev.HumanoidStudio
+namespace jlinkdev.HumanoidStudio
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator), typeof(CharacterController))]

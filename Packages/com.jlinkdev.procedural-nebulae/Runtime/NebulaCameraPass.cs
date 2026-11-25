@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace JLinkDev.ProceduralNebulae
+namespace jlinkdev.ProceduralNebulae
 {
     /// <summary>Runs the configured feature on this camera in a URP scene.</summary>
     [ExecuteAlways, DisallowMultipleComponent, RequireComponent(typeof(Camera), typeof(UniversalAdditionalCameraData))]

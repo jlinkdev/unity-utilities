@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace JLinkDev.HumanoidStudio.Editor
+namespace jlinkdev.HumanoidStudio.Editor
 {
     public static class HumanoidStudioBuilder
     {

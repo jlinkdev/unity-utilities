@@ -1,17 +1,17 @@
-#ifndef JLINKDEV_WORLD_SCAN_INCLUDED
-#define JLINKDEV_WORLD_SCAN_INCLUDED
+#ifndef jlinkdev_WORLD_SCAN_INCLUDED
+#define jlinkdev_WORLD_SCAN_INCLUDED
 
-#define JLINKDEV_WORLD_SCAN_MAX_PULSES 16
+#define jlinkdev_WORLD_SCAN_MAX_PULSES 16
 
 int _WorldScanPulseCount;
-float4 _WorldScanOriginRadius[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanAxisShape[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanColorIntensity[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanParameters0[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanParameters1[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanParameters2[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanParameters3[JLINKDEV_WORLD_SCAN_MAX_PULSES];
-float4 _WorldScanParameters4[JLINKDEV_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanOriginRadius[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanAxisShape[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanColorIntensity[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanParameters0[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanParameters1[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanParameters2[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanParameters3[jlinkdev_WORLD_SCAN_MAX_PULSES];
+float4 _WorldScanParameters4[jlinkdev_WORLD_SCAN_MAX_PULSES];
 
 struct WorldScanResult
 {
@@ -69,7 +69,7 @@ WorldScanResult WorldScanEvaluate(float3 positionWS, float3 normalWS)
     result.edgeThickness = 1.0;
 
     [loop]
-    for (int index = 0; index < JLINKDEV_WORLD_SCAN_MAX_PULSES; index++)
+    for (int index = 0; index < jlinkdev_WORLD_SCAN_MAX_PULSES; index++)
     {
         if (index >= _WorldScanPulseCount)
             break;

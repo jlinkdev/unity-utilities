@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
-namespace JLinkDev.ProceduralNebulae
+namespace jlinkdev.ProceduralNebulae
 {
     public sealed class NebulaRendererFeature : ScriptableRendererFeature
     {

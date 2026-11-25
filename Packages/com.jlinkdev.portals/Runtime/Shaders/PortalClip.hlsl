@@ -1,5 +1,5 @@
-#ifndef JLINKDEV_PORTAL_CLIP_INCLUDED
-#define JLINKDEV_PORTAL_CLIP_INCLUDED
+#ifndef jlinkdev_PORTAL_CLIP_INCLUDED
+#define jlinkdev_PORTAL_CLIP_INCLUDED
 
 // Shader Graph Custom Function node:
 // Source: File, Function: PortalClip_float (or PortalClip_half)

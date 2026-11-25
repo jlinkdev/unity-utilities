@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
-namespace JLinkDev.ProceduralNebulae
+namespace jlinkdev.ProceduralNebulae
 {
     [ExecuteAlways, DisallowMultipleComponent]
     public sealed class NebulaVolume : MonoBehaviour

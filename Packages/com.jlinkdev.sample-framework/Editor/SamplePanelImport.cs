@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace JLinkDev.SampleFramework.Editor
+namespace jlinkdev.SampleFramework.Editor
 {
     internal sealed class SamplePanelImport : AssetPostprocessor
     {
