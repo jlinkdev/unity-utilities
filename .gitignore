@@ -6,6 +6,10 @@
 # See: https://github.com/github/gitignore/tree/main/Global
 #
 .utmp/
+
+# Local sample concept art
+/ArtSource/Package Sample Style/
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
