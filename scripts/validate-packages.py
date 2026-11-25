@@ -213,7 +213,12 @@ def main():
         for folder in (package / "Samples~").glob("*"):
             if folder.is_dir() and Path(package.name, folder.name) not in registered:
                 fail(folder, "published sample has no package registration")
-    for document in ("README.md", "CONTRIBUTING.md", "Assets/PackageDevelopment/README.md", "Assets/PackageSamples/README.md"):
+    for document in (
+        "README.md",
+        "docs/maintainer-guide.md",
+        "Assets/PackageDevelopment/README.md",
+        "Assets/PackageSamples/README.md",
+    ):
         check_links(ROOT / document, ROOT)
     if ERRORS:
         print("\n".join(ERRORS), file=sys.stderr)

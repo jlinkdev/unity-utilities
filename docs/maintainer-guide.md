@@ -1,4 +1,4 @@
-# Contributing and releasing packages
+# Maintainer guide
 
 ## Package boundaries
 
@@ -39,7 +39,7 @@ any global pipeline changes. Edit the scene and guide under `Assets/PackageSampl
 Use the sample folder name from the manifest. Put scenes in `Scenes/` and group
 other assets by type. Publish with **Assets > jlinkdev > Publish Package Sample**
 or `python scripts/package_samples.py --publish <package-id> "<sample>"`.
-See the [sample authoring workflow](Assets/PackageSamples/README.md).
+See the [sample authoring workflow](../Assets/PackageSamples/README.md).
 
 ## Static checks
 
@@ -78,5 +78,5 @@ Before publishing a version:
   final smoke check, then publish and provide a pinned Git revision or archive.
 
 Keep validation records with the package when available. Volumetric Fog and Rain's
-[validation record](Packages/com.jlinkdev.volumetric-fog-and-rain/Documentation~/validation.md)
+[validation record](../Packages/com.jlinkdev.volumetric-fog-and-rain/Documentation~/validation.md)
 is an existing example; its results apply to that package and those tested versions.
