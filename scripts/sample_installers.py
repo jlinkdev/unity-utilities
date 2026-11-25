@@ -17,6 +17,8 @@ def sources():
         if not package.is_dir() or package.name == FRAMEWORK:
             continue
         manifest = json.loads((package / "package.json").read_text(encoding="utf-8-sig"))
+        if not manifest.get("samples"):
+            continue
         editor = package / "Editor"
         if editor != PILOT:
             yield editor / "SampleFrameworkInstaller.cs", helper

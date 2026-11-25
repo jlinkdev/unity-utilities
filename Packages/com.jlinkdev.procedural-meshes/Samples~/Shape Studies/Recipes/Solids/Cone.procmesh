@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 2,
+  "generator": "cone",
+  "generatorVersion": 1,
+  "sides": 12,
+  "bottomRadius": 0.8,
+  "height": 1.5,
+  "capEnds": true
+}

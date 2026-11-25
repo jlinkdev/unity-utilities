@@ -1,0 +1,4 @@
+{
+  "name": "jlinkdev.ProceduralTextures",
+  "references": ["Unity.Mathematics"]
+}

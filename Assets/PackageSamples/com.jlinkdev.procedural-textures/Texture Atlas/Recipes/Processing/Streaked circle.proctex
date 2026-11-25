@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 4,
+  "generatorVersion": 1,
+  "generator": "circle",
+  "softness": 0.025,
+  "blur": 2,
+  "blurRadius": 0.2,
+  "blurAngle": 35
+}

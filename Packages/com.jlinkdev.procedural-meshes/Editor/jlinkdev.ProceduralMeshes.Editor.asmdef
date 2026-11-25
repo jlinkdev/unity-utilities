@@ -1,0 +1,11 @@
+{
+  "name": "jlinkdev.ProceduralMeshes.Editor",
+  "references": [
+    "jlinkdev.ProceduralMeshes"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "overrideReferences": true,
+  "precompiledReferences": ["Newtonsoft.Json.dll"]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 2,
+  "generator": "annulus",
+  "generatorVersion": 1,
+  "radius": 0.9,
+  "innerRadius": 0.45,
+  "sides": 40,
+  "bands": 4,
+  "sweep": 275,
+  "discUV": 1
+}

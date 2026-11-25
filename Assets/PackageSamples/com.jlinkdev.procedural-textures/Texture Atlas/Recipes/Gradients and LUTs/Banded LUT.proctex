@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 3,
+  "generator": "linear",
+  "generatorVersion": 1,
+  "width": 256,
+  "height": 1,
+  "sizeX": 1,
+  "fitTexelEndpoints": true,
+  "colorMode": 2,
+  "colorRamp": {
+    "mode": 1,
+    "colorSpace": 0,
+    "colors": [
+      {
+        "time": 0,
+        "color": {
+          "r": 0.012,
+          "g": 0.025,
+          "b": 0.11,
+          "a": 1
+        }
+      },
+      {
+        "time": 0.28,
+        "color": {
+          "r": 0.025,
+          "g": 0.17,
+          "b": 0.41,
+          "a": 1
+        }
+      },
+      {
+        "time": 0.52,
+        "color": {
+          "r": 0.025,
+          "g": 0.48,
+          "b": 0.46,
+          "a": 1
+        }
+      },
+      {
+        "time": 0.74,
+        "color": {
+          "r": 0.98,
+          "g": 0.47,
+          "b": 0.1,
+          "a": 1
+        }
+      },
+      {
+        "time": 1,
+        "color": {
+          "r": 1,
+          "g": 0.92,
+          "b": 0.53,
+          "a": 1
+        }
+      }
+    ],
+    "alphas": [
+      {
+        "time": 0,
+        "alpha": 1
+      },
+      {
+        "time": 1,
+        "alpha": 1
+      }
+    ]
+  }
+}

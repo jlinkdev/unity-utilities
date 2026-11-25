@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 3,
+  "generator": "fbm",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "seed": 17,
+  "seamlessX": true,
+  "seamlessY": true,
+  "basis": 1,
+  "octaves": 5,
+  "remap": 2,
+  "threshold": 0.52
+}

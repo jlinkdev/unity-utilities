@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 3,
+  "generator": "repeated-shapes",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "stamp": 2,
+  "sizeX": 0.75
+}

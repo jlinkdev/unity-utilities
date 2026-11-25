@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 2,
+  "generator": "icosphere",
+  "generatorVersion": 1,
+  "radius": 0.85,
+  "subdivisions": 0
+}

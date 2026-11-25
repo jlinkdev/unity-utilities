@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 2,
+  "generator": "box",
+  "generatorVersion": 1,
+  "width": 1.5,
+  "height": 0.85,
+  "depth": 1,
+  "columns": 3,
+  "rows": 2,
+  "depthSegments": 2
+}

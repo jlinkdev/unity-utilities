@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 3,
+  "generator": "billow",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "seed": 17,
+  "seamlessX": true,
+  "seamlessY": true,
+  "basis": 2,
+  "octaves": 4
+}

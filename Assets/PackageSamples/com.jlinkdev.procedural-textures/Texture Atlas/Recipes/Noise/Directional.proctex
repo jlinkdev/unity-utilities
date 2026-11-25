@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 3,
+  "generator": "directional-noise",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "seed": 17,
+  "seamlessX": true,
+  "seamlessY": true,
+  "alongU": true,
+  "stretch": 6
+}

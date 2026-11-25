@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "generator": "ridged",
+  "generatorVersion": 1,
+  "width": 512,
+  "height": 512,
+  "cellsX": 4,
+  "cellsY": 4,
+  "seed": 53,
+  "seamlessX": true,
+  "seamlessY": true,
+  "basis": 2,
+  "octaves": 6,
+  "persistence": 0.52,
+  "lacunarity": 2
+}

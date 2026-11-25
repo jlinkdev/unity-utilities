@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 3,
+  "generator": "hex-grid",
+  "generatorVersion": 1,
+  "cellsX": 4,
+  "cellsY": 3,
+  "thickness": 0.12
+}

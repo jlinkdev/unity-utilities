@@ -31,6 +31,8 @@ in `Documentation~`. Small packages can use a single manual. Describe implemente
 behavior in present tense and mark proposed behavior explicitly. Do not describe
 minimum requirements as tested compatibility without validation evidence.
 
+An early `-preview.N` package may explicitly declare `"samples": []` while its
+authoring workflow is being validated. Release packages require a registered sample.
 Every declared sample needs a README and a usable scene. Start with running the
 included scene, then explain optional reconstruction or customization. Document
 any global pipeline changes. Edit the scene and guide under `Assets/PackageSamples/<package-id>/<sample>`.

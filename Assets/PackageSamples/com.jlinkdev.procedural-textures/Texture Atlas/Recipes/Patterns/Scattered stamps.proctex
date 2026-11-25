@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 3,
+  "generator": "scattered-shapes",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "stamp": 2,
+  "sizeX": 0.75,
+  "seed": 17,
+  "jitter": 0.8,
+  "sizeJitter": 0.4,
+  "angleJitter": 45
+}

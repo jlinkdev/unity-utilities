@@ -83,9 +83,13 @@ def check_package(package):
         elif "Editor" in asmdef.relative_to(package).parts and assembly.get("includePlatforms") != ["Editor"]:
             fail(asmdef, "Editor assembly must target Editor only")
     samples = manifest.get("samples", [])
-    if not isinstance(samples, list) or not samples:
-        fail(manifest_path, "expected at least one registered sample")
+    if not isinstance(samples, list):
+        fail(manifest_path, "samples must be a list")
         return 0
+    preview_without_samples = ("samples" in manifest and
+                               re.search(r"-preview\.\d+$", str(manifest.get("version", ""))))
+    if not samples and not preview_without_samples:
+        fail(manifest_path, "expected at least one registered sample for a release")
     for sample in samples:
         if not isinstance(sample, dict) or not all(sample.get(k) for k in ("displayName", "description", "path")):
             fail(manifest_path, "sample needs displayName, description, and path")

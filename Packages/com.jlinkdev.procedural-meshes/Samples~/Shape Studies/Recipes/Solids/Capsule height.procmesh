@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "generator": "capsule",
+  "generatorVersion": 1,
+  "radius": 0.5,
+  "bodyLength": 1,
+  "heightInColorR": true,
+  "sides": 32,
+  "rings": 10
+}

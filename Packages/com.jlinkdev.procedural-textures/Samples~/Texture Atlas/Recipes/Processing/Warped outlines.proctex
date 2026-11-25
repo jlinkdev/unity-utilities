@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 4,
+  "generatorVersion": 1,
+  "generator": "stripes",
+  "cellsX": 6,
+  "duty": 0.24,
+  "domainWarp": true,
+  "warpAmount": 0.14,
+  "warpFrequency": 3,
+  "warpSeed": 47,
+  "warpDirection": 1,
+  "blur": 1,
+  "blurRadius": 0.02,
+  "detectEdges": true,
+  "edgeWidth": 0.006,
+  "edgeStrength": 1.6
+}

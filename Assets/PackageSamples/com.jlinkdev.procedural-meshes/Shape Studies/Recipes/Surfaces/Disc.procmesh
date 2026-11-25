@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "generator": "disc",
+  "generatorVersion": 1,
+  "radius": 0.9,
+  "sides": 32,
+  "bands": 4
+}

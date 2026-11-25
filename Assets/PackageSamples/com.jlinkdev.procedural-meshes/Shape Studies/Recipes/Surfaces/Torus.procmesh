@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 2,
+  "generator": "torus",
+  "generatorVersion": 1,
+  "radius": 0.72,
+  "tubeRadius": 0.24,
+  "sides": 48,
+  "tubeSegments": 12
+}

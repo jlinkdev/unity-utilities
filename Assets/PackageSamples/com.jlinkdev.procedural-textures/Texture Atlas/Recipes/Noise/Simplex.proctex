@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 3,
+  "generator": "simplex",
+  "generatorVersion": 1,
+  "cellsX": 5,
+  "cellsY": 5,
+  "seed": 17,
+  "seamlessX": true,
+  "seamlessY": true
+}

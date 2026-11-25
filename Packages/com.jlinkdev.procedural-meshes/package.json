@@ -1,0 +1,23 @@
+{
+  "name": "com.jlinkdev.procedural-meshes",
+  "displayName": "jlinkdev Procedural Meshes",
+  "version": "0.3.0-preview.1",
+  "unity": "6000.0",
+  "description": "Author editable procedural meshes with selectable foundational generators and native Unity output.",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "samples": [
+    {
+      "displayName": "Shape Studies",
+      "description": "Two editable galleries covering all 11 generators, with comparisons of sweep, topology, closure materials, UV mapping and vertex height.",
+      "path": "Samples~/Shape Studies"
+    }
+  ],
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.2",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0"
+  }
+}

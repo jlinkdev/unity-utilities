@@ -1,0 +1,24 @@
+{
+  "name": "com.jlinkdev.procedural-textures",
+  "displayName": "jlinkdev Procedural Textures",
+  "version": "0.3.0-preview.1",
+  "unity": "6000.0",
+  "description": "Author editable procedural textures with selectable foundational generators and native Unity output.",
+  "license": "MIT",
+  "author": {
+    "name": "Justin Link"
+  },
+  "samples": [
+    {
+      "displayName": "Texture Atlas",
+      "description": "Six editable galleries covering all 34 generators, resolution independence, shader LUTs, masks, patterns and shared processing.",
+      "path": "Samples~/Texture Atlas"
+    }
+  ],
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.2",
+    "com.unity.mathematics": "1.3.3",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0"
+  }
+}

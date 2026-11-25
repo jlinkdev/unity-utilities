@@ -1,0 +1,14 @@
+{
+  "name": "jlinkdev.ProceduralMeshes.EditorTests",
+  "references": [
+    "jlinkdev.ProceduralMeshes",
+    "jlinkdev.ProceduralMeshes.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false
+}

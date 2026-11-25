@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 4,
+  "generatorVersion": 1,
+  "generator": "circle",
+  "softness": 0.025,
+  "detectEdges": true,
+  "edgeWidth": 0.018
+}

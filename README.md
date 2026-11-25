@@ -1,13 +1,14 @@
 # jlinkdev Unity Packages
 
-Independent Unity Package Manager utilities. Install only the packages your
-project needs; each package includes setup instructions, a license, a changelog,
-and an importable demo.
+Independent Unity Package Manager utilities. Each package includes setup
+instructions, a license, and a changelog. Released packages include an importable demo.
 
 ## Packages
 
 | Package and quick start | Declared requirements | Maturity |
 | --- | --- | --- |
+| [Procedural Textures](Packages/com.jlinkdev.procedural-textures/README.md) | Unity 6.0 | Choose among 34 noise, gradient, mask and pattern generators inside a texture asset. |
+| [Procedural Meshes](Packages/com.jlinkdev.procedural-meshes/README.md) | Unity 6.0 | Choose among 11 configurable primitives inside a mesh asset. |
 | [Procedural Plants](Packages/com.jlinkdev.procedural-plants/README.md) | Unity 6.0 | 2.3.1. Seven seeded houseplants with textured foliage, optional care and propagation. Inspect a young plant up close or grow the same cutting in two pots on the Windowsill. |
 | [IK](Packages/com.jlinkdev.ik/README.md) | Unity 2022.3; any pipeline | Experimental; avatar validation remains necessary. |
 | [Object Pooling](Packages/com.jlinkdev.object-pooling/README.md) | Unity 2022.3; any pipeline | Initial extraction; no package-specific automated tests yet. |
@@ -53,6 +54,8 @@ underwater atmosphere, and floating props. Procedural Plants includes **Windowsi
 and **Plant Studio**. Beams includes **Beam Kit Demo**, **Energy Studies**, and **Orbital Descent**.
 
 ## Develop and validate
+
+The procedural asset records cover the [asset lifecycle](docs/procedural-assets-phase-1.md) and the [foundational generators and Inspector selector](docs/procedural-assets-phase-2.md).
 
 Open this repository root in Unity `6000.3.21f1` to work on the embedded packages.
 Package runtime code lives in `Runtime`, editor tooling in `Editor`, detailed docs

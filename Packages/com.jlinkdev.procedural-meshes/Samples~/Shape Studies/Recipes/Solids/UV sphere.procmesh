@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "generator": "uv-sphere",
+  "generatorVersion": 1,
+  "radius": 0.85,
+  "sides": 24,
+  "rings": 12
+}

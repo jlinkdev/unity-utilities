@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "generator": "cylinder",
+  "generatorVersion": 1,
+  "sides": 32,
+  "bottomRadius": 0.72,
+  "topRadius": 0.72,
+  "height": 1.5,
+  "capEnds": true
+}

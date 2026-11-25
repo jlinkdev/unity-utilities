@@ -1,0 +1,11 @@
+{
+  "name": "jlinkdev.ProceduralTextures.Editor",
+  "references": [
+    "jlinkdev.ProceduralTextures"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "overrideReferences": true,
+  "precompiledReferences": ["Newtonsoft.Json.dll"]
+}

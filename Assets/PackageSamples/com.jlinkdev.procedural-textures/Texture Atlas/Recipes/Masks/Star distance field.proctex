@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 3,
+  "generator": "star",
+  "generatorVersion": 1,
+  "points": 6,
+  "innerRatio": 0.4,
+  "signedDistance": true,
+  "distanceRange": 0.15
+}

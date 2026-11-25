@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "generator": "cylinder",
+  "generatorVersion": 1,
+  "sides": 32,
+  "bottomRadius": 0.85,
+  "topRadius": 0.5,
+  "height": 1.4,
+  "sweep": 240,
+  "seamDegrees": 0,
+  "closeCut": true,
+  "capEnds": true,
+  "separateEnds": true
+}
